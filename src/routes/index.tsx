@@ -52,17 +52,40 @@ function Central() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-fade-up" style={{ animationDelay: "80ms" }}>
+        <Link
+          to="/foto-mensagem"
+          className="group relative p-6 md:p-8 rounded-3xl ring-1 ring-accent/20 bg-gradient-to-br from-accent/10 to-transparent hover:ring-accent/40 transition-all md:col-span-2 min-h-[200px]"
+        >
+          <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-3">Novo</div>
+          <h2 className="text-xl md:text-2xl font-medium text-foreground mb-2">Foto → Mensagem</h2>
+          <p className="text-sm text-muted-foreground max-w-[48ch]">
+            Manda a foto. Eu leio a vibe e te dou a mensagem perfeita pra puxar assunto.
+          </p>
+        </Link>
+
+        <Link
+          to="/foto-story"
+          className="group relative p-6 md:p-8 rounded-3xl ring-1 bg-gradient-to-br from-violet/10 to-transparent hover:ring-violet/40 transition-all min-h-[200px]"
+          style={{ ['--tw-ring-color' as string]: 'color-mix(in oklab, var(--violet) 20%, transparent)' }}
+        >
+          <div className="text-[10px] font-medium uppercase tracking-widest mb-3" style={{ color: 'var(--violet)' }}>Novo</div>
+          <h2 className="text-xl md:text-2xl font-medium text-foreground mb-2">Foto Story</h2>
+          <p className="text-sm text-muted-foreground">
+            Print do story → leitura, métricas e 7 respostas prontas.
+          </p>
+        </Link>
+
         <Card
           slug={TOOLS["story-scan"].slug}
           title={TOOLS["story-scan"].title}
           short={TOOLS["story-scan"].short}
-          span="md:col-span-2 md:row-span-1 min-h-[200px]"
+          span="md:col-span-2 min-h-[160px]"
         />
         <Card
           slug={TOOLS["chat-scan"].slug}
           title={TOOLS["chat-scan"].title}
           short={TOOLS["chat-scan"].short}
-          span="min-h-[200px]"
+          span="min-h-[160px]"
         />
 
         <Card slug={TOOLS["perfil-scan"].slug} title={TOOLS["perfil-scan"].title} short={TOOLS["perfil-scan"].short} />

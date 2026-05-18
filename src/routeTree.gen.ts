@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as FotoStoryRouteImport } from './routes/foto-story'
+import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ScanToolRouteImport } from './routes/scan.$tool'
 
@@ -30,6 +32,16 @@ const HistoricoRoute = HistoricoRouteImport.update({
   path: '/historico',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FotoStoryRoute = FotoStoryRouteImport.update({
+  id: '/foto-story',
+  path: '/foto-story',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FotoMensagemRoute = FotoMensagemRouteImport.update({
+  id: '/foto-mensagem',
+  path: '/foto-mensagem',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +55,8 @@ const ScanToolRoute = ScanToolRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/foto-mensagem': typeof FotoMensagemRoute
+  '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
   '/perfil': typeof PerfilRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -50,6 +64,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/foto-mensagem': typeof FotoMensagemRoute
+  '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
   '/perfil': typeof PerfilRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -58,6 +74,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/foto-mensagem': typeof FotoMensagemRoute
+  '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
   '/perfil': typeof PerfilRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -65,12 +83,28 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/historico' | '/perfil' | '/sitemap.xml' | '/scan/$tool'
+  fullPaths:
+    | '/'
+    | '/foto-mensagem'
+    | '/foto-story'
+    | '/historico'
+    | '/perfil'
+    | '/sitemap.xml'
+    | '/scan/$tool'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/historico' | '/perfil' | '/sitemap.xml' | '/scan/$tool'
+  to:
+    | '/'
+    | '/foto-mensagem'
+    | '/foto-story'
+    | '/historico'
+    | '/perfil'
+    | '/sitemap.xml'
+    | '/scan/$tool'
   id:
     | '__root__'
     | '/'
+    | '/foto-mensagem'
+    | '/foto-story'
     | '/historico'
     | '/perfil'
     | '/sitemap.xml'
@@ -79,6 +113,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FotoMensagemRoute: typeof FotoMensagemRoute
+  FotoStoryRoute: typeof FotoStoryRoute
   HistoricoRoute: typeof HistoricoRoute
   PerfilRoute: typeof PerfilRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -108,6 +144,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/foto-story': {
+      id: '/foto-story'
+      path: '/foto-story'
+      fullPath: '/foto-story'
+      preLoaderRoute: typeof FotoStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foto-mensagem': {
+      id: '/foto-mensagem'
+      path: '/foto-mensagem'
+      fullPath: '/foto-mensagem'
+      preLoaderRoute: typeof FotoMensagemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -127,6 +177,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FotoMensagemRoute: FotoMensagemRoute,
+  FotoStoryRoute: FotoStoryRoute,
   HistoricoRoute: HistoricoRoute,
   PerfilRoute: PerfilRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
