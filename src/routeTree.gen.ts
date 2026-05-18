@@ -10,10 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as FotoStoryRouteImport } from './routes/foto-story'
 import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
+import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ScanToolRouteImport } from './routes/scan.$tool'
 
@@ -22,9 +26,24 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
+  id: '/recuperar-senha',
+  path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PerfilRoute = PerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoricoRoute = HistoricoRouteImport.update({
@@ -42,6 +61,11 @@ const FotoMensagemRoute = FotoMensagemRouteImport.update({
   path: '/foto-mensagem',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CadastroRoute = CadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,29 +79,41 @@ const ScanToolRoute = ScanToolRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/scan/$tool': typeof ScanToolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/scan/$tool': typeof ScanToolRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/scan/$tool': typeof ScanToolRoute
 }
@@ -85,38 +121,54 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cadastro'
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/login'
     | '/perfil'
+    | '/recuperar-senha'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/scan/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cadastro'
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/login'
     | '/perfil'
+    | '/recuperar-senha'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/scan/$tool'
   id:
     | '__root__'
     | '/'
+    | '/cadastro'
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/login'
     | '/perfil'
+    | '/recuperar-senha'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/scan/$tool'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CadastroRoute: typeof CadastroRoute
   FotoMensagemRoute: typeof FotoMensagemRoute
   FotoStoryRoute: typeof FotoStoryRoute
   HistoricoRoute: typeof HistoricoRoute
+  LoginRoute: typeof LoginRoute
   PerfilRoute: typeof PerfilRoute
+  RecuperarSenhaRoute: typeof RecuperarSenhaRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ScanToolRoute: typeof ScanToolRoute
 }
@@ -130,11 +182,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar-senha': {
+      id: '/recuperar-senha'
+      path: '/recuperar-senha'
+      fullPath: '/recuperar-senha'
+      preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/perfil': {
       id: '/perfil'
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/historico': {
@@ -158,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FotoMensagemRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cadastro': {
+      id: '/cadastro'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -177,10 +257,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CadastroRoute: CadastroRoute,
   FotoMensagemRoute: FotoMensagemRoute,
   FotoStoryRoute: FotoStoryRoute,
   HistoricoRoute: HistoricoRoute,
+  LoginRoute: LoginRoute,
   PerfilRoute: PerfilRoute,
+  RecuperarSenhaRoute: RecuperarSenhaRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ScanToolRoute: ScanToolRoute,
 }
