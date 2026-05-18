@@ -73,6 +73,7 @@ function saveToHistory(tool: ToolSlug, input: string, reading: string) {
 
 function ScanPage() {
   const { tool } = useParams({ from: "/scan/$tool" });
+  const { seed } = useSearch({ from: "/scan/$tool" });
   const toolDef = TOOLS[tool as ToolSlug];
   const analisarFn = useServerFn(analisar);
   const [content, setContent] = useState("");
@@ -88,12 +89,12 @@ function ScanPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mutation.data?.reading]);
 
-  // Reset on tool change
+  // Reset on tool change; prefill from ?seed=
   useEffect(() => {
-    setContent("");
+    setContent(seed ?? "");
     mutation.reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tool]);
+  }, [tool, seed]);
 
   const entries = mutation.data ? parseReading(mutation.data.reading) : [];
 
