@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useParams, useSearch } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
@@ -6,6 +6,9 @@ import { TOOLS, type ToolSlug } from "@/lib/tools";
 import { analisar } from "@/lib/analise.functions";
 
 export const Route = createFileRoute("/scan/$tool")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    seed: typeof search.seed === "string" ? search.seed : undefined,
+  }),
   beforeLoad: ({ params }) => {
     if (!(params.tool in TOOLS)) throw notFound();
   },
