@@ -1,15 +1,23 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 import { BottomNav } from "@/components/BottomNav";
+import { useAuth } from "@/lib/use-auth";
+import { supabase } from "@/integrations/supabase/client";
+
+const PUBLIC_PATHS = new Set(["/login", "/cadastro", "/recuperar-senha", "/reset-password"]);
 
 function NotFoundComponent() {
   return (
@@ -95,13 +103,56 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const { session, loading } = useAuth();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const isPublic = PUBLIC_PATHS.has(pathname);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      router.invalidate();
+      queryClient.invalidateQueries();
+    });
+    return () => subscription.unsubscribe();
+  }, [router, queryClient]);
+
+  useEffect(() => {
+    if (!loading && !session && !isPublic) {
+      navigate({ to: "/login" });
+    }
+  }, [loading, session, isPublic, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xs text-muted-foreground tracking-widest uppercase">Carregando…</div>
+      </div>
+    );
+  }
+
+  if (!session && !isPublic) return null;
+
+  return (
+    <>
+      {children}
+      {session && !isPublic && <BottomNav />}
+    </>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-background text-foreground">
-        <Outlet />
-        <BottomNav />
+        <AuthGate>
+          <Outlet />
+        </AuthGate>
+        <Toaster theme="dark" />
       </div>
     </QueryClientProvider>
   );
