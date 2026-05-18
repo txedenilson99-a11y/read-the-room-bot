@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useParams, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useParams } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
@@ -6,9 +6,6 @@ import { TOOLS, type ToolSlug } from "@/lib/tools";
 import { analisar } from "@/lib/analise.functions";
 
 export const Route = createFileRoute("/scan/$tool")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    seed: typeof search.seed === "string" ? search.seed : undefined,
-  }),
   beforeLoad: ({ params }) => {
     if (!(params.tool in TOOLS)) throw notFound();
   },
@@ -73,7 +70,6 @@ function saveToHistory(tool: ToolSlug, input: string, reading: string) {
 
 function ScanPage() {
   const { tool } = useParams({ from: "/scan/$tool" });
-  const { seed } = useSearch({ from: "/scan/$tool" });
   const toolDef = TOOLS[tool as ToolSlug];
   const analisarFn = useServerFn(analisar);
   const [content, setContent] = useState("");
@@ -89,12 +85,12 @@ function ScanPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mutation.data?.reading]);
 
-  // Reset on tool change; prefill from ?seed=
+  // Reset on tool change
   useEffect(() => {
-    setContent(seed ?? "");
+    setContent("");
     mutation.reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tool, seed]);
+  }, [tool]);
 
   const entries = mutation.data ? parseReading(mutation.data.reading) : [];
 
