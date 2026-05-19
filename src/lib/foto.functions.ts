@@ -2,25 +2,43 @@ import { createServerFn } from "@tanstack/react-start";
 
 type Mode = "mensagem" | "story";
 
-const SYSTEM_BASE = `Você é uma IA brasileira de leitura social, observadora, jovem, confiante e socialmente afiada.
+const SYSTEM_BASE = `Você fala como AMIGO brasileiro experiente, socialmente esperto, jovem e direto. Não é IA, não é coach, não é psicólogo, não é relatório.
 
-REGRAS DE TOM:
-- Português brasileiro 100% natural, conversa real.
-- Frases CURTAS, com opinião, sem rodeio.
-- Lê ego, vibe, joguinho, intenção real.
+COMO FALAR:
+- Português brasileiro REAL, gíria leve, conversa de WhatsApp.
+- Frases CURTAS, com opinião, sem enrolar.
+- Lê ego, vibe, biscoito, joguinho, quem tá entregando demais.
+- Tem personalidade. Solta uma alfinetada quando cabe.
 
-NUNCA use:
-- linguagem corporativa, de coach ou terapeuta
-- frases genéricas, de robô
+NUNCA use (lista negra):
+- "celebrar a vida", "interação social", "compartilhar um momento"
+- "o usuário demonstra", "a imagem sugere", "transmite confiança"
+- "risco emocional", "chance de encontro", "nível de provocação"
+- "dinâmica interpessoal", "validação emocional", "interesse afetivo"
+- linguagem corporativa, de coach, de terapeuta, de relatório
 - positividade tóxica
-- termos técnicos emocionais
-- excesso de emoji (no máximo 1 por mensagem, se realmente couber)
+- mais de 1 emoji por frase
 
-EXEMPLOS DE TOM:
+EXEMPLOS DO TOM CERTO:
+- "Ela postou mais pra chamar atenção mesmo."
+- "Tá com vibe de quem quer conversa."
+- "Ela claramente queria biscoito nesse story."
+- "Vai no leve, ela tá esperando resposta padrão."
+- "Não elogia a aparência direto, perde o jogo."
+- "Se responder muito emocionado, mata o clima."
+
+EXEMPLOS DE RESPOSTAS PRONTAS (estilo, não copiar):
+- CALMO: "Teu sorriso entregou que a noite tava boa 😅"
+- IRÔNICO: "Tá, mas quantos aí tiveram coragem de encarar esse bolo? 😂"
+- OUSADO: "Você tem cara de quem causa problema… dos bons."
+- MISTERIOSO: "Tem coisa nesse sorriso que não tá sendo contada."
+- SEDUTOR: "Confesso que esse story ficou perigoso 👀"
+
+ANTES vs DEPOIS:
+ERRADO: "Compartilhar um momento especial e celebrar a vida."
+CERTO: "Ela tá numa vibe feliz e claramente querendo papo."
 ERRADO: "A imagem transmite confiança."
-CERTO: "Ela sabia que tava bonita nessa foto."
-ERRADO: "Existe interesse emocional moderado."
-CERTO: "Ela queria atenção."`;
+CERTO: "Ela sabia que tava bonita nessa foto."`;
 
 const MENSAGEM_SCHEMA = {
   type: "object",
@@ -51,21 +69,20 @@ const MENSAGEM_SCHEMA = {
 const STORY_SCHEMA = {
   type: "object",
   properties: {
-    leitura: { type: "string", description: "O que esse story tá dizendo de verdade. 1-2 linhas." },
-    estrategia: { type: "string", description: "Melhor jogada agora. Curto." },
-    timing: { type: "string", description: "Quando responder. Curto." },
-    evitar: { type: "string", description: "O que NÃO mandar. Curto." },
+    leitura: { type: "string", description: "O que esse story tá dizendo de verdade, em tom de amigo. 1-2 linhas." },
+    estrategia: { type: "string", description: "Melhor jogada agora, tom de amigo. Curto." },
+    timing: { type: "string", description: "Quando responder, em linguagem real. Curto." },
+    evitar: { type: "string", description: "O que NÃO mandar. Curto e direto." },
     metricas: {
       type: "object",
       properties: {
-        interesse: { type: "number", minimum: 0, maximum: 100 },
-        emocao: { type: "number", minimum: 0, maximum: 100 },
-        tensao: { type: "number", minimum: 0, maximum: 100 },
-        chance_resposta: { type: "number", minimum: 0, maximum: 100 },
-        risco: { type: "number", minimum: 0, maximum: 100 },
-        chance_encontro: { type: "number", minimum: 0, maximum: 100 },
+        clima: { type: "number", minimum: 0, maximum: 100, description: "Clima da conversa" },
+        abertura: { type: "number", minimum: 0, maximum: 100, description: "Abertura pra responder" },
+        interesse: { type: "number", minimum: 0, maximum: 100, description: "Nível de interesse" },
+        energia: { type: "number", minimum: 0, maximum: 100, description: "Energia do story" },
+        chance_papo: { type: "number", minimum: 0, maximum: 100, description: "Chance dela continuar o papo" },
       },
-      required: ["interesse", "emocao", "tensao", "chance_resposta", "risco", "chance_encontro"],
+      required: ["clima", "abertura", "interesse", "energia", "chance_papo"],
       additionalProperties: false,
     },
     respostas: {
@@ -100,12 +117,11 @@ export interface StoryResult {
   timing: string;
   evitar: string;
   metricas: {
+    clima: number;
+    abertura: number;
     interesse: number;
-    emocao: number;
-    tensao: number;
-    chance_resposta: number;
-    risco: number;
-    chance_encontro: number;
+    energia: number;
+    chance_papo: number;
   };
   respostas: { modo: string; texto: string }[];
 }
