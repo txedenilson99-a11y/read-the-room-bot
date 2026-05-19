@@ -154,7 +154,7 @@ function FotoStoryPage() {
             <div className="space-y-4">
               {METRIC_LABELS.map(({ key, label }) => {
                 const value = Math.max(0, Math.min(100, Math.round(result.metricas[key] ?? 0)));
-                const danger = key === "risco" && value >= 60;
+                const danger = false;
                 return (
                   <div key={key}>
                     <div className="flex items-center justify-between text-xs mb-1.5">
