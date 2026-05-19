@@ -69,21 +69,20 @@ const MENSAGEM_SCHEMA = {
 const STORY_SCHEMA = {
   type: "object",
   properties: {
-    leitura: { type: "string", description: "O que esse story tá dizendo de verdade. 1-2 linhas." },
-    estrategia: { type: "string", description: "Melhor jogada agora. Curto." },
-    timing: { type: "string", description: "Quando responder. Curto." },
-    evitar: { type: "string", description: "O que NÃO mandar. Curto." },
+    leitura: { type: "string", description: "O que esse story tá dizendo de verdade, em tom de amigo. 1-2 linhas." },
+    estrategia: { type: "string", description: "Melhor jogada agora, tom de amigo. Curto." },
+    timing: { type: "string", description: "Quando responder, em linguagem real. Curto." },
+    evitar: { type: "string", description: "O que NÃO mandar. Curto e direto." },
     metricas: {
       type: "object",
       properties: {
-        interesse: { type: "number", minimum: 0, maximum: 100 },
-        emocao: { type: "number", minimum: 0, maximum: 100 },
-        tensao: { type: "number", minimum: 0, maximum: 100 },
-        chance_resposta: { type: "number", minimum: 0, maximum: 100 },
-        risco: { type: "number", minimum: 0, maximum: 100 },
-        chance_encontro: { type: "number", minimum: 0, maximum: 100 },
+        clima: { type: "number", minimum: 0, maximum: 100, description: "Clima da conversa" },
+        abertura: { type: "number", minimum: 0, maximum: 100, description: "Abertura pra responder" },
+        interesse: { type: "number", minimum: 0, maximum: 100, description: "Nível de interesse" },
+        energia: { type: "number", minimum: 0, maximum: 100, description: "Energia do story" },
+        chance_papo: { type: "number", minimum: 0, maximum: 100, description: "Chance dela continuar o papo" },
       },
-      required: ["interesse", "emocao", "tensao", "chance_resposta", "risco", "chance_encontro"],
+      required: ["clima", "abertura", "interesse", "energia", "chance_papo"],
       additionalProperties: false,
     },
     respostas: {
