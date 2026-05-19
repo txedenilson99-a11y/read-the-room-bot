@@ -117,12 +117,11 @@ export interface StoryResult {
   timing: string;
   evitar: string;
   metricas: {
+    clima: number;
+    abertura: number;
     interesse: number;
-    emocao: number;
-    tensao: number;
-    chance_resposta: number;
-    risco: number;
-    chance_encontro: number;
+    energia: number;
+    chance_papo: number;
   };
   respostas: { modo: string; texto: string }[];
 }
