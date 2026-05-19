@@ -24,12 +24,11 @@ async function fileToDataUrl(file: File): Promise<string> {
 }
 
 const METRIC_LABELS: { key: keyof StoryResult["metricas"]; label: string }[] = [
-  { key: "interesse", label: "Interesse" },
-  { key: "emocao", label: "Emoção" },
-  { key: "tensao", label: "Tensão" },
-  { key: "chance_resposta", label: "Chance de resposta" },
-  { key: "risco", label: "Risco emocional" },
-  { key: "chance_encontro", label: "Chance de encontro" },
+  { key: "clima", label: "Clima da conversa" },
+  { key: "abertura", label: "Abertura pra responder" },
+  { key: "interesse", label: "Nível de interesse" },
+  { key: "energia", label: "Energia do story" },
+  { key: "chance_papo", label: "Chance dela continuar o papo" },
 ];
 
 function FotoStoryPage() {
