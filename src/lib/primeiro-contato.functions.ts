@@ -66,7 +66,7 @@ const SCHEMA = {
     },
     abordagem: {
       type: "string",
-      enum: ["engraçada","provocativa","misteriosa","calma","dominante","espontânea"],
+      enum: ["zoeira leve","observação","micro provocação","curiosidade","casual","seca"],
     },
     painel: {
       type: "object",
