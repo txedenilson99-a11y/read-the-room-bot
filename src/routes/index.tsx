@@ -77,12 +77,23 @@ function Central() {
 
         <Link
           to="/perfil-ig"
-          className="group relative p-6 md:p-8 rounded-3xl ring-1 ring-violet/20 bg-gradient-to-br from-violet/15 via-accent/5 to-transparent hover:ring-violet/40 transition-all md:col-span-3 min-h-[180px] overflow-hidden"
+          className="group relative p-6 md:p-8 rounded-3xl ring-1 ring-violet/20 bg-gradient-to-br from-violet/15 via-accent/5 to-transparent hover:ring-violet/40 transition-all md:col-span-2 min-h-[180px] overflow-hidden"
         >
           <div className="text-[10px] font-medium uppercase tracking-widest mb-3" style={{ color: 'var(--violet)' }}>Premium</div>
           <h2 className="text-xl md:text-2xl font-medium text-foreground mb-2">Análise de Perfil Instagram</h2>
           <p className="text-sm text-muted-foreground max-w-[52ch]">
-            Joga o @, a bio e prints. A IA diz se o perfil é forte, carente, fake ou sem presença — e como subir o nível.
+            Joga o @, a bio e prints. A IA diz se o perfil é forte, carente, fake ou sem presença.
+          </p>
+        </Link>
+
+        <Link
+          to="/primeiro-contato"
+          className="group relative p-6 md:p-8 rounded-3xl ring-1 ring-accent/25 bg-gradient-to-br from-accent/15 via-violet/5 to-transparent hover:ring-accent/40 transition-all min-h-[180px] overflow-hidden"
+        >
+          <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-3">Match</div>
+          <h2 className="text-xl md:text-2xl font-medium text-foreground mb-2">Primeiro Contato</h2>
+          <p className="text-sm text-muted-foreground">
+            Tinder, Badoo ou direct. 10 abridores prontos sem cantada cringe.
           </p>
         </Link>
 
