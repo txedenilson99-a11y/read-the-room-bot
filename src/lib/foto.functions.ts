@@ -53,7 +53,7 @@ const MENSAGEM_SCHEMA = {
         properties: {
           tipo: {
             type: "string",
-            enum: ["Educada", "Engraçada", "Misteriosa", "Ousada", "Romântica", "Instagram", "WhatsApp", "Tinder"],
+            enum: ["Natural", "Zoando", "Low Profile", "Debochada", "Conversável", "Seca", "Anti-Gado", "Reação Real"],
           },
           texto: { type: "string", description: "Mensagem pronta para enviar. Curta, natural, brasileira." },
         },
