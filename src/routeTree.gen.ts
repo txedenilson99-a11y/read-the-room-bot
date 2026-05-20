@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as LoginRouteImport } from './routes/login'
@@ -35,6 +36,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
   id: '/recuperar-senha',
   path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrimeiroContatoRoute = PrimeiroContatoRouteImport.update({
+  id: '/primeiro-contato',
+  path: '/primeiro-contato',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerfilIgRoute = PerfilIgRouteImport.update({
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
+  '/primeiro-contato': typeof PrimeiroContatoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
+  '/primeiro-contato': typeof PrimeiroContatoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
+  '/primeiro-contato': typeof PrimeiroContatoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/perfil'
     | '/perfil-ig'
+    | '/primeiro-contato'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/perfil'
     | '/perfil-ig'
+    | '/primeiro-contato'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/perfil'
     | '/perfil-ig'
+    | '/primeiro-contato'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
@@ -180,6 +192,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PerfilRoute: typeof PerfilRoute
   PerfilIgRoute: typeof PerfilIgRoute
+  PrimeiroContatoRoute: typeof PrimeiroContatoRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -207,6 +220,13 @@ declare module '@tanstack/react-router' {
       path: '/recuperar-senha'
       fullPath: '/recuperar-senha'
       preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/primeiro-contato': {
+      id: '/primeiro-contato'
+      path: '/primeiro-contato'
+      fullPath: '/primeiro-contato'
+      preLoaderRoute: typeof PrimeiroContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perfil-ig': {
@@ -284,6 +304,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PerfilRoute: PerfilRoute,
   PerfilIgRoute: PerfilIgRoute,
+  PrimeiroContatoRoute: PrimeiroContatoRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
