@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResponderStoryRouteImport } from './routes/responder-story'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
@@ -26,6 +27,11 @@ import { Route as ScanToolRouteImport } from './routes/scan.$tool'
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResponderStoryRoute = ResponderStoryRouteImport.update({
+  id: '/responder-story',
+  path: '/responder-story',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/scan/$tool': typeof ScanToolRoute
 }
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/scan/$tool': typeof ScanToolRoute
 }
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/scan/$tool': typeof ScanToolRoute
 }
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/primeiro-contato'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/responder-story'
     | '/sitemap.xml'
     | '/scan/$tool'
   fileRoutesByTo: FileRoutesByTo
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/primeiro-contato'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/responder-story'
     | '/sitemap.xml'
     | '/scan/$tool'
   id:
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/primeiro-contato'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/responder-story'
     | '/sitemap.xml'
     | '/scan/$tool'
   fileRoutesById: FileRoutesById
@@ -195,6 +207,7 @@ export interface RootRouteChildren {
   PrimeiroContatoRoute: typeof PrimeiroContatoRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ResponderStoryRoute: typeof ResponderStoryRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ScanToolRoute: typeof ScanToolRoute
 }
@@ -206,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/responder-story': {
+      id: '/responder-story'
+      path: '/responder-story'
+      fullPath: '/responder-story'
+      preLoaderRoute: typeof ResponderStoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -307,6 +327,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrimeiroContatoRoute: PrimeiroContatoRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ResponderStoryRoute: ResponderStoryRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ScanToolRoute: ScanToolRoute,
 }
