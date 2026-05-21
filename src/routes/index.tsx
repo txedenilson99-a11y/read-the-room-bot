@@ -97,6 +97,18 @@ function Central() {
           </p>
         </Link>
 
+        <Link
+          to="/responder-story"
+          className="group relative p-6 md:p-8 rounded-3xl ring-1 ring-violet/25 bg-gradient-to-br from-violet/15 via-accent/5 to-transparent hover:ring-violet/45 transition-all md:col-span-3 min-h-[180px] overflow-hidden"
+        >
+          <div className="text-[10px] font-medium uppercase tracking-widest mb-3" style={{ color: 'var(--violet)' }}>Novo</div>
+          <h2 className="text-xl md:text-2xl font-medium text-foreground mb-2">Responder Story sem parecer carente</h2>
+          <p className="text-sm text-muted-foreground max-w-[56ch]">
+            Cola o link, manda o print ou o vídeo. 8 respostas humanas — natural, debochada, anti-gado, low profile e mais. Com sliders pra calibrar humor, mistério e provocação.
+          </p>
+        </Link>
+
+
 
         <Card
           slug={TOOLS["story-scan"].slug}
