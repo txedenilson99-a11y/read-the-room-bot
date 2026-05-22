@@ -16,6 +16,7 @@ import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as MemoriaRouteImport } from './routes/memoria'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as FotoStoryRouteImport } from './routes/foto-story'
@@ -57,6 +58,11 @@ const PerfilIgRoute = PerfilIgRouteImport.update({
 const PerfilRoute = PerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemoriaRoute = MemoriaRouteImport.update({
+  id: '/memoria',
+  path: '/memoria',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/foto-story'
     | '/historico'
     | '/login'
+    | '/memoria'
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/foto-story'
     | '/historico'
     | '/login'
+    | '/memoria'
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/foto-story'
     | '/historico'
     | '/login'
+    | '/memoria'
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   FotoStoryRoute: typeof FotoStoryRoute
   HistoricoRoute: typeof HistoricoRoute
   LoginRoute: typeof LoginRoute
+  MemoriaRoute: typeof MemoriaRoute
   PerfilRoute: typeof PerfilRoute
   PerfilIgRoute: typeof PerfilIgRoute
   PrimeiroContatoRoute: typeof PrimeiroContatoRoute
@@ -263,6 +276,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/memoria': {
+      id: '/memoria'
+      path: '/memoria'
+      fullPath: '/memoria'
+      preLoaderRoute: typeof MemoriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -322,6 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   FotoStoryRoute: FotoStoryRoute,
   HistoricoRoute: HistoricoRoute,
   LoginRoute: LoginRoute,
+  MemoriaRoute: MemoriaRoute,
   PerfilRoute: PerfilRoute,
   PerfilIgRoute: PerfilIgRoute,
   PrimeiroContatoRoute: PrimeiroContatoRoute,
@@ -334,3 +355,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
