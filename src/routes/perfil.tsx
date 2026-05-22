@@ -8,11 +8,20 @@ export const Route = createFileRoute("/perfil")({
   head: () => ({
     meta: [
       { title: "Perfil — ScanSocial" },
-      { name: "description", content: "Sua conta e preferências." },
+      { name: "description", content: "Sua conta e estilo detectado pela IA." },
     ],
   }),
   component: PerfilPage,
 });
+
+const STATS = [
+  { n: "42", label: "leituras" },
+  { n: "18", label: "stories analisados" },
+  { n: "91", label: "respostas criadas" },
+  { n: "6", label: "matches gerados" },
+];
+
+const ESTILO = ["low profile", "humor seco", "direto", "provocação leve"];
 
 function PerfilPage() {
   const { user } = useAuth();
@@ -32,17 +41,10 @@ function PerfilPage() {
     const { error: upErr } = await supabase.storage
       .from("avatars")
       .upload(path, f, { upsert: true, contentType: f.type });
-    if (upErr) {
-      setUploading(false);
-      toast.error("Não consegui subir a foto.");
-      return;
-    }
+    if (upErr) { setUploading(false); toast.error("Não consegui subir a foto."); return; }
     const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
     const cacheBust = `${pub.publicUrl}?t=${Date.now()}`;
-    const { error: dbErr } = await supabase
-      .from("profiles")
-      .update({ avatar_url: cacheBust })
-      .eq("id", user.id);
+    const { error: dbErr } = await supabase.from("profiles").update({ avatar_url: cacheBust }).eq("id", user.id);
     setUploading(false);
     if (dbErr) { toast.error("Salvou a foto mas não atualizou o perfil."); return; }
     setProfile((p) => (p ? { ...p, avatar_url: cacheBust } : p));
@@ -55,16 +57,27 @@ function PerfilPage() {
     navigate({ to: "/login" });
   };
 
+  const name = profile?.full_name || "Sua conta";
+  const username = profile?.username;
+
   return (
-    <main className="max-w-3xl mx-auto px-6 pt-16 pb-40">
+    <main className="relative max-w-3xl mx-auto px-5 md:px-6 pt-10 md:pt-14 pb-40">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[360px] -z-10 overflow-hidden">
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[560px] h-[560px] rounded-full blur-3xl opacity-25"
+          style={{ background: "radial-gradient(closest-side, var(--accent), transparent 70%)" }} />
+        <div className="absolute top-4 right-0 w-[360px] h-[360px] rounded-full blur-3xl opacity-20"
+          style={{ background: "radial-gradient(closest-side, var(--violet), transparent 70%)" }} />
+      </div>
+
       <Link to="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-        ← Central
+        ← Voltar
       </Link>
 
-      <header className="mt-8 mb-10 flex items-center gap-5">
+      <header className="mt-6 mb-8 flex items-center gap-5 animate-fade-up">
         <button
           onClick={() => fileRef.current?.click()}
-          className="relative size-20 rounded-full bg-card/60 ring-1 ring-border hover:ring-accent/40 transition overflow-hidden flex items-center justify-center"
+          className="relative size-20 rounded-full bg-card/60 ring-1 ring-accent/30 hover:ring-accent/60 transition overflow-hidden flex items-center justify-center"
+          style={{ boxShadow: "0 0 30px color-mix(in oklab, var(--accent) 25%, transparent)" }}
         >
           {profile?.avatar_url ? (
             <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -77,38 +90,51 @@ function PerfilPage() {
         </button>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onAvatar} />
         <div>
-          <h1 className="text-2xl md:text-3xl font-medium tracking-tight">
-            {profile?.full_name || "Sua conta"}
-          </h1>
-          {profile?.username && (
-            <p className="text-sm text-muted-foreground mt-1">@{profile.username}</p>
-          )}
+          <h1 className="text-2xl md:text-3xl font-medium tracking-tight">{name}</h1>
+          {username && <p className="text-sm text-muted-foreground mt-1">@{username}</p>}
+          <div className="mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent/10 ring-1 ring-accent/25">
+            <span className="size-1.5 rounded-full bg-accent animate-pulse" style={{ boxShadow: "0 0 10px var(--accent)" }} />
+            <span className="text-[10px] uppercase tracking-[0.22em] text-accent">Modo · Observador</span>
+          </div>
         </div>
       </header>
 
-      <div className="space-y-3">
-        <div className="p-5 rounded-2xl bg-card/40 ring-1 ring-border">
-          <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-2">
-            Email
+      {/* stats */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 animate-fade-up" style={{ animationDelay: "60ms" }}>
+        {STATS.map((s, i) => (
+          <div key={i} className="p-4 rounded-2xl bg-card/40 ring-1 ring-border">
+            <div className="text-2xl font-medium text-foreground">{s.n}</div>
+            <div className="text-[11px] text-muted-foreground mt-0.5">{s.label}</div>
           </div>
-          <p className="text-sm text-foreground">{profile?.email ?? user?.email}</p>
-        </div>
+        ))}
+      </section>
 
-        <div className="p-5 rounded-2xl bg-card/40 ring-1 ring-border">
-          <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-2">
-            Modo de leitura
-          </div>
-          <p className="text-foreground font-medium">Observador</p>
-          <p className="text-sm text-muted-foreground mt-1">Direto, sem rodeio, com peso social.</p>
+      {/* estilo */}
+      <section className="p-5 rounded-2xl bg-card/40 ring-1 ring-border mb-3 animate-fade-up" style={{ animationDelay: "100ms" }}>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="size-1.5 rounded-full" style={{ background: "var(--violet)", boxShadow: "0 0 10px var(--violet)" }} />
+          <span className="text-[10px] uppercase tracking-[0.22em]" style={{ color: "var(--violet)" }}>Estilo detectado</span>
         </div>
+        <div className="flex flex-wrap gap-2">
+          {ESTILO.map((tag) => (
+            <span key={tag} className="px-3 py-1.5 rounded-full bg-background/60 ring-1 ring-border text-[13px] text-foreground/85">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </section>
 
-        <button
-          onClick={onLogout}
-          className="w-full mt-4 p-4 rounded-2xl bg-destructive/10 ring-1 ring-destructive/20 text-destructive font-medium hover:bg-destructive/20 transition"
-        >
-          Sair da conta
-        </button>
+      <div className="p-5 rounded-2xl bg-card/30 ring-1 ring-border mb-3">
+        <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-2">Email</div>
+        <p className="text-sm text-foreground">{profile?.email ?? user?.email}</p>
       </div>
+
+      <button
+        onClick={onLogout}
+        className="w-full mt-4 p-4 rounded-2xl bg-destructive/10 ring-1 ring-destructive/20 text-destructive font-medium hover:bg-destructive/20 transition"
+      >
+        Sair da conta
+      </button>
     </main>
   );
 }
