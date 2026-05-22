@@ -2,9 +2,11 @@ import { Link, useRouterState } from "@tanstack/react-router";
 
 const items = [
   { to: "/", label: "Central" },
+  { to: "/memoria", label: "Memória" },
   { to: "/historico", label: "Histórico" },
   { to: "/perfil", label: "Perfil" },
 ] as const;
+
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

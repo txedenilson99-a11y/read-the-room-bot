@@ -239,9 +239,17 @@ function Home() {
           title="Recuperar Controle"
           sub="Volta o jogo pro seu lado."
           tone="violet"
+        />
+        <ToolCard
+          to="/memoria"
+          label="Memória"
+          title="Perfis & Memória"
+          sub="A IA lembra cada pessoa."
+          tone="violet"
           span="col-span-2"
         />
       </section>
+
 
       {/* footer quick links */}
       <div className="mt-8 flex gap-3 animate-fade-up" style={{ animationDelay: "180ms" }}>
