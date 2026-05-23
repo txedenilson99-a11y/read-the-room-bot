@@ -23,6 +23,104 @@ const STATS = [
 
 const ESTILO = ["low profile", "humor seco", "direto", "provocação leve"];
 
+const BADGES = [
+  { label: "Observador", tone: "accent" as const },
+  { label: "Frame Holder", tone: "violet" as const },
+  { label: "Sem Carência", tone: "accent" as const },
+];
+
+// Radar comportamental — 5 eixos
+const RADAR = [
+  { axis: "Frame", value: 82 },
+  { axis: "Humor", value: 74 },
+  { axis: "Mistério", value: 68 },
+  { axis: "Provocação", value: 61 },
+  { axis: "Naturalidade", value: 88 },
+];
+
+function RadarChart({ data }: { data: { axis: string; value: number }[] }) {
+  const size = 220;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = 86;
+  const n = data.length;
+  const angle = (i: number) => (Math.PI * 2 * i) / n - Math.PI / 2;
+
+  const points = data.map((d, i) => {
+    const a = angle(i);
+    const rr = (d.value / 100) * r;
+    return [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr] as const;
+  });
+  const polygon = points.map((p) => p.join(",")).join(" ");
+
+  const rings = [0.25, 0.5, 0.75, 1];
+
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-[280px] mx-auto">
+      <defs>
+        <radialGradient id="radarFill" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="var(--violet)" stopOpacity="0.15" />
+        </radialGradient>
+      </defs>
+      {rings.map((k, idx) => (
+        <polygon
+          key={idx}
+          points={Array.from({ length: n })
+            .map((_, i) => {
+              const a = angle(i);
+              return `${cx + Math.cos(a) * r * k},${cy + Math.sin(a) * r * k}`;
+            })
+            .join(" ")}
+          fill="none"
+          stroke="color-mix(in oklab, white 8%, transparent)"
+          strokeWidth={1}
+        />
+      ))}
+      {Array.from({ length: n }).map((_, i) => {
+        const a = angle(i);
+        return (
+          <line
+            key={i}
+            x1={cx} y1={cy}
+            x2={cx + Math.cos(a) * r}
+            y2={cy + Math.sin(a) * r}
+            stroke="color-mix(in oklab, white 6%, transparent)"
+            strokeWidth={1}
+          />
+        );
+      })}
+      <polygon
+        points={polygon}
+        fill="url(#radarFill)"
+        stroke="var(--accent)"
+        strokeWidth={1.5}
+        style={{ filter: "drop-shadow(0 0 10px color-mix(in oklab, var(--accent) 60%, transparent))" }}
+      />
+      {points.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={3} fill="var(--accent)" />
+      ))}
+      {data.map((d, i) => {
+        const a = angle(i);
+        const lx = cx + Math.cos(a) * (r + 16);
+        const ly = cy + Math.sin(a) * (r + 16);
+        return (
+          <text
+            key={d.axis}
+            x={lx} y={ly}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="color-mix(in oklab, var(--foreground) 75%, transparent)"
+            style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" }}
+          >
+            {d.axis}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
 function PerfilPage() {
   const { user } = useAuth();
   const { profile, setProfile } = useProfile(user);
@@ -76,55 +174,108 @@ function PerfilPage() {
       <header className="mt-6 mb-8 flex items-center gap-5 animate-fade-up">
         <button
           onClick={() => fileRef.current?.click()}
-          className="relative size-20 rounded-full bg-card/60 ring-1 ring-accent/30 hover:ring-accent/60 transition overflow-hidden flex items-center justify-center"
-          style={{ boxShadow: "0 0 30px color-mix(in oklab, var(--accent) 25%, transparent)" }}
+          className="relative size-24 rounded-full overflow-hidden group"
         >
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-xs text-muted-foreground">foto</span>
-          )}
+          {/* aura neon */}
+          <span
+            className="absolute -inset-2 rounded-full glow-breath pointer-events-none"
+            style={{
+              background: "conic-gradient(from 0deg, var(--accent), var(--violet), var(--accent))",
+              filter: "blur(14px)",
+              opacity: 0.55,
+            }}
+          />
+          <span className="absolute inset-0 rounded-full ring-1 ring-accent/40" />
+          <span
+            className="absolute inset-[3px] rounded-full bg-card/80 grid place-items-center overflow-hidden"
+            style={{ boxShadow: "inset 0 0 0 1px color-mix(in oklab, white 8%, transparent)" }}
+          >
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">foto</span>
+            )}
+          </span>
           {uploading && (
-            <div className="absolute inset-0 bg-background/70 grid place-items-center text-[10px]">…</div>
+            <div className="absolute inset-[3px] rounded-full bg-background/70 grid place-items-center text-[10px]">…</div>
           )}
         </button>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onAvatar} />
-        <div>
-          <h1 className="text-2xl md:text-3xl font-medium tracking-tight">{name}</h1>
+        <div className="min-w-0">
+          <h1 className="text-2xl md:text-3xl font-medium tracking-tight truncate">{name}</h1>
           {username && <p className="text-sm text-muted-foreground mt-1">@{username}</p>}
-          <div className="mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent/10 ring-1 ring-accent/25">
-            <span className="size-1.5 rounded-full bg-accent animate-pulse" style={{ boxShadow: "0 0 10px var(--accent)" }} />
-            <span className="text-[10px] uppercase tracking-[0.22em] text-accent">Modo · Observador</span>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 ring-1 ring-accent/25">
+              <span className="size-1.5 rounded-full bg-accent animate-pulse" style={{ boxShadow: "0 0 10px var(--accent)" }} />
+              <span className="text-[10px] uppercase tracking-[0.22em] text-accent">Modo · Observador</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ring-1"
+              style={{
+                background: "color-mix(in oklab, var(--violet) 10%, transparent)",
+                borderColor: "color-mix(in oklab, var(--violet) 30%, transparent)",
+              }}
+            >
+              <span className="text-[10px] uppercase tracking-[0.22em]" style={{ color: "var(--violet)" }}>Nível · 3 / Decifrador</span>
+            </span>
           </div>
         </div>
       </header>
 
+      {/* badges */}
+      <section className="flex flex-wrap gap-2 mb-6 animate-fade-up" style={{ animationDelay: "40ms" }}>
+        {BADGES.map((b) => {
+          const c = b.tone === "violet" ? "var(--violet)" : "var(--accent)";
+          return (
+            <span
+              key={b.label}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-[12px] font-medium"
+              style={{ color: c, boxShadow: `0 0 18px color-mix(in oklab, ${c} 18%, transparent)` }}
+            >
+              <span className="size-1.5 rounded-full animate-pulse" style={{ background: c, boxShadow: `0 0 10px ${c}` }} />
+              {b.label}
+            </span>
+          );
+        })}
+      </section>
+
       {/* stats */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 animate-fade-up" style={{ animationDelay: "60ms" }}>
         {STATS.map((s, i) => (
-          <div key={i} className="p-4 rounded-2xl bg-card/40 ring-1 ring-border">
-            <div className="text-2xl font-medium text-foreground">{s.n}</div>
+          <div key={i} className="card-premium p-4">
+            <div className="text-2xl font-medium text-foreground tracking-tight">{s.n}</div>
             <div className="text-[11px] text-muted-foreground mt-0.5">{s.label}</div>
           </div>
         ))}
       </section>
 
+      {/* radar comportamental */}
+      <section className="card-premium p-5 md:p-6 mb-3 animate-fade-up overflow-hidden" style={{ animationDelay: "80ms" }}>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="size-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)", boxShadow: "0 0 10px var(--accent)" }} />
+            <span className="text-[10px] uppercase tracking-[0.22em] text-accent">Radar comportamental</span>
+          </div>
+          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">energia dominante · frame</span>
+        </div>
+        <RadarChart data={RADAR} />
+      </section>
+
       {/* estilo */}
-      <section className="p-5 rounded-2xl bg-card/40 ring-1 ring-border mb-3 animate-fade-up" style={{ animationDelay: "100ms" }}>
+      <section className="card-premium p-5 mb-3 animate-fade-up" style={{ animationDelay: "100ms" }}>
         <div className="flex items-center gap-2 mb-3">
           <span className="size-1.5 rounded-full" style={{ background: "var(--violet)", boxShadow: "0 0 10px var(--violet)" }} />
           <span className="text-[10px] uppercase tracking-[0.22em]" style={{ color: "var(--violet)" }}>Estilo detectado</span>
         </div>
         <div className="flex flex-wrap gap-2">
           {ESTILO.map((tag) => (
-            <span key={tag} className="px-3 py-1.5 rounded-full bg-background/60 ring-1 ring-border text-[13px] text-foreground/85">
+            <span key={tag} className="px-3 py-1.5 rounded-full glass text-[13px] text-foreground/90">
               {tag}
             </span>
           ))}
         </div>
       </section>
 
-      <div className="p-5 rounded-2xl bg-card/30 ring-1 ring-border mb-3">
+      <div className="card-premium p-5 mb-3">
         <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-2">Email</div>
         <p className="text-sm text-foreground">{profile?.email ?? user?.email}</p>
       </div>
