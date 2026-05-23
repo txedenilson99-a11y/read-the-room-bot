@@ -23,6 +23,104 @@ const STATS = [
 
 const ESTILO = ["low profile", "humor seco", "direto", "provocação leve"];
 
+const BADGES = [
+  { label: "Observador", tone: "accent" as const },
+  { label: "Frame Holder", tone: "violet" as const },
+  { label: "Sem Carência", tone: "accent" as const },
+];
+
+// Radar comportamental — 5 eixos
+const RADAR = [
+  { axis: "Frame", value: 82 },
+  { axis: "Humor", value: 74 },
+  { axis: "Mistério", value: 68 },
+  { axis: "Provocação", value: 61 },
+  { axis: "Naturalidade", value: 88 },
+];
+
+function RadarChart({ data }: { data: { axis: string; value: number }[] }) {
+  const size = 220;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = 86;
+  const n = data.length;
+  const angle = (i: number) => (Math.PI * 2 * i) / n - Math.PI / 2;
+
+  const points = data.map((d, i) => {
+    const a = angle(i);
+    const rr = (d.value / 100) * r;
+    return [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr] as const;
+  });
+  const polygon = points.map((p) => p.join(",")).join(" ");
+
+  const rings = [0.25, 0.5, 0.75, 1];
+
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-[280px] mx-auto">
+      <defs>
+        <radialGradient id="radarFill" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="var(--violet)" stopOpacity="0.15" />
+        </radialGradient>
+      </defs>
+      {rings.map((k, idx) => (
+        <polygon
+          key={idx}
+          points={Array.from({ length: n })
+            .map((_, i) => {
+              const a = angle(i);
+              return `${cx + Math.cos(a) * r * k},${cy + Math.sin(a) * r * k}`;
+            })
+            .join(" ")}
+          fill="none"
+          stroke="color-mix(in oklab, white 8%, transparent)"
+          strokeWidth={1}
+        />
+      ))}
+      {Array.from({ length: n }).map((_, i) => {
+        const a = angle(i);
+        return (
+          <line
+            key={i}
+            x1={cx} y1={cy}
+            x2={cx + Math.cos(a) * r}
+            y2={cy + Math.sin(a) * r}
+            stroke="color-mix(in oklab, white 6%, transparent)"
+            strokeWidth={1}
+          />
+        );
+      })}
+      <polygon
+        points={polygon}
+        fill="url(#radarFill)"
+        stroke="var(--accent)"
+        strokeWidth={1.5}
+        style={{ filter: "drop-shadow(0 0 10px color-mix(in oklab, var(--accent) 60%, transparent))" }}
+      />
+      {points.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={3} fill="var(--accent)" />
+      ))}
+      {data.map((d, i) => {
+        const a = angle(i);
+        const lx = cx + Math.cos(a) * (r + 16);
+        const ly = cy + Math.sin(a) * (r + 16);
+        return (
+          <text
+            key={d.axis}
+            x={lx} y={ly}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="color-mix(in oklab, var(--foreground) 75%, transparent)"
+            style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" }}
+          >
+            {d.axis}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
 function PerfilPage() {
   const { user } = useAuth();
   const { profile, setProfile } = useProfile(user);
