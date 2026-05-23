@@ -14,6 +14,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 import { BottomNav } from "@/components/BottomNav";
+import { Particles } from "@/components/Particles";
 import { useAuth } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -148,10 +149,13 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background text-foreground">
-        <AuthGate>
-          <Outlet />
-        </AuthGate>
+      <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+        <Particles />
+        <div className="relative z-10">
+          <AuthGate>
+            <Outlet />
+          </AuthGate>
+        </div>
         <Toaster theme="dark" />
       </div>
     </QueryClientProvider>
