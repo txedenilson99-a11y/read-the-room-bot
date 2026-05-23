@@ -38,34 +38,32 @@
 
 :root {
   --radius: 1rem;
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.96 0 0);
-  --surface: oklch(0.145 0 0);
-  --card: oklch(0.19 0 0);
+  --background: oklch(0.13 0.01 270);
+  --foreground: oklch(0.97 0 0);
+  --surface: oklch(0.145 0.008 270);
+  --card: oklch(0.19 0.012 270);
   --card-foreground: oklch(0.96 0 0);
-  --popover: oklch(0.19 0 0);
+  --popover: oklch(0.19 0.012 270);
   --popover-foreground: oklch(0.96 0 0);
   --primary: oklch(0.96 0 0);
   --primary-foreground: oklch(0.145 0 0);
-  --secondary: oklch(0.24 0 0);
+  --secondary: oklch(0.24 0.01 270);
   --secondary-foreground: oklch(0.96 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.62 0 0);
-  --accent: oklch(0.86 0.16 210);
+  --muted: oklch(0.22 0.008 270);
+  --muted-foreground: oklch(0.65 0.01 270);
+  --accent: oklch(0.82 0.17 215);
   --accent-foreground: oklch(0.145 0 0);
-  --accent-glow: oklch(0.86 0.16 210 / 0.4);
-  --violet: oklch(0.7 0.22 295);
+  --accent-glow: oklch(0.82 0.17 215 / 0.45);
+  --violet: oklch(0.7 0.24 295);
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(1 0 0 / 6%);
+  --border: oklch(1 0 0 / 7%);
   --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.86 0.16 210);
+  --ring: oklch(0.82 0.17 215);
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
+  * { border-color: var(--color-border); }
 
   html, body {
     background-color: var(--color-background);
@@ -75,20 +73,39 @@
     text-rendering: optimizeLegibility;
   }
 
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-image:
+      radial-gradient(1200px 600px at 10% -10%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, color-mix(in oklab, var(--violet) 16%, transparent), transparent 60%),
+      radial-gradient(700px 500px at 50% 120%, color-mix(in oklab, var(--violet) 10%, transparent), transparent 60%);
+    background-attachment: fixed;
+  }
+
   ::selection {
     background-color: color-mix(in oklab, var(--accent) 30%, transparent);
     color: var(--foreground);
   }
+
+  /* Custom thin scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--accent) 20%, transparent);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--accent) 40%, transparent);
+  }
 }
 
+/* ============ Animations ============ */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-.animate-fade-up {
-  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
+.animate-fade-up { animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 @keyframes scan-move {
   0% { top: 0%; opacity: 0; }
@@ -96,13 +113,161 @@
   90% { opacity: 1; }
   100% { top: 100%; opacity: 0; }
 }
-
 .scan-line {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--violet), var(--accent), transparent);
   box-shadow: 0 0 24px var(--violet), 0 0 48px var(--accent);
   animation: scan-move 1.8s linear infinite;
+}
+
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 0%, transparent); }
+  50% { box-shadow: 0 0 24px 4px color-mix(in oklab, var(--accent) 35%, transparent); }
+}
+.neon-pulse { animation: neon-pulse 2.6s ease-in-out infinite; }
+
+@keyframes glow-breath {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.06); }
+}
+.glow-breath { animation: glow-breath 5s ease-in-out infinite; }
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.float-y { animation: float-y 6s ease-in-out infinite; }
+
+@keyframes orbit-drift {
+  0% { transform: translate3d(0,0,0); }
+  50% { transform: translate3d(20px,-14px,0); }
+  100% { transform: translate3d(0,0,0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer-text {
+  background: linear-gradient(90deg,
+    color-mix(in oklab, var(--foreground) 40%, transparent) 0%,
+    var(--foreground) 50%,
+    color-mix(in oklab, var(--foreground) 40%, transparent) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 3.2s linear infinite;
+}
+
+@keyframes ai-thinking {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+.ai-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  margin: 0 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  animation: ai-thinking 1.4s ease-in-out infinite;
+}
+.ai-dot:nth-child(2) { animation-delay: 0.16s; background: var(--violet); box-shadow: 0 0 10px var(--violet); }
+.ai-dot:nth-child(3) { animation-delay: 0.32s; }
+
+/* ============ Glass / Premium Surfaces ============ */
+.glass {
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid color-mix(in oklab, white 8%, transparent);
+}
+
+.glass-strong {
+  background: color-mix(in oklab, var(--card) 85%, transparent);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid color-mix(in oklab, white 10%, transparent);
+}
+
+.card-premium {
+  position: relative;
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(180deg, color-mix(in oklab, white 4%, transparent), transparent 50%),
+    color-mix(in oklab, var(--card) 60%, transparent);
+  border: 1px solid color-mix(in oklab, white 8%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+    0 30px 60px -30px rgba(0,0,0,0.6);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1),
+              border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.card-premium:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 12%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--accent) 20%, transparent),
+    0 20px 50px -20px color-mix(in oklab, var(--accent) 35%, transparent),
+    0 40px 80px -40px rgba(0,0,0,0.7);
+}
+
+.card-premium::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg,
+    color-mix(in oklab, var(--accent) 30%, transparent),
+    transparent 40%,
+    color-mix(in oklab, var(--violet) 25%, transparent));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.card-premium:hover::before { opacity: 1; }
+
+/* ============ Particle field ============ */
+.particles {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.particles .p {
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent) 80%, white);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent) 70%, transparent);
+  opacity: 0.5;
+  animation: orbit-drift 14s ease-in-out infinite;
+}
+.particles .p.v { background: color-mix(in oklab, var(--violet) 80%, white); box-shadow: 0 0 8px color-mix(in oklab, var(--violet) 70%, transparent); }
+.particles .p.lg { width: 3px; height: 3px; }
+
+/* ============ Holographic / Aurora ============ */
+.aurora {
+  position: absolute; inset: -20%;
+  background:
+    radial-gradient(40% 30% at 20% 30%, color-mix(in oklab, var(--accent) 35%, transparent), transparent 70%),
+    radial-gradient(40% 30% at 80% 20%, color-mix(in oklab, var(--violet) 40%, transparent), transparent 70%),
+    radial-gradient(50% 40% at 60% 80%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 70%);
+  filter: blur(40px) saturate(140%);
+  animation: glow-breath 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .scan-line, .neon-pulse, .glow-breath, .float-y, .shimmer-text, .particles .p, .aurora, .ai-dot {
+    animation: none !important;
+  }
 }
