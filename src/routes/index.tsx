@@ -14,12 +14,12 @@ export const Route = createFileRoute("/")({
 });
 
 const VIBES = [
-  "O que vamos decifrar hoje?",
-  "Qual foi a situação agora?",
-  "Manda o print.",
-  "A IA lê a vibe.",
-  "Vamos analisar isso.",
-  "Quem postou o story?",
+  "Pronta pra ler sinais.",
+  "Analisando padrões sociais.",
+  "Detectando intenção por trás da mensagem.",
+  "Interpretando a energia da conversa.",
+  "Lendo o subtexto antes de você responder.",
+  "Mapeando ego, biscoito e joguinho.",
 ];
 
 function greeting() {
@@ -54,32 +54,44 @@ function ToolCard({
   tone?: "accent" | "violet"; span?: string;
 }) {
   const isViolet = tone === "violet";
+  const color = isViolet ? "var(--violet)" : "var(--accent)";
   return (
     <Link
       to={to}
-      className={`group relative overflow-hidden p-5 md:p-6 rounded-3xl bg-card/40 ring-1 ring-border hover:ring-accent/40 transition-all duration-500 hover:-translate-y-0.5 ${span ?? ""}`}
+      onMouseMove={(e) => {
+        const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        (e.currentTarget as HTMLElement).style.setProperty("--mx", `${e.clientX - r.left}px`);
+        (e.currentTarget as HTMLElement).style.setProperty("--my", `${e.clientY - r.top}px`);
+      }}
+      className={`group relative overflow-hidden p-5 md:p-6 card-premium transition-transform duration-500 hover:scale-[1.015] active:scale-[0.99] ${span ?? ""}`}
     >
+      {/* spotlight follows cursor */}
       <div
         className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
-          background: `radial-gradient(600px circle at var(--mx,50%) var(--my,50%), ${isViolet ? "color-mix(in oklab, var(--violet) 18%, transparent)" : "color-mix(in oklab, var(--accent) 16%, transparent)"}, transparent 40%)`,
+          background: `radial-gradient(420px circle at var(--mx,50%) var(--my,50%), color-mix(in oklab, ${color} 22%, transparent), transparent 45%)`,
         }}
       />
-      <div className="flex items-center gap-2 mb-3">
+      {/* corner glow */}
+      <div
+        className="pointer-events-none absolute -top-16 -right-16 size-40 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700"
+        style={{ background: `radial-gradient(closest-side, ${color}, transparent 70%)` }}
+      />
+      <div className="relative flex items-center gap-2 mb-3">
         <span
           className="size-1.5 rounded-full animate-pulse"
-          style={{ background: isViolet ? "var(--violet)" : "var(--accent)", boxShadow: `0 0 12px ${isViolet ? "var(--violet)" : "var(--accent)"}` }}
+          style={{ background: color, boxShadow: `0 0 12px ${color}` }}
         />
         <span
-          className="text-[10px] font-medium uppercase tracking-[0.22em]"
-          style={{ color: isViolet ? "var(--violet)" : "var(--accent)" }}
+          className="text-[10px] font-medium uppercase tracking-[0.24em]"
+          style={{ color }}
         >
           {label}
         </span>
       </div>
-      <h3 className="text-base md:text-lg font-medium text-foreground mb-1.5">{title}</h3>
-      <p className="text-[13px] text-muted-foreground leading-snug">{sub}</p>
-      <span className="absolute bottom-5 right-5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
+      <h3 className="relative text-base md:text-lg font-medium text-foreground mb-1.5 tracking-tight">{title}</h3>
+      <p className="relative text-[13px] text-muted-foreground leading-snug">{sub}</p>
+      <span className="absolute bottom-5 right-5 text-muted-foreground/70 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
         →
       </span>
     </Link>
