@@ -110,7 +110,7 @@ function FotoMensagemPage() {
             disabled={mutation.isPending}
             className="w-full bg-foreground text-background font-medium px-5 py-3 rounded-full disabled:opacity-40 transition"
           >
-            {mutation.isPending ? "IA analisando a foto…" : "Gerar Mensagem"}
+            {mutation.isPending ? "IA lendo o print…" : "Gerar resposta"}
           </button>
         </div>
       )}
