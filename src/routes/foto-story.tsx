@@ -65,8 +65,8 @@ function FotoStoryPage() {
         <div className="text-[11px] font-medium uppercase tracking-[0.25em] text-violet mb-3">
           Foto Story
         </div>
-        <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[26ch]">
-          Manda o print do story. Eu leio e te dou a resposta certa.
+        <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[30ch]">
+          Manda o print do story. Eu leio a vibe e te dou 4 respostas naturais.
         </h1>
       </header>
 
