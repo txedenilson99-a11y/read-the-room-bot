@@ -56,12 +56,14 @@ function FotoMensagemPage() {
 
       <header className="mt-8 mb-10 animate-fade-up">
         <div className="text-[11px] font-medium uppercase tracking-[0.25em] text-accent mb-3">
-          Foto → Mensagem
+          Print → Resposta
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[26ch]">
-          Envie uma foto e deixe a IA criar a mensagem perfeita.
+          Manda o print. A IA entende o contexto.
         </h1>
+        <p className="mt-3 text-sm text-muted-foreground">Ela lê a conversa e cria respostas naturais.</p>
       </header>
+
 
       <input
         ref={inputRef}
