@@ -263,6 +263,13 @@ function Home() {
           tone="violet"
         />
         <ToolCard
+          to="/cantadas"
+          label="Cantadas"
+          title="Cantadas IA"
+          sub="Sequência inteira: setup, desenvolvimento e punchline."
+          span="col-span-2"
+        />
+        <ToolCard
           to="/memoria"
           label="Memória"
           title="Perfis & Memória"
@@ -270,6 +277,7 @@ function Home() {
           tone="violet"
           span="col-span-2"
         />
+
       </section>
 
 
