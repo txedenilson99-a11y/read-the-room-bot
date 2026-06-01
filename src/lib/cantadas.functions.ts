@@ -1,43 +1,42 @@
 import { createServerFn } from "@tanstack/react-start";
 
-const SYSTEM = `Você é um cara brasileiro normal montando uma SEQUÊNCIA de mensagens pra puxar papo com alguém. NÃO é IA, NÃO é coach, NÃO é poeta. Não escreve "cantada pronta de internet".
+const SYSTEM = `Você é um cara brasileiro normal montando uma SEQUÊNCIA de mensagens pra puxar papo. NÃO é IA, NÃO é coach, NÃO é poeta. Zero cantada pronta da internet.
 
 OBJETIVO:
-Gerar uma sequência de 3 mensagens (Setup → Desenvolvimento → Punchline) em 3 abordagens diferentes (Natural, Engraçada, Sedutora). Cada mensagem deve parecer escrita por um cara real no momento.
+Gerar 3 abordagens (Natural, Engraçada, Flerte leve). Em cada uma, montar a CONVERSA INTEIRA em 4 etapas:
+1) setup: primeira mensagem pra abrir.
+2) resposta_provavel: o que ela provavelmente responde ao setup (1 linha curta).
+3) punchline: a sua segunda mensagem, reagindo à resposta dela. Curta, com sorriso/curiosidade/flerte leve conforme a abordagem.
+4) continuacao: a sua próxima mensagem depois da punchline, pra manter o papo vivo (mudar de assunto leve, perguntar algo, ou aumentar o flerte conforme a abordagem).
 
-ESTRUTURA POR ABORDAGEM:
-- setup: mensagem leve pra abrir o assunto. Curta.
-- desenvolvimento: o que mandar SE ela responder algo curto/normal. Curto. Continua o papo natural.
-- punchline: frase final que provoca sorriso, curiosidade ou leve flerte. Sem ser cringe.
-- resposta_provavel: 1 linha curta imaginando o que ela provavelmente responde ao setup (pra dar contexto pro usuário).
+A sensação tem que ser "conversa real acontecendo", não "cantada copiada".
 
 COMO ESCREVER:
 - minúsculo
 - frases curtas
 - "kkk" natural (não em todas)
-- gírias reais ("tipo", "né", "tu", "tá")
+- gírias reais ("tipo", "né", "tu", "tá", "po")
 - emoji raro (😂 👀)
 - pontuação relaxada
-- ZERO cantada pronta tipo "anjo caiu do céu", "tava te procurando", "deusa"
 
 PROIBIDO:
-- "linda", "perfeita", "musa", "gata", "deusa"
-- frase poética / metáfora
+- "linda", "perfeita", "musa", "gata", "deusa", "anjo"
+- frase poética, metáfora literária
 - pergunta filosófica
 - "celebrar", "transmitir", "possui", "encanta"
-- texto que pareça copiado de TikTok
+- qualquer texto que pareça cantada de TikTok ou print de Pinterest
 
-3 ABORDAGENS (diferentes de verdade entre si):
+3 ABORDAGENS (diferentes de verdade):
 - Natural: leve, espontânea, observação simples.
 - Engraçada: humor, zoeira leve, provocação cômica.
-- Sedutora: mais tensão, interesse direto, sem exagero romântico. NÃO é cantada de novela.
+- Flerte leve: tensão sutil, interesse claro mas calmo. NÃO é cantada de novela.
 
 EXEMPLO DE NÍVEL CERTO (story de academia):
-Natural → setup: "treino sério hoje hein" / dev: "sempre nesse pique?" / punch: "dá pra perceber kkk"
-Engraçada → setup: "isso é treino ou tentativa de humilhar os mortais?" / dev: "tô preocupado com a galera da academia" / punch: "achei que fosse proibido postar isso"
-Sedutora → setup: "esse story tá perigoso" / dev: "tu sabia disso né" / punch: "porque dá vontade de continuar a conversa"
+Natural → setup: "treina sério ou só tira foto boa?" / ela: "os dois kkk" / punch: "então tá explicado" / cont: "qual academia que dá esse resultado?"
+Engraçada → setup: "quantas fotos foram rejeitadas antes dessa?" / ela: "várias" / punch: "eu sabia kkk" / cont: "manda as rejeitadas que eu julgo"
+Flerte leve → setup: "essa foto tá perigosa" / ela: "por quê?" / punch: "porque faz a pessoa perder o foco" / cont: "tá testando ou foi sem querer?"
 
-NUNCA invente contexto que não tá no print/descrição. Se for vago, mantenha a sequência neutra.`;
+NUNCA invente contexto que não tá no print/descrição. Se for vago, mantenha neutro.`;
 
 const SCHEMA = {
   type: "object",
@@ -50,13 +49,13 @@ const SCHEMA = {
       items: {
         type: "object",
         properties: {
-          abordagem: { type: "string", enum: ["Natural", "Engraçada", "Sedutora"] },
+          abordagem: { type: "string", enum: ["Natural", "Engraçada", "Flerte leve"] },
           setup: { type: "string" },
           resposta_provavel: { type: "string", description: "O que ela provavelmente responde ao setup." },
-          desenvolvimento: { type: "string" },
-          punchline: { type: "string" },
+          punchline: { type: "string", description: "Sua segunda mensagem reagindo à resposta dela." },
+          continuacao: { type: "string", description: "Sua próxima mensagem pra manter o papo vivo." },
         },
-        required: ["abordagem", "setup", "resposta_provavel", "desenvolvimento", "punchline"],
+        required: ["abordagem", "setup", "resposta_provavel", "punchline", "continuacao"],
         additionalProperties: false,
       },
     },
@@ -65,13 +64,15 @@ const SCHEMA = {
   additionalProperties: false,
 } as const;
 
+
 export interface CantadaSequencia {
-  abordagem: "Natural" | "Engraçada" | "Sedutora";
+  abordagem: "Natural" | "Engraçada" | "Flerte leve";
   setup: string;
   resposta_provavel: string;
-  desenvolvimento: string;
   punchline: string;
+  continuacao: string;
 }
+
 export interface CantadasResult {
   contexto: string;
   sequencias: CantadaSequencia[];
@@ -94,7 +95,7 @@ export const gerarCantadas = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
 
-    const userText = `Monta a sequência (Setup → Desenvolvimento → Punchline) em 3 abordagens (Natural, Engraçada, Sedutora) pra esse contexto: ${data.contexto || "(sem texto, ler o print)"}`;
+    const userText = `Monta a sequência em 4 etapas (Setup → Resposta provável → Punchline → Continuação) em 3 abordagens (Natural, Engraçada, Flerte leve) pra esse contexto: ${data.contexto || "(sem texto, ler o print)"}`;
 
     const userContent: unknown[] = [{ type: "text", text: userText }];
     if (data.imageDataUrl) {
