@@ -23,13 +23,12 @@ async function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
-const METRIC_LABELS: { key: keyof StoryResult["metricas"]; label: string }[] = [
-  { key: "clima", label: "Clima da conversa" },
-  { key: "abertura", label: "Abertura pra responder" },
-  { key: "interesse", label: "Nível de interesse" },
-  { key: "energia", label: "Energia do story" },
-  { key: "chance_papo", label: "Chance dela continuar o papo" },
-];
+const MODO_COR: Record<string, string> = {
+  Natural: "text-accent",
+  "Engraçada": "text-violet",
+  "Low profile": "text-muted-foreground",
+  "Provocação leve": "text-accent",
+};
 
 function FotoStoryPage() {
   const fn = useServerFn(analisarFoto);
@@ -66,8 +65,8 @@ function FotoStoryPage() {
         <div className="text-[11px] font-medium uppercase tracking-[0.25em] text-violet mb-3">
           Foto Story
         </div>
-        <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[26ch]">
-          Manda o print do story. Eu leio e te dou a resposta certa.
+        <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[30ch]">
+          Manda o print do story. Eu leio a vibe e te dou 4 respostas naturais.
         </h1>
       </header>
 
@@ -141,45 +140,6 @@ function FotoStoryPage() {
             <p className="text-xl md:text-2xl font-medium text-balance leading-snug">{result.leitura}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Insight label="Estratégia" text={result.estrategia} />
-            <Insight label="Timing" text={result.timing} />
-            <Insight label="Evitar" text={result.evitar} tone="danger" />
-          </div>
-
-          <div className="rounded-3xl bg-card/60 ring-1 ring-border p-5 md:p-6">
-            <div className="text-[10px] font-medium uppercase tracking-widest text-violet mb-5">
-              Painel de análise
-            </div>
-            <div className="space-y-4">
-              {METRIC_LABELS.map(({ key, label }) => {
-                const value = Math.max(0, Math.min(100, Math.round(result.metricas[key] ?? 0)));
-                const danger = false;
-                return (
-                  <div key={key}>
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-muted-foreground">{label}</span>
-                      <span className="font-medium text-foreground">{value}%</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{
-                          width: `${value}%`,
-                          background: danger
-                            ? "linear-gradient(90deg, var(--destructive), oklch(0.75 0.18 25))"
-                            : "linear-gradient(90deg, var(--violet), var(--accent))",
-                          boxShadow: danger
-                            ? "0 0 12px color-mix(in oklab, var(--destructive) 50%, transparent)"
-                            : "0 0 12px color-mix(in oklab, var(--violet) 50%, transparent)",
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
 
           <div>
             <div className="text-[10px] font-medium uppercase tracking-widest text-violet mb-4">
@@ -188,7 +148,7 @@ function FotoStoryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {result.respostas.map((r, i) => (
                 <div key={i} className="p-5 rounded-2xl bg-card/60 ring-1 ring-border hover:ring-violet/30 transition">
-                  <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-2">
+                  <div className={`text-[10px] font-medium uppercase tracking-widest mb-2 ${MODO_COR[r.modo] ?? "text-accent"}`}>
                     {r.modo}
                   </div>
                   <p className="text-sm text-foreground leading-relaxed mb-4">{r.texto}</p>
@@ -215,13 +175,3 @@ function FotoStoryPage() {
   );
 }
 
-function Insight({ label, text, tone }: { label: string; text: string; tone?: "danger" }) {
-  return (
-    <div className={`p-4 rounded-2xl ring-1 ${tone === "danger" ? "bg-destructive/5 ring-destructive/20" : "bg-card/60 ring-border"}`}>
-      <div className={`text-[10px] font-medium uppercase tracking-widest mb-2 ${tone === "danger" ? "text-destructive" : "text-accent"}`}>
-        {label}
-      </div>
-      <p className="text-sm leading-relaxed">{text}</p>
-    </div>
-  );
-}

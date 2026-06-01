@@ -106,41 +106,34 @@ const MENSAGEM_SCHEMA = {
 const STORY_SCHEMA = {
   type: "object",
   properties: {
-    leitura: { type: "string", description: "O que esse story tá dizendo de verdade, em tom de amigo. 1-2 linhas." },
-    estrategia: { type: "string", description: "Melhor jogada agora, tom de amigo. Curto." },
-    timing: { type: "string", description: "Quando responder, em linguagem real. Curto." },
-    evitar: { type: "string", description: "O que NÃO mandar. Curto e direto." },
-    metricas: {
-      type: "object",
-      properties: {
-        clima: { type: "number", minimum: 0, maximum: 100 },
-        abertura: { type: "number", minimum: 0, maximum: 100 },
-        interesse: { type: "number", minimum: 0, maximum: 100 },
-        energia: { type: "number", minimum: 0, maximum: 100 },
-        chance_papo: { type: "number", minimum: 0, maximum: 100 },
-      },
-      required: ["clima", "abertura", "interesse", "energia", "chance_papo"],
-      additionalProperties: false,
+    leitura: {
+      type: "string",
+      description:
+        "2-3 linhas em tom de amigo: o que aparece no story, clima da foto, legenda/música se tiver, contexto provável e qual ângulo faz sentido pra responder. Sem certeza absoluta, sem julgar corpo/roupa, sem dizer que ela quer validação.",
     },
     respostas: {
       type: "array",
-      minItems: 7,
-      maxItems: 7,
+      minItems: 4,
+      maxItems: 4,
       items: {
         type: "object",
         properties: {
           modo: {
             type: "string",
-            enum: ["Calmo", "Engraçado", "Irônico", "Ousado", "Misterioso", "Sedutor", "Direto"],
+            enum: ["Natural", "Engraçada", "Low profile", "Provocação leve"],
           },
-          texto: { type: "string" },
+          texto: {
+            type: "string",
+            description:
+              "Resposta curta, humana, com cara de Instagram real. minúsculo, kkk natural, sem elogio direto, sem frase robótica.",
+          },
         },
         required: ["modo", "texto"],
         additionalProperties: false,
       },
     },
   },
-  required: ["leitura", "estrategia", "timing", "evitar", "metricas", "respostas"],
+  required: ["leitura", "respostas"],
   additionalProperties: false,
 } as const;
 
@@ -151,18 +144,9 @@ export interface MensagemResult {
 }
 export interface StoryResult {
   leitura: string;
-  estrategia: string;
-  timing: string;
-  evitar: string;
-  metricas: {
-    clima: number;
-    abertura: number;
-    interesse: number;
-    energia: number;
-    chance_papo: number;
-  };
   respostas: { modo: string; texto: string }[];
 }
+
 
 export const analisarFoto = createServerFn({ method: "POST" })
   .inputValidator((input: { mode: Mode; imageDataUrl: string; extra?: string }) => {
@@ -189,7 +173,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
 
     const userText = isMensagem
       ? `Olha essa imagem. PRIMEIRO identifica o tipo (conversa / story / perfil / foto). Se for PRINT DE CONVERSA, lê as mensagens trocadas e me dá 4 respostas pra eu mandar agora continuando o papo de forma natural. Não inventa contexto que não tá ali. ${data.extra ? `Contexto extra do usuário: ${data.extra}` : ""}`
-      : `Analisa esse print de story (Instagram/WhatsApp/Snap/Facebook). Lê legenda, expressão, pose, ambiente, emoção, intenção. Devolve a leitura, estratégia, timing, o que evitar, métricas de 0 a 100 e 7 respostas prontas (uma por modo). ${data.extra ? `Contexto extra: ${data.extra}` : ""}`;
+      : `Analisa esse print de story (Instagram/WhatsApp/Snap). Observa: o que aparece, clima da foto, legenda/música se tiver, contexto provável, melhor ângulo pra responder. NÃO inventa certeza, NÃO diz que ela "quer validação", NÃO julga corpo/roupa, NÃO age como guru de sedução. Devolve a leitura (2-3 linhas) e EXATAMENTE 4 respostas curtas e humanas, uma por modo: Natural, Engraçada, Low profile, Provocação leve. ${data.extra ? `Contexto extra: ${data.extra}` : ""}`;
 
     const toolName = isMensagem ? "responder_foto" : "responder_story";
     const schema = isMensagem ? MENSAGEM_SCHEMA : STORY_SCHEMA;
