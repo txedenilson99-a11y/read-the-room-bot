@@ -106,10 +106,23 @@ const MENSAGEM_SCHEMA = {
 const STORY_SCHEMA = {
   type: "object",
   properties: {
-    leitura: {
+    o_que_aparece: {
       type: "string",
       description:
-        "2-3 linhas em tom de amigo: o que aparece no story, clima da foto, legenda/música se tiver, contexto provável e qual ângulo faz sentido pra responder. Sem certeza absoluta, sem julgar corpo/roupa, sem dizer que ela quer validação.",
+        "Descrição objetiva do que realmente aparece: foto, legenda, música, expressão, ambiente. Só o visível, sem inventar.",
+    },
+    provavel_contexto: {
+      type: "string",
+      description:
+        "1-2 linhas em tom especulativo (pode ser / parece) sobre o que provavelmente está rolando. Sem inventar sentimento, interesse ou intenção.",
+    },
+    melhor_angulo: {
+      type: "string",
+      description: "Qual ângulo faz mais sentido pra responder esse story específico. 1 linha.",
+    },
+    evitar: {
+      type: "string",
+      description: "O que evitar responder nesse story. 1 linha curta.",
     },
     respostas: {
       type: "array",
@@ -125,7 +138,7 @@ const STORY_SCHEMA = {
           texto: {
             type: "string",
             description:
-              "Resposta curta, humana, com cara de Instagram real. minúsculo, kkk natural, sem elogio direto, sem frase robótica.",
+              "Resposta curta, humana, cara de Instagram real. minúsculo, kkk natural quando cabe, sem elogio direto, sem frase robótica, sem cantada pronta.",
           },
         },
         required: ["modo", "texto"],
@@ -133,7 +146,7 @@ const STORY_SCHEMA = {
       },
     },
   },
-  required: ["leitura", "respostas"],
+  required: ["o_que_aparece", "provavel_contexto", "melhor_angulo", "evitar", "respostas"],
   additionalProperties: false,
 } as const;
 
