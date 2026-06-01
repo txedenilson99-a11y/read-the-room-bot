@@ -219,16 +219,18 @@ function Home() {
           span="col-span-2"
         />
         <ToolCard
+          to="/primeiro-contato"
+          label="Match"
+          title="Primeiro Contato"
+          sub="Manda o perfil. A IA lê personalidade, sinais de interesse e te dá várias formas de puxar assunto."
+          tone="violet"
+          span="col-span-2"
+        />
+        <ToolCard
           to="/perfil-ig"
           label="Perfil"
           title="Análise de Perfil"
           sub="A vibe que seu perfil passa de verdade."
-        />
-        <ToolCard
-          to="/primeiro-contato"
-          label="Match"
-          title="Primeiro Contato"
-          sub="Quebra o gelo sem parecer forçado."
         />
         <ToolCard
           to={`/scan/${TOOLS["chat-scan"].slug}`}
