@@ -264,11 +264,12 @@ function Home() {
         />
         <ToolCard
           to="/cantadas"
-          label="Cantadas"
-          title="Cantadas IA"
-          sub="Sequência inteira: setup, desenvolvimento e punchline."
+          label="Conversa"
+          title="Cantadas em Etapas"
+          sub="A IA monta a conversa inteira, etapa por etapa."
           span="col-span-2"
         />
+
         <ToolCard
           to="/memoria"
           label="Memória"
