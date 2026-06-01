@@ -140,45 +140,6 @@ function FotoStoryPage() {
             <p className="text-xl md:text-2xl font-medium text-balance leading-snug">{result.leitura}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Insight label="Estratégia" text={result.estrategia} />
-            <Insight label="Timing" text={result.timing} />
-            <Insight label="Evitar" text={result.evitar} tone="danger" />
-          </div>
-
-          <div className="rounded-3xl bg-card/60 ring-1 ring-border p-5 md:p-6">
-            <div className="text-[10px] font-medium uppercase tracking-widest text-violet mb-5">
-              Painel de análise
-            </div>
-            <div className="space-y-4">
-              {METRIC_LABELS.map(({ key, label }) => {
-                const value = Math.max(0, Math.min(100, Math.round(result.metricas[key] ?? 0)));
-                const danger = false;
-                return (
-                  <div key={key}>
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-muted-foreground">{label}</span>
-                      <span className="font-medium text-foreground">{value}%</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{
-                          width: `${value}%`,
-                          background: danger
-                            ? "linear-gradient(90deg, var(--destructive), oklch(0.75 0.18 25))"
-                            : "linear-gradient(90deg, var(--violet), var(--accent))",
-                          boxShadow: danger
-                            ? "0 0 12px color-mix(in oklab, var(--destructive) 50%, transparent)"
-                            : "0 0 12px color-mix(in oklab, var(--violet) 50%, transparent)",
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
 
           <div>
             <div className="text-[10px] font-medium uppercase tracking-widest text-violet mb-4">
