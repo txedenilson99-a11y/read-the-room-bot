@@ -227,6 +227,13 @@ function Home() {
           span="col-span-2"
         />
         <ToolCard
+          to="/leitura"
+          label="Leitura"
+          title="🧠 Leitura Comportamental"
+          sub="O que ela realmente tá transmitindo. Interesse, joguinho, contradição, intenção oculta."
+          span="col-span-2"
+        />
+        <ToolCard
           to="/perfil-ig"
           label="Perfil"
           title="Análise de Perfil"
