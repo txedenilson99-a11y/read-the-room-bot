@@ -133,31 +133,12 @@ function FotoStoryPage() {
 
       {result && (
         <section className="mt-12 space-y-10 animate-fade-up">
-          <div className="border-t border-border pt-8 space-y-6">
-            <div>
-              <span className="inline-block px-3 py-1 rounded-full bg-secondary text-[10px] font-medium uppercase tracking-wider text-muted-foreground ring-1 ring-border mb-3">
-                O que aparece
-              </span>
-              <p className="text-base md:text-lg text-foreground leading-snug">{result.o_que_aparece}</p>
-            </div>
-            <div>
-              <span className="inline-block px-3 py-1 rounded-full bg-secondary text-[10px] font-medium uppercase tracking-wider text-muted-foreground ring-1 ring-border mb-3">
-                Provável contexto
-              </span>
-              <p className="text-base md:text-lg text-foreground leading-snug">{result.provavel_contexto}</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl bg-card/60 ring-1 ring-border">
-                <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-2">Melhor ângulo</div>
-                <p className="text-sm text-foreground leading-relaxed">{result.melhor_angulo}</p>
-              </div>
-              <div className="p-4 rounded-2xl bg-card/60 ring-1 ring-border">
-                <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-2">Evitar</div>
-                <p className="text-sm text-foreground leading-relaxed">{result.evitar}</p>
-              </div>
-            </div>
+          <div className="border-t border-border pt-8">
+            <span className="inline-block px-3 py-1 rounded-full bg-secondary text-[10px] font-medium uppercase tracking-wider text-muted-foreground ring-1 ring-border mb-4">
+              Leitura
+            </span>
+            <p className="text-xl md:text-2xl font-medium text-balance leading-snug">{result.leitura}</p>
           </div>
-
 
 
           <div>

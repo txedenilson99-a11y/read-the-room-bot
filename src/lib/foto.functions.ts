@@ -106,23 +106,10 @@ const MENSAGEM_SCHEMA = {
 const STORY_SCHEMA = {
   type: "object",
   properties: {
-    o_que_aparece: {
+    leitura: {
       type: "string",
       description:
-        "Descrição objetiva do que realmente aparece: foto, legenda, música, expressão, ambiente. Só o visível, sem inventar.",
-    },
-    provavel_contexto: {
-      type: "string",
-      description:
-        "1-2 linhas em tom especulativo (pode ser / parece) sobre o que provavelmente está rolando. Sem inventar sentimento, interesse ou intenção.",
-    },
-    melhor_angulo: {
-      type: "string",
-      description: "Qual ângulo faz mais sentido pra responder esse story específico. 1 linha.",
-    },
-    evitar: {
-      type: "string",
-      description: "O que evitar responder nesse story. 1 linha curta.",
+        "2-3 linhas em tom de amigo: o que aparece no story, clima da foto, legenda/música se tiver, contexto provável e qual ângulo faz sentido pra responder. Sem certeza absoluta, sem julgar corpo/roupa, sem dizer que ela quer validação.",
     },
     respostas: {
       type: "array",
@@ -138,7 +125,7 @@ const STORY_SCHEMA = {
           texto: {
             type: "string",
             description:
-              "Resposta curta, humana, cara de Instagram real. minúsculo, kkk natural quando cabe, sem elogio direto, sem frase robótica, sem cantada pronta.",
+              "Resposta curta, humana, com cara de Instagram real. minúsculo, kkk natural, sem elogio direto, sem frase robótica.",
           },
         },
         required: ["modo", "texto"],
@@ -146,7 +133,7 @@ const STORY_SCHEMA = {
       },
     },
   },
-  required: ["o_que_aparece", "provavel_contexto", "melhor_angulo", "evitar", "respostas"],
+  required: ["leitura", "respostas"],
   additionalProperties: false,
 } as const;
 
@@ -156,10 +143,7 @@ export interface MensagemResult {
   mensagens: { tipo: string; texto: string }[];
 }
 export interface StoryResult {
-  o_que_aparece: string;
-  provavel_contexto: string;
-  melhor_angulo: string;
-  evitar: string;
+  leitura: string;
   respostas: { modo: string; texto: string }[];
 }
 
@@ -189,23 +173,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
 
     const userText = isMensagem
       ? `Olha essa imagem. PRIMEIRO identifica o tipo (conversa / story / perfil / foto). Se for PRINT DE CONVERSA, lê as mensagens trocadas e me dá 4 respostas pra eu mandar agora continuando o papo de forma natural. Não inventa contexto que não tá ali. ${data.extra ? `Contexto extra do usuário: ${data.extra}` : ""}`
-      : `Analisa esse print de story. Observa o que REALMENTE aparece: foto, legenda, música, expressão, ambiente, contexto visual, tom do story.
-
-REGRAS:
-- NÃO invente interesse, sentimento ou intenção
-- NÃO julgue a pessoa (corpo, roupa, atitude)
-- NÃO crie teorias malucas ("ela quer validação", "tá no jogo")
-- NÃO aja como guru/coach de sedução
-- Tom especulativo: "pode ser", "parece" — nunca certeza absoluta
-
-Devolve:
-1. o_que_aparece — descrição objetiva do visível
-2. provavel_contexto — 1-2 linhas em tom especulativo
-3. melhor_angulo — 1 linha sobre como puxar
-4. evitar — 1 linha do que NÃO mandar
-5. EXATAMENTE 4 respostas, uma por modo: Natural, Engraçada, Low profile, Provocação leve. Curtas, humanas, com cara de gente real respondendo story. Sem cantada pronta, sem frase copiada da internet, sem soar emocionado ou fã.
-
-${data.extra ? `Contexto extra: ${data.extra}` : ""}`;
+      : `Analisa esse print de story (Instagram/WhatsApp/Snap). Observa: o que aparece, clima da foto, legenda/música se tiver, contexto provável, melhor ângulo pra responder. NÃO inventa certeza, NÃO diz que ela "quer validação", NÃO julga corpo/roupa, NÃO age como guru de sedução. Devolve a leitura (2-3 linhas) e EXATAMENTE 4 respostas curtas e humanas, uma por modo: Natural, Engraçada, Low profile, Provocação leve. ${data.extra ? `Contexto extra: ${data.extra}` : ""}`;
 
     const toolName = isMensagem ? "responder_foto" : "responder_story";
     const schema = isMensagem ? MENSAGEM_SCHEMA : STORY_SCHEMA;
