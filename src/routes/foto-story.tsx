@@ -175,13 +175,3 @@ function FotoStoryPage() {
   );
 }
 
-function Insight({ label, text, tone }: { label: string; text: string; tone?: "danger" }) {
-  return (
-    <div className={`p-4 rounded-2xl ring-1 ${tone === "danger" ? "bg-destructive/5 ring-destructive/20" : "bg-card/60 ring-border"}`}>
-      <div className={`text-[10px] font-medium uppercase tracking-widest mb-2 ${tone === "danger" ? "text-destructive" : "text-accent"}`}>
-        {label}
-      </div>
-      <p className="text-sm leading-relaxed">{text}</p>
-    </div>
-  );
-}
