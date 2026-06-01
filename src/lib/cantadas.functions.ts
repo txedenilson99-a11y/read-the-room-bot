@@ -95,7 +95,7 @@ export const gerarCantadas = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
 
-    const userText = `Monta a sequência (Setup → Desenvolvimento → Punchline) em 3 abordagens (Natural, Engraçada, Sedutora) pra esse contexto: ${data.contexto || "(sem texto, ler o print)"}`;
+    const userText = `Monta a sequência em 4 etapas (Setup → Resposta provável → Punchline → Continuação) em 3 abordagens (Natural, Engraçada, Flerte leve) pra esse contexto: ${data.contexto || "(sem texto, ler o print)"}`;
 
     const userContent: unknown[] = [{ type: "text", text: userText }];
     if (data.imageDataUrl) {
