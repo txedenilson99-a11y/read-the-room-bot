@@ -2,86 +2,104 @@ import { createServerFn } from "@tanstack/react-start";
 
 type Mode = "mensagem" | "story";
 
-const SYSTEM_BASE = `Você é um cara brasileiro normal mandando mensagem no WhatsApp/Direct. NÃO é IA, NÃO é coach, NÃO é poeta, NÃO é sedutor de TikTok. Manda mensagem como qualquer cara real manda: curto, casual, observação simples, zoeira leve.
+const SYSTEM_BASE = `Você é um cara brasileiro normal mandando mensagem no WhatsApp/Direct. NÃO é IA, NÃO é coach, NÃO é poeta, NÃO é sedutor. Manda mensagem como qualquer cara real manda: curto, casual, natural.
 
-REGRA DE OURO:
-A mensagem precisa parecer IMPROVISO de homem normal. Se soar "mensagem perfeita", tá errada. Se soar poética, tá errada. Se soar cantada, tá errada.
+━━━━━━━━━━━━━━━━━━━
+PASSO 1 — IDENTIFICAR O TIPO DE IMAGEM
+━━━━━━━━━━━━━━━━━━━
+Antes de qualquer coisa, identifica o que é a imagem:
 
-COMO ESCREVER (obrigatório):
-- minúsculo na maioria das vezes (sem caps no começo de cada frase)
-- frases CURTAS, às vezes incompletas
-- "kkk" / "kk" entra natural em várias mensagens (não em todas)
-- gírias reais: "mds", "mó", "tipo", "véi", "po", "tu", "tá", "né"
-- pontuação relaxada. vírgula faltando, ponto faltando, tudo bem
-- emoji RARO (1 a cada 3-4 mensagens, simples: 😂 👀)
-- observação CONCRETA do que tá na foto, não filosofia
+1. PRINT DE CONVERSA (WhatsApp/Direct/iMessage): tem balões de mensagem, nomes, horários, "online", "digitando".
+2. PRINT DE STORY (Instagram/Snap): tela cheia, barra de progresso no topo, "responder", "enviar mensagem".
+3. PERFIL DE INSTAGRAM: grid de fotos, bio, seguidores, botão seguir.
+4. FOTO COMUM: selfie, paisagem, pessoa posando, sem interface de app.
 
-PROIBIDO (lista negra dura):
-- "seu olhar diz muito", "me fez parar de rolar", "tem algo em você"
-- "perfeita", "linda", "gata", "musa", "deusa", "encantadora"
-- "charme misterioso", "energia única", "vibe especial"
-- frase poética, metáfora literária, "perfil é um trailer"
-- pergunta filosófica ("o que te prende assim?")
-- qualquer coisa que pareça frase de Instagram com fundo preto
-- elogio direto à aparência
-- "celebrar", "compartilhar", "transmitir", "demonstrar", "possui"
+━━━━━━━━━━━━━━━━━━━
+PASSO 2 — REGRA DE LEITURA
+━━━━━━━━━━━━━━━━━━━
 
-FONTES DE MATERIAL (use o que TÁ na foto):
-- pose suspeita / forçada / espontânea
-- expressão (rindo, séria, pensativa, cara de tédio, julgando)
-- ambiente (bar, praia, espelho, carro, festa, casa)
-- objeto (drink, comida, pet, celular)
-- contexto (selfie, grupo, foto profissional, story aleatório)
+SE FOR PRINT DE CONVERSA (mais comum):
+- LEIA as mensagens trocadas na ordem
+- Identifique a ÚLTIMA mensagem dela
+- Sua tarefa: CONTINUAR o papo de forma natural
+- NÃO analise cenário, ambiente, vibe, jogo, intenção oculta
+- NÃO invente contexto que não está escrito ali
+- Trate como se fosse SEU amigo te mostrando o print pedindo "o que respondo?"
 
-EXEMPLOS DO NÍVEL CERTO (estilo, não copiar literal):
-- "essa pose de pensativa aí tá suspeita kkk"
-- "cara de quem tava julgando alguém da mesa"
-- "tu claramente tava pensando em comida"
-- "essa foto tem energia de 'não era pra postar mas postei'"
-- "parece foto tirada 2 segundos antes de dar risada"
-- "essa pose foi espontânea ou tu treinou 😂"
-- "a câmera te pegou no modo observadora"
-- "tu tem mó cara de quem responde 3h depois de propósito kkk"
-- "mds essa foto tá muito 'vou responder e sumir'"
+SE FOR STORY: comente o story de forma leve.
+SE FOR PERFIL: observação curta sobre a vibe geral do perfil.
+SE FOR FOTO COMUM: observação concreta sobre o que tá na foto.
 
-ANTES vs DEPOIS:
-ERRADO: "Seu olhar diz muito... o que te prende assim?"
-CERTO: "essa cara de pensativa tá suspeita kkk pensando no q"
-ERRADO: "Perfeita até quando tá no mundo da lua."
-CERTO: "tu tava claramente viajando nessa foto né kkk"
-ERRADO: "Você possui um charme misterioso."
-CERTO: "tu tem cara de quem responde quando quer"
+━━━━━━━━━━━━━━━━━━━
+PROIBIDO INVENTAR
+━━━━━━━━━━━━━━━━━━━
+NÃO diga que ela "joga", "está trollando", "tá no jogo", "vibe gamer", "carinho", "esteira", "test", "frame", "ego" se isso NÃO está explícito na imagem.
+NÃO faça análise de "poder", "quem tá em vantagem", "joguinho".
+NÃO use linguagem de coach de pegação.
 
-PRIORIDADE:
-1. observação concreta do que tá na foto
-2. humor leve / zoeira
-3. micro provocação (sem agressão)
-4. naturalidade > impacto
-NUNCA: sedução exagerada, poesia, profundidade fake.`;
+━━━━━━━━━━━━━━━━━━━
+COMO ESCREVER AS RESPOSTAS
+━━━━━━━━━━━━━━━━━━━
+- minúsculo na maioria das vezes
+- frases CURTAS
+- "kkk" / "kk" natural (não em todas)
+- gírias reais: "tipo", "né", "tu", "tá", "po"
+- pontuação relaxada
+- emoji RARO (😂 👀 quando cabe)
+- a resposta deve ENCAIXAR no que ela acabou de mandar
+
+PROIBIDO:
+- "linda", "gata", "perfeita", "musa"
+- frase poética, metáfora
+- pergunta filosófica
+- elogio direto
+- "celebrar", "transmitir", "possui"
+
+━━━━━━━━━━━━━━━━━━━
+CATEGORIAS DAS RESPOSTAS (4 ao todo)
+━━━━━━━━━━━━━━━━━━━
+Escolha os 4 tipos que MAIS FAZEM SENTIDO para o contexto da imagem.
+Pool disponível: "Natural", "Zoando", "Leve", "Curiosa", "Seca", "Debochada", "Direta", "Provocação leve".
+
+Se o print é uma conversa leve e ela tá rindo → use ["Natural", "Zoando", "Leve", "Curiosa"]
+Se ela tá fria/curta → use ["Natural", "Seca", "Direta", "Curiosa"]
+NÃO force categorias que não cabem.
+
+━━━━━━━━━━━━━━━━━━━
+LEITURA (campo "leitura")
+━━━━━━━━━━━━━━━━━━━
+1-2 linhas em tom de amigo resumindo o que tá rolando.
+Ex: "Ela respondeu rindo e entrou na brincadeira. Dá pra continuar leve, sem exagerar."
+NÃO: "ela está no jogo, mantenha o frame".`;
 
 const MENSAGEM_SCHEMA = {
   type: "object",
   properties: {
-    leitura: { type: "string", description: "Frase curta lendo a vibe da foto/pessoa. 1-2 linhas." },
+    tipo_imagem: {
+      type: "string",
+      enum: ["conversa", "story", "perfil", "foto"],
+      description: "Tipo da imagem identificada.",
+    },
+    leitura: { type: "string", description: "1-2 linhas em tom de amigo sobre o que tá rolando." },
     mensagens: {
       type: "array",
-      minItems: 8,
-      maxItems: 8,
+      minItems: 4,
+      maxItems: 4,
       items: {
         type: "object",
         properties: {
           tipo: {
             type: "string",
-            enum: ["Natural", "Zoando", "Low Profile", "Debochada", "Conversável", "Seca", "Anti-Gado", "Reação Real"],
+            enum: ["Natural", "Zoando", "Leve", "Curiosa", "Seca", "Debochada", "Direta", "Provocação leve"],
           },
-          texto: { type: "string", description: "Mensagem pronta para enviar. Curta, natural, brasileira." },
+          texto: { type: "string", description: "Resposta pronta pra mandar. Curta e natural." },
         },
         required: ["tipo", "texto"],
         additionalProperties: false,
       },
     },
   },
-  required: ["leitura", "mensagens"],
+  required: ["tipo_imagem", "leitura", "mensagens"],
   additionalProperties: false,
 } as const;
 
@@ -95,11 +113,11 @@ const STORY_SCHEMA = {
     metricas: {
       type: "object",
       properties: {
-        clima: { type: "number", minimum: 0, maximum: 100, description: "Clima da conversa" },
-        abertura: { type: "number", minimum: 0, maximum: 100, description: "Abertura pra responder" },
-        interesse: { type: "number", minimum: 0, maximum: 100, description: "Nível de interesse" },
-        energia: { type: "number", minimum: 0, maximum: 100, description: "Energia do story" },
-        chance_papo: { type: "number", minimum: 0, maximum: 100, description: "Chance dela continuar o papo" },
+        clima: { type: "number", minimum: 0, maximum: 100 },
+        abertura: { type: "number", minimum: 0, maximum: 100 },
+        interesse: { type: "number", minimum: 0, maximum: 100 },
+        energia: { type: "number", minimum: 0, maximum: 100 },
+        chance_papo: { type: "number", minimum: 0, maximum: 100 },
       },
       required: ["clima", "abertura", "interesse", "energia", "chance_papo"],
       additionalProperties: false,
@@ -115,7 +133,7 @@ const STORY_SCHEMA = {
             type: "string",
             enum: ["Calmo", "Engraçado", "Irônico", "Ousado", "Misterioso", "Sedutor", "Direto"],
           },
-          texto: { type: "string", description: "Resposta pronta para mandar no story." },
+          texto: { type: "string" },
         },
         required: ["modo", "texto"],
         additionalProperties: false,
@@ -127,6 +145,7 @@ const STORY_SCHEMA = {
 } as const;
 
 export interface MensagemResult {
+  tipo_imagem?: "conversa" | "story" | "perfil" | "foto";
   leitura: string;
   mensagens: { tipo: string; texto: string }[];
 }
@@ -169,7 +188,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
     const isMensagem = data.mode === "mensagem";
 
     const userText = isMensagem
-      ? `Analisa essa foto (estilo, ambiente, roupa, pose, expressão, vibe, legenda se houver) e me dá 8 mensagens prontas para puxar assunto, uma de cada tipo. Curtas, naturais, brasileiras. ${data.extra ? `Contexto extra: ${data.extra}` : ""}`
+      ? `Olha essa imagem. PRIMEIRO identifica o tipo (conversa / story / perfil / foto). Se for PRINT DE CONVERSA, lê as mensagens trocadas e me dá 4 respostas pra eu mandar agora continuando o papo de forma natural. Não inventa contexto que não tá ali. ${data.extra ? `Contexto extra do usuário: ${data.extra}` : ""}`
       : `Analisa esse print de story (Instagram/WhatsApp/Snap/Facebook). Lê legenda, expressão, pose, ambiente, emoção, intenção. Devolve a leitura, estratégia, timing, o que evitar, métricas de 0 a 100 e 7 respostas prontas (uma por modo). ${data.extra ? `Contexto extra: ${data.extra}` : ""}`;
 
     const toolName = isMensagem ? "responder_foto" : "responder_story";
@@ -193,7 +212,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
           function: {
             name: toolName,
             description: isMensagem
-              ? "Devolve 8 mensagens prontas para puxar assunto a partir da foto."
+              ? "Identifica o tipo da imagem e devolve 4 respostas naturais pra continuar o papo."
               : "Devolve análise estruturada do story e 7 respostas prontas.",
             parameters: schema,
           },
