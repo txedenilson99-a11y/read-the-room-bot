@@ -106,41 +106,34 @@ const MENSAGEM_SCHEMA = {
 const STORY_SCHEMA = {
   type: "object",
   properties: {
-    leitura: { type: "string", description: "O que esse story tá dizendo de verdade, em tom de amigo. 1-2 linhas." },
-    estrategia: { type: "string", description: "Melhor jogada agora, tom de amigo. Curto." },
-    timing: { type: "string", description: "Quando responder, em linguagem real. Curto." },
-    evitar: { type: "string", description: "O que NÃO mandar. Curto e direto." },
-    metricas: {
-      type: "object",
-      properties: {
-        clima: { type: "number", minimum: 0, maximum: 100 },
-        abertura: { type: "number", minimum: 0, maximum: 100 },
-        interesse: { type: "number", minimum: 0, maximum: 100 },
-        energia: { type: "number", minimum: 0, maximum: 100 },
-        chance_papo: { type: "number", minimum: 0, maximum: 100 },
-      },
-      required: ["clima", "abertura", "interesse", "energia", "chance_papo"],
-      additionalProperties: false,
+    leitura: {
+      type: "string",
+      description:
+        "2-3 linhas em tom de amigo: o que aparece no story, clima da foto, legenda/música se tiver, contexto provável e qual ângulo faz sentido pra responder. Sem certeza absoluta, sem julgar corpo/roupa, sem dizer que ela quer validação.",
     },
     respostas: {
       type: "array",
-      minItems: 7,
-      maxItems: 7,
+      minItems: 4,
+      maxItems: 4,
       items: {
         type: "object",
         properties: {
           modo: {
             type: "string",
-            enum: ["Calmo", "Engraçado", "Irônico", "Ousado", "Misterioso", "Sedutor", "Direto"],
+            enum: ["Natural", "Engraçada", "Low profile", "Provocação leve"],
           },
-          texto: { type: "string" },
+          texto: {
+            type: "string",
+            description:
+              "Resposta curta, humana, com cara de Instagram real. minúsculo, kkk natural, sem elogio direto, sem frase robótica.",
+          },
         },
         required: ["modo", "texto"],
         additionalProperties: false,
       },
     },
   },
-  required: ["leitura", "estrategia", "timing", "evitar", "metricas", "respostas"],
+  required: ["leitura", "respostas"],
   additionalProperties: false,
 } as const;
 
