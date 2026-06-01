@@ -149,10 +149,13 @@ function CantadasPage() {
           Cantadas em Etapas
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[28ch]">
-          A IA monta a conversa inteira.
+          Manda o print. A IA monta exatamente o que falar.
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Setup → resposta dela → punchline → continuação. Em 3 vibes: natural, engraçada, flerte leve.
+          Ela lê a situação e cria a conversa inteira: primeira mensagem → resposta dela → continuação → fechamento. Em 3 abordagens: natural, engraçada, flertando.
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground/70">
+          Sem frase pronta. Sem cantada forçada. Só o que combina com o contexto.
         </p>
       </header>
 
@@ -197,7 +200,7 @@ function CantadasPage() {
           disabled={mutation.isPending || (!contexto.trim() && !preview)}
           className="w-full bg-foreground text-background font-medium px-5 py-3 rounded-full disabled:opacity-40 transition"
         >
-          {mutation.isPending ? "IA montando a conversa…" : "Gerar conversa"}
+          {mutation.isPending ? "IA lendo o contexto…" : "⚡ Montar conversa"}
         </button>
       </div>
 
