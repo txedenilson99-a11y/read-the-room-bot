@@ -20,6 +20,7 @@ import { Route as MemoriaRouteImport } from './routes/memoria'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LeituraRouteImport } from './routes/leitura'
 import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as FlowRouteImport } from './routes/flow'
 import { Route as FotoStoryRouteImport } from './routes/foto-story'
 import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
 import { Route as FlowRouteImport } from './routes/flow'
@@ -83,6 +84,11 @@ const HistoricoRoute = HistoricoRouteImport.update({
   path: '/historico',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FlowRoute = FlowRouteImport.update({
+  id: '/flow',
+  path: '/flow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FotoStoryRoute = FotoStoryRouteImport.update({
   id: '/foto-story',
   path: '/foto-story',
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
+  '/flow': typeof FlowRoute
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
+  '/flow': typeof FlowRoute
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
+  '/flow': typeof FlowRoute
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
@@ -189,6 +198,8 @@ export interface FileRouteTypes {
     | '/flow'
     | '/foto-mensagem'
     | '/foto-story'
+    | '/flow'
+    | '/flow'
     | '/historico'
     | '/leitura'
     | '/login'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/flow'
     | '/foto-mensagem'
     | '/foto-story'
+    | '/flow'
     | '/historico'
     | '/leitura'
     | '/login'
@@ -250,6 +262,7 @@ export interface RootRouteChildren {
   FlowRoute: typeof FlowRoute
   FotoMensagemRoute: typeof FotoMensagemRoute
   FotoStoryRoute: typeof FotoStoryRoute
+  FlowRoute: typeof FlowRoute
   HistoricoRoute: typeof HistoricoRoute
   LeituraRoute: typeof LeituraRoute
   LoginRoute: typeof LoginRoute
@@ -343,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/flow': {
+      id: '/flow'
+      path: '/flow'
+      fullPath: '/flow'
+      preLoaderRoute: typeof FlowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/foto-story': {
       id: '/foto-story'
       path: '/foto-story'
@@ -402,6 +422,7 @@ const rootRouteChildren: RootRouteChildren = {
   FlowRoute: FlowRoute,
   FotoMensagemRoute: FotoMensagemRoute,
   FotoStoryRoute: FotoStoryRoute,
+  FlowRoute: FlowRoute,
   HistoricoRoute: HistoricoRoute,
   LeituraRoute: LeituraRoute,
   LoginRoute: LoginRoute,
@@ -418,13 +439,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -234,6 +234,14 @@ function Home() {
           span="col-span-2"
         />
         <ToolCard
+          to="/flow"
+          label="Flow"
+          title="🌊 Continuar Conversa"
+          sub="Nunca mais fique sem assunto. A IA cria a próxima mensagem ideal pra manter o flow."
+          tone="violet"
+          span="col-span-2"
+        />
+        <ToolCard
           to="/perfil-ig"
           label="Perfil"
           title="Análise de Perfil"
