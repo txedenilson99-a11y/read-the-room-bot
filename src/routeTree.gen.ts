@@ -18,6 +18,7 @@ import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as MemoriaRouteImport } from './routes/memoria'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LeituraRouteImport } from './routes/leitura'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as FotoStoryRouteImport } from './routes/foto-story'
 import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
@@ -71,6 +72,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LeituraRoute = LeituraRouteImport.update({
+  id: '/leitura',
+  path: '/leitura',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoricoRoute = HistoricoRouteImport.update({
   id: '/historico',
   path: '/historico',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/leitura'
     | '/login'
     | '/memoria'
     | '/perfil'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/leitura'
     | '/login'
     | '/memoria'
     | '/perfil'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/leitura'
     | '/login'
     | '/memoria'
     | '/perfil'
@@ -226,6 +238,7 @@ export interface RootRouteChildren {
   FotoMensagemRoute: typeof FotoMensagemRoute
   FotoStoryRoute: typeof FotoStoryRoute
   HistoricoRoute: typeof HistoricoRoute
+  LeituraRoute: typeof LeituraRoute
   LoginRoute: typeof LoginRoute
   MemoriaRoute: typeof MemoriaRoute
   PerfilRoute: typeof PerfilRoute
@@ -303,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/leitura': {
+      id: '/leitura'
+      path: '/leitura'
+      fullPath: '/leitura'
+      preLoaderRoute: typeof LeituraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/historico': {
       id: '/historico'
       path: '/historico'
@@ -362,6 +382,7 @@ const rootRouteChildren: RootRouteChildren = {
   FotoMensagemRoute: FotoMensagemRoute,
   FotoStoryRoute: FotoStoryRoute,
   HistoricoRoute: HistoricoRoute,
+  LeituraRoute: LeituraRoute,
   LoginRoute: LoginRoute,
   MemoriaRoute: MemoriaRoute,
   PerfilRoute: PerfilRoute,
