@@ -1,122 +1,113 @@
 import { createServerFn } from "@tanstack/react-start";
 
-const SYSTEM = `Você é um leitor comportamental brasileiro, socialmente esperto, frio e preciso. NÃO é coach, NÃO é terapeuta, NÃO é IA fofa. Você lê o que tá por trás das palavras, fotos, stories e atitudes.
+const SYSTEM = `Você é um leitor social brasileiro maduro, calmo e realista. Ajuda a pessoa a entender o contexto de uma foto, story, print ou situação SEM atacar, julgar ou humilhar ninguém.
 
-COMO LER:
-- Foca em sinais, padrões, contradição, micro-comportamento.
-- Diferencia interesse real de educação, biscoito, joguinho, tédio, validação.
-- Aponta intenção oculta sem inventar.
-- Direto, seco, sem suavizar. Sem clichê de autoajuda.
+POSTURA:
+- Direto, maduro, leve, respeitoso.
+- Descreve o que aparece sem exagero nem drama.
+- Fala em possibilidades, não em certezas. Usa "pode ser", "parece", "talvez", "abre espaço para".
+- Reconhece quando não dá pra saber. Não inventa intenção.
+- Útil de verdade: ajuda a decidir se vale responder e como.
 
-NUNCA use:
-- "transmite confiança", "energia única", "vibe especial", "linguagem do amor"
-- "celebrar", "compartilhar momento", "vulnerabilidade saudável"
-- emoji em excesso, mais de 1 por bloco
-- generalidades vazias ("ela pode estar passando por algo")
+NUNCA:
+- Chame a pessoa de "carente", "biscoiteira", "quer validação", "joguinho", "manipuladora".
+- Diga "ela não tem interesse em você", "tá te usando", "corre" como certeza.
+- Julgue o corpo, a aparência, a roupa ou o estilo de vida da pessoa.
+- Use tom de coach masculinista, redpill, deboche ou superioridade.
+- Finja ler a mente. Você lê sinais, não pensamentos.
+- Use clichês de autoajuda ("energia única", "vibe especial", "vulnerabilidade").
 
-TOM DOS EXEMPLOS:
-- "Não é interesse. É educação pra não parecer mal."
-- "Tá testando se você corre atrás. Não corre."
-- "Responde rápido quando tá entediada, some quando tem opção melhor."
-- "O story é pra alguém. Não é pra você."
-- "Quer atenção, não quer compromisso."
+TOM DOS EXEMPLOS (use esse estilo):
+- "Ela postou uma foto da academia mostrando rotina. A vibe é confiante e casual. Pode ser só um post normal, mas abre espaço pra uma resposta leve se quiser puxar assunto."
+- "É uma foto de viagem comum. Não dá pra cravar interesse, mas é um gancho fácil pra comentar algo do lugar."
+- "A mensagem foi curta e educada. Pode ser que ela tava ocupada, pode ser desinteresse leve. Vale esperar antes de mandar de novo."
 
-Se não dá pra ler com o que foi enviado, fala. Não inventa.`;
+Se não dá pra ler com o que foi enviado, fala isso com tranquilidade. Sem inventar.`;
 
 const SCHEMA = {
   type: "object",
   properties: {
-    veredito: {
+    vibe: {
       type: "string",
-      enum: [
-        "interesse-real",
-        "interesse-morno",
-        "educação",
-        "joguinho",
-        "validação",
-        "biscoito",
-        "desinteresse",
-        "tédio",
-        "manipulação",
-        "indefinido",
-      ],
+      description: "1-3 palavras descrevendo a vibe provável (ex: 'confiante e casual', 'introspectiva', 'animada', 'reservada').",
     },
-    titulo: { type: "string", description: "1 linha afiada resumindo o que tá rolando." },
-    leitura: { type: "string", description: "3-6 linhas explicando o subtexto, sem encheção." },
-    transmitindo: {
-      type: "array", minItems: 2, maxItems: 5,
-      items: { type: "string", description: "Sinal claro que a pessoa tá emitindo." },
+    titulo: { type: "string", description: "1 linha leve resumindo o contexto, sem julgamento." },
+    descricao: {
+      type: "string",
+      description: "2-4 linhas descrevendo o que aparece na foto/print/situação, sem exagero nem drama.",
     },
-    sinais_interesse: {
-      type: "array", minItems: 0, maxItems: 6,
-      items: { type: "string" },
+    leitura: {
+      type: "string",
+      description: "3-5 linhas em tom maduro e respeitoso explicando possibilidades, usando 'pode ser', 'parece', 'talvez'.",
     },
-    sinais_desinteresse: {
-      type: "array", minItems: 0, maxItems: 6,
-      items: { type: "string" },
+    intencao_possivel: {
+      type: "array", minItems: 1, maxItems: 4,
+      items: { type: "string", description: "Intenção POSSÍVEL (não certa). Ex: 'pode estar só compartilhando a rotina'." },
     },
-    contradicoes: {
-      type: "array", minItems: 0, maxItems: 5,
-      items: { type: "string", description: "Onde o discurso bate de frente com o comportamento." },
+    abre_espaco_para: {
+      type: "array", minItems: 1, maxItems: 4,
+      items: { type: "string", description: "Ganchos naturais que a situação oferece pra puxar conversa." },
     },
-    intencoes_ocultas: {
-      type: "array", minItems: 0, maxItems: 5,
-      items: { type: "string" },
+    vale_responder: {
+      type: "string",
+      enum: ["sim", "talvez", "melhor-esperar", "nao-necessario"],
+    },
+    porque_vale: {
+      type: "string",
+      description: "1-2 linhas explicando, sem agressividade, por que vale ou não responder agora.",
     },
     medidores: {
       type: "object",
       properties: {
         interesse_real: { type: "number", minimum: 0, maximum: 100 },
-        apenas_educacao: { type: "number", minimum: 0, maximum: 100 },
-        joguinho: { type: "number", minimum: 0, maximum: 100 },
-        carencia: { type: "number", minimum: 0, maximum: 100 },
-        risco_perder: { type: "number", minimum: 0, maximum: 100 },
-        chance_evoluir: { type: "number", minimum: 0, maximum: 100 },
+        abertura_conversa: { type: "number", minimum: 0, maximum: 100 },
+        risco_forcado: { type: "number", minimum: 0, maximum: 100 },
+        timing: { type: "number", minimum: 0, maximum: 100, description: "Quão bom é o timing pra responder agora (0 = ruim, 100 = ótimo)." },
+        chance_resposta: { type: "number", minimum: 0, maximum: 100 },
       },
-      required: ["interesse_real","apenas_educacao","joguinho","carencia","risco_perder","chance_evoluir"],
+      required: ["interesse_real","abertura_conversa","risco_forcado","timing","chance_resposta"],
       additionalProperties: false,
     },
     evitar: {
-      type: "array", minItems: 3, maxItems: 6,
-      items: { type: "string", description: "O que NÃO dizer/fazer agora." },
+      type: "array", minItems: 2, maxItems: 5,
+      items: { type: "string", description: "O que evitar dizer/fazer agora, em tom respeitoso (sem atacar ela)." },
     },
     abordagem_ideal: {
       type: "string",
-      description: "Qual postura/abordagem combina com o que tá rolando. 1-2 linhas.",
+      description: "1-2 linhas com a postura que combina. Tom maduro, sem coach.",
     },
     proximos_passos: {
-      type: "array", minItems: 3, maxItems: 5,
-      items: { type: "string", description: "Próximo movimento concreto e estratégico." },
+      type: "array", minItems: 2, maxItems: 4,
+      items: { type: "string", description: "Próximo movimento natural e tranquilo." },
     },
     frase_pronta: {
       type: "string",
-      description: "1 mensagem curta, natural, que faz sentido AGORA. Sem cantada. Sem clichê.",
+      description: "1 mensagem curta, natural, leve. Sem cantada, sem deboche, sem agressividade. Pode ter 'kkk' se couber.",
     },
   },
   required: [
-    "veredito","titulo","leitura","transmitindo",
-    "sinais_interesse","sinais_desinteresse","contradicoes","intencoes_ocultas",
-    "medidores","evitar","abordagem_ideal","proximos_passos","frase_pronta",
+    "vibe","titulo","descricao","leitura","intencao_possivel","abre_espaco_para",
+    "vale_responder","porque_vale","medidores","evitar","abordagem_ideal",
+    "proximos_passos","frase_pronta",
   ],
   additionalProperties: false,
 } as const;
 
 export interface LeituraResult {
-  veredito: string;
+  vibe: string;
   titulo: string;
+  descricao: string;
   leitura: string;
-  transmitindo: string[];
-  sinais_interesse: string[];
-  sinais_desinteresse: string[];
-  contradicoes: string[];
-  intencoes_ocultas: string[];
+  intencao_possivel: string[];
+  abre_espaco_para: string[];
+  vale_responder: "sim" | "talvez" | "melhor-esperar" | "nao-necessario";
+  porque_vale: string;
   medidores: {
     interesse_real: number;
-    apenas_educacao: number;
-    joguinho: number;
-    carencia: number;
-    risco_perder: number;
-    chance_evoluir: number;
+    abertura_conversa: number;
+    risco_forcado: number;
+    timing: number;
+    chance_resposta: number;
   };
   evitar: string[];
   abordagem_ideal: string;
@@ -148,7 +139,7 @@ export const lerComportamento = createServerFn({ method: "POST" })
     > = [
       {
         type: "text",
-        text: `Faz uma leitura comportamental honesta da situação abaixo. Aponta sinais reais, contradições, intenção, e qual abordagem combina agora. Sem suavizar, sem inventar.${data.contexto ? `\n\nContexto / situação:\n${data.contexto}` : ""}${data.images.length ? `\n\n${data.images.length} imagem(ns) anexada(s): print, story, perfil ou foto.` : ""}`,
+        text: `Faz uma leitura madura, leve e realista da situação abaixo. Descreve o que aparece sem exagero, mostra a vibe provável, fala de intenção POSSÍVEL (não certa), e ajuda a decidir se vale responder e como. Sem atacar, sem julgar corpo/estilo, sem chamar de carente ou biscoiteira.${data.contexto ? `\n\nContexto / situação:\n${data.contexto}` : ""}${data.images.length ? `\n\n${data.images.length} imagem(ns) anexada(s).` : ""}`,
       },
       ...data.images.map((url) => ({ type: "image_url" as const, image_url: { url } })),
     ];
@@ -166,7 +157,7 @@ export const lerComportamento = createServerFn({ method: "POST" })
           type: "function",
           function: {
             name: "ler_comportamento",
-            description: "Devolve leitura comportamental estruturada.",
+            description: "Devolve leitura social estruturada, madura e respeitosa.",
             parameters: SCHEMA,
           },
         }],
