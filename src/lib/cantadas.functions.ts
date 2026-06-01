@@ -66,12 +66,13 @@ const SCHEMA = {
 
 
 export interface CantadaSequencia {
-  abordagem: "Natural" | "Engraçada" | "Sedutora";
+  abordagem: "Natural" | "Engraçada" | "Flerte leve";
   setup: string;
   resposta_provavel: string;
-  desenvolvimento: string;
   punchline: string;
+  continuacao: string;
 }
+
 export interface CantadasResult {
   contexto: string;
   sequencias: CantadaSequencia[];
