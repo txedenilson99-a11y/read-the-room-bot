@@ -156,7 +156,10 @@ export interface MensagemResult {
   mensagens: { tipo: string; texto: string }[];
 }
 export interface StoryResult {
-  leitura: string;
+  o_que_aparece: string;
+  provavel_contexto: string;
+  melhor_angulo: string;
+  evitar: string;
   respostas: { modo: string; texto: string }[];
 }
 
