@@ -23,13 +23,12 @@ async function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
-const METRIC_LABELS: { key: keyof StoryResult["metricas"]; label: string }[] = [
-  { key: "clima", label: "Clima da conversa" },
-  { key: "abertura", label: "Abertura pra responder" },
-  { key: "interesse", label: "Nível de interesse" },
-  { key: "energia", label: "Energia do story" },
-  { key: "chance_papo", label: "Chance dela continuar o papo" },
-];
+const MODO_COR: Record<string, string> = {
+  Natural: "text-accent",
+  "Engraçada": "text-violet",
+  "Low profile": "text-muted-foreground",
+  "Provocação leve": "text-accent",
+};
 
 function FotoStoryPage() {
   const fn = useServerFn(analisarFoto);
