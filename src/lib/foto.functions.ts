@@ -144,18 +144,9 @@ export interface MensagemResult {
 }
 export interface StoryResult {
   leitura: string;
-  estrategia: string;
-  timing: string;
-  evitar: string;
-  metricas: {
-    clima: number;
-    abertura: number;
-    interesse: number;
-    energia: number;
-    chance_papo: number;
-  };
   respostas: { modo: string; texto: string }[];
 }
+
 
 export const analisarFoto = createServerFn({ method: "POST" })
   .inputValidator((input: { mode: Mode; imageDataUrl: string; extra?: string }) => {
