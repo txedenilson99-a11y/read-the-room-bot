@@ -11,7 +11,7 @@ export const Route = createFileRoute("/leitura")({
       {
         name: "description",
         content:
-          "A IA lê os sinais por trás das palavras, stories e atitudes. Interesse real, joguinho, contradição e intenção oculta.",
+          "A IA lê o contexto de fotos, stories e prints de forma madura e respeitosa. Mostra vibe, intenção possível e se vale responder.",
       },
     ],
   }),
@@ -63,6 +63,13 @@ function Chip({ children, tone = "accent" }: { children: React.ReactNode; tone?:
   );
 }
 
+const VALE_LABEL: Record<LeituraResult["vale_responder"], string> = {
+  sim: "Vale responder",
+  talvez: "Talvez valha",
+  "melhor-esperar": "Melhor esperar",
+  "nao-necessario": "Não precisa responder",
+};
+
 function LeituraPage() {
   const fn = useServerFn(lerComportamento);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -96,7 +103,6 @@ function LeituraPage() {
 
   return (
     <main className="relative max-w-3xl mx-auto px-5 md:px-6 pt-10 md:pt-14 pb-40">
-      {/* ambient */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[360px] -z-10 overflow-hidden">
         <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[560px] h-[560px] rounded-full blur-3xl opacity-25"
           style={{ background: "radial-gradient(closest-side, var(--accent), transparent 70%)" }} />
@@ -112,12 +118,12 @@ function LeituraPage() {
           <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-accent">Leitura comportamental</span>
         </div>
         <h1 className="text-3xl md:text-5xl font-medium tracking-tight leading-[1.05]">
-          <span className="shimmer-text">O que tá por trás</span>
-          <br />das palavras.
+          <span className="shimmer-text">Entende o contexto</span>
+          <br />sem dramatizar.
         </h1>
         <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-[52ch]">
-          A IA lê sinais sociais, padrões, contradição, intenção oculta. Diferencia interesse real de educação,
-          joguinho, biscoito ou tédio.
+          Leitura madura e leve. Mostra a vibe provável, intenção possível e se vale responder.
+          Sem ataque, sem julgar a pessoa, sem fingir certeza.
         </p>
       </header>
 
@@ -126,7 +132,7 @@ function LeituraPage() {
           value={contexto}
           onChange={(e) => setContexto(e.target.value)}
           rows={5}
-          placeholder="Descreve a situação: o que ela disse, o que tá rolando, o que te incomodou. Ou só manda o print abaixo."
+          placeholder="Descreve a situação: o que ela postou, o que rolou, o que tá em dúvida. Ou só manda o print abaixo."
           className="w-full resize-none rounded-2xl bg-card/60 ring-1 ring-border focus:ring-accent/40 outline-none p-4 text-sm placeholder:text-muted-foreground/60"
         />
 
@@ -175,7 +181,7 @@ function LeituraPage() {
           disabled={!canSubmit}
           className="w-full bg-foreground text-background font-medium px-5 py-3 rounded-full disabled:opacity-40 transition"
         >
-          {mutation.isPending ? "IA lendo o subtexto…" : "🧠 Ler comportamento"}
+          {mutation.isPending ? "IA lendo o contexto…" : "🧠 Ler contexto"}
         </button>
 
         {mutation.isError && (
@@ -187,19 +193,21 @@ function LeituraPage() {
 
       {result && (
         <section className="mt-12 space-y-8 animate-fade-up">
-          {/* veredito */}
           <div className="card-premium p-5 md:p-6">
-            <div className="flex items-center justify-between mb-2">
-              <Chip>Veredito · {result.veredito.replace(/-/g, " ")}</Chip>
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">leitura</span>
+            <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+              <Chip>Vibe · {result.vibe}</Chip>
+              <Chip tone="violet">{VALE_LABEL[result.vale_responder]}</Chip>
             </div>
-            <h2 className="text-xl md:text-2xl font-medium tracking-tight leading-snug mt-2">{result.titulo}</h2>
+            <h2 className="text-xl md:text-2xl font-medium tracking-tight leading-snug mt-3">{result.titulo}</h2>
             <p className="mt-3 text-sm md:text-base text-foreground/85 leading-relaxed whitespace-pre-line">
+              {result.descricao}
+            </p>
+            <p className="mt-3 text-sm md:text-base text-foreground/80 leading-relaxed whitespace-pre-line">
               {result.leitura}
             </p>
+            <p className="mt-3 text-xs text-muted-foreground italic">{result.porque_vale}</p>
           </div>
 
-          {/* medidores */}
           <div className="card-premium p-5 md:p-6">
             <div className="flex items-center gap-2 mb-4">
               <span className="size-1.5 rounded-full bg-accent animate-pulse" style={{ boxShadow: "0 0 10px var(--accent)" }} />
@@ -207,86 +215,44 @@ function LeituraPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Meter label="Interesse real" value={result.medidores.interesse_real} />
-              <Meter label="Só educação" value={result.medidores.apenas_educacao} tone="violet" />
-              <Meter label="Joguinho" value={result.medidores.joguinho} tone="violet" />
-              <Meter label="Carência" value={result.medidores.carencia} tone="destructive" />
-              <Meter label="Risco de perder" value={result.medidores.risco_perder} tone="destructive" />
-              <Meter label="Chance de evoluir" value={result.medidores.chance_evoluir} />
+              <Meter label="Abertura pra conversa" value={result.medidores.abertura_conversa} />
+              <Meter label="Risco de parecer forçado" value={result.medidores.risco_forcado} tone="destructive" />
+              <Meter label="Melhor timing" value={result.medidores.timing} tone="violet" />
+              <Meter label="Chance de resposta" value={result.medidores.chance_resposta} />
             </div>
           </div>
 
-          {/* o que tá transmitindo */}
           <div className="card-premium p-5 md:p-6">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-3">O que ela tá transmitindo</div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-3">Intenção possível</div>
             <ul className="space-y-2">
-              {result.transmitindo.map((t, i) => (
+              {result.intencao_possivel.map((t, i) => (
                 <li key={i} className="text-sm text-foreground/90 flex gap-2">
                   <span className="text-accent mt-1">›</span>
                   <span>{t}</span>
                 </li>
               ))}
             </ul>
+            <p className="mt-3 text-[11px] text-muted-foreground">São hipóteses, não certezas.</p>
           </div>
 
-          {/* sinais */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {result.sinais_interesse.length > 0 && (
-              <div className="card-premium p-5">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-3">Sinais de interesse</div>
-                <ul className="space-y-1.5 text-sm text-foreground/90">
-                  {result.sinais_interesse.map((s, i) => <li key={i}>+ {s}</li>)}
-                </ul>
-              </div>
-            )}
-            {result.sinais_desinteresse.length > 0 && (
-              <div className="card-premium p-5">
-                <div className="text-[10px] uppercase tracking-[0.22em] mb-3" style={{ color: "var(--destructive)" }}>
-                  Sinais de desinteresse
-                </div>
-                <ul className="space-y-1.5 text-sm text-foreground/90">
-                  {result.sinais_desinteresse.map((s, i) => <li key={i}>− {s}</li>)}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* contradições + intenções */}
-          {(result.contradicoes.length > 0 || result.intencoes_ocultas.length > 0) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {result.contradicoes.length > 0 && (
-                <div className="card-premium p-5">
-                  <div className="text-[10px] uppercase tracking-[0.22em] mb-3" style={{ color: "var(--violet)" }}>
-                    Contradições
-                  </div>
-                  <ul className="space-y-1.5 text-sm text-foreground/90">
-                    {result.contradicoes.map((s, i) => <li key={i}>⚡ {s}</li>)}
-                  </ul>
-                </div>
-              )}
-              {result.intencoes_ocultas.length > 0 && (
-                <div className="card-premium p-5">
-                  <div className="text-[10px] uppercase tracking-[0.22em] mb-3" style={{ color: "var(--violet)" }}>
-                    Intenções ocultas
-                  </div>
-                  <ul className="space-y-1.5 text-sm text-foreground/90">
-                    {result.intencoes_ocultas.map((s, i) => <li key={i}>◆ {s}</li>)}
-                  </ul>
-                </div>
-              )}
+          <div className="card-premium p-5 md:p-6">
+            <div className="text-[10px] uppercase tracking-[0.22em] mb-3" style={{ color: "var(--violet)" }}>
+              Abre espaço para
             </div>
-          )}
+            <ul className="space-y-1.5 text-sm text-foreground/90">
+              {result.abre_espaco_para.map((s, i) => <li key={i}>+ {s}</li>)}
+            </ul>
+          </div>
 
-          {/* evitar */}
           <div className="card-premium p-5 md:p-6">
             <div className="text-[10px] uppercase tracking-[0.22em] mb-3" style={{ color: "var(--destructive)" }}>
-              O que evitar dizer
+              O que evitar
             </div>
             <ul className="space-y-1.5 text-sm text-foreground/90">
               {result.evitar.map((s, i) => <li key={i}>✕ {s}</li>)}
             </ul>
           </div>
 
-          {/* abordagem */}
           <div className="card-premium p-5 md:p-6">
             <Chip tone="violet">Abordagem ideal</Chip>
             <p className="mt-3 text-base md:text-lg font-medium text-foreground leading-snug">
@@ -294,9 +260,8 @@ function LeituraPage() {
             </p>
           </div>
 
-          {/* próximos passos */}
           <div className="card-premium p-5 md:p-6">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-3">Próximos passos inteligentes</div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-3">Próximos passos</div>
             <ol className="space-y-2">
               {result.proximos_passos.map((s, i) => (
                 <li key={i} className="text-sm text-foreground/90 flex gap-3">
@@ -309,7 +274,6 @@ function LeituraPage() {
             </ol>
           </div>
 
-          {/* frase pronta */}
           <div className="card-premium p-5 md:p-6"
             style={{
               background:
