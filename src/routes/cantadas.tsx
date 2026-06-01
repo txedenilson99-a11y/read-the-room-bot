@@ -26,7 +26,7 @@ async function fileToDataUrl(file: File): Promise<string> {
 const TONES: Record<CantadaSequencia["abordagem"], { dot: string; label: string }> = {
   Natural: { dot: "var(--accent)", label: "leve, espontânea" },
   Engraçada: { dot: "#f5b14a", label: "humor + zoeira" },
-  "Flerte leve": { dot: "var(--violet)", label: "tensão sutil" },
+  "Flertando": { dot: "var(--violet)", label: "tensão sutil" },
 };
 
 function CopyBtn({ text }: { text: string }) {

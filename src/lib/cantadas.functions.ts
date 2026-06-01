@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 const SYSTEM = `Você é um cara brasileiro normal montando uma SEQUÊNCIA de mensagens pra puxar papo. NÃO é IA, NÃO é coach, NÃO é poeta. Zero cantada pronta da internet.
 
 OBJETIVO:
-Gerar 3 abordagens (Natural, Engraçada, Flerte leve). Em cada uma, montar a CONVERSA INTEIRA em 4 etapas:
+Gerar 3 abordagens (Natural, Engraçada, Flertando). Em cada uma, montar a CONVERSA INTEIRA em 4 etapas:
 1) setup: primeira mensagem pra abrir.
 2) resposta_provavel: o que ela provavelmente responde ao setup (1 linha curta).
 3) punchline: a sua segunda mensagem, reagindo à resposta dela. Curta, com sorriso/curiosidade/flerte leve conforme a abordagem.
@@ -29,12 +29,12 @@ PROIBIDO:
 3 ABORDAGENS (diferentes de verdade):
 - Natural: leve, espontânea, observação simples.
 - Engraçada: humor, zoeira leve, provocação cômica.
-- Flerte leve: tensão sutil, interesse claro mas calmo. NÃO é cantada de novela.
+- Flertando: tensão sutil, interesse claro mas calmo. NÃO é cantada de novela.
 
 EXEMPLO DE NÍVEL CERTO (story de academia):
 Natural → setup: "treina sério ou só tira foto boa?" / ela: "os dois kkk" / punch: "então tá explicado" / cont: "qual academia que dá esse resultado?"
 Engraçada → setup: "quantas fotos foram rejeitadas antes dessa?" / ela: "várias" / punch: "eu sabia kkk" / cont: "manda as rejeitadas que eu julgo"
-Flerte leve → setup: "essa foto tá perigosa" / ela: "por quê?" / punch: "porque faz a pessoa perder o foco" / cont: "tá testando ou foi sem querer?"
+Flertando → setup: "essa foto tá perigosa" / ela: "por quê?" / punch: "porque faz a pessoa perder o foco" / cont: "tá testando ou foi sem querer?"
 
 NUNCA invente contexto que não tá no print/descrição. Se for vago, mantenha neutro.`;
 
@@ -49,7 +49,7 @@ const SCHEMA = {
       items: {
         type: "object",
         properties: {
-          abordagem: { type: "string", enum: ["Natural", "Engraçada", "Flerte leve"] },
+          abordagem: { type: "string", enum: ["Natural", "Engraçada", "Flertando"] },
           setup: { type: "string" },
           resposta_provavel: { type: "string", description: "O que ela provavelmente responde ao setup." },
           punchline: { type: "string", description: "Sua segunda mensagem reagindo à resposta dela." },
@@ -66,7 +66,7 @@ const SCHEMA = {
 
 
 export interface CantadaSequencia {
-  abordagem: "Natural" | "Engraçada" | "Flerte leve";
+  abordagem: "Natural" | "Engraçada" | "Flertando";
   setup: string;
   resposta_provavel: string;
   punchline: string;
@@ -95,7 +95,7 @@ export const gerarCantadas = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
 
-    const userText = `Monta a sequência em 4 etapas (Setup → Resposta provável → Punchline → Continuação) em 3 abordagens (Natural, Engraçada, Flerte leve) pra esse contexto: ${data.contexto || "(sem texto, ler o print)"}`;
+    const userText = `Monta a sequência em 4 etapas (Setup → Resposta provável → Punchline → Continuação) em 3 abordagens (Natural, Engraçada, Flertando) pra esse contexto: ${data.contexto || "(sem texto, ler o print)"}`;
 
     const userContent: unknown[] = [{ type: "text", text: userText }];
     if (data.imageDataUrl) {
