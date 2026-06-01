@@ -17,7 +17,6 @@ import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as MemoriaRouteImport } from './routes/memoria'
-import { Route as LeituraRouteImport } from './routes/leitura'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LeituraRouteImport } from './routes/leitura'
 import { Route as HistoricoRouteImport } from './routes/historico'
@@ -66,11 +65,6 @@ const PerfilRoute = PerfilRouteImport.update({
 const MemoriaRoute = MemoriaRouteImport.update({
   id: '/memoria',
   path: '/memoria',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LeituraRoute = LeituraRouteImport.update({
-  id: '/leitura',
-  path: '/leitura',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -128,7 +122,6 @@ export interface FileRoutesByFullPath {
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
-  '/leitura': typeof LeituraRoute
   '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
@@ -148,7 +141,6 @@ export interface FileRoutesByTo {
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
-  '/leitura': typeof LeituraRoute
   '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
@@ -169,7 +161,6 @@ export interface FileRoutesById {
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
-  '/leitura': typeof LeituraRoute
   '/memoria': typeof MemoriaRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
@@ -191,8 +182,6 @@ export interface FileRouteTypes {
     | '/historico'
     | '/leitura'
     | '/login'
-    | '/leitura'
-    | '/leitura'
     | '/memoria'
     | '/perfil'
     | '/perfil-ig'
@@ -212,7 +201,6 @@ export interface FileRouteTypes {
     | '/historico'
     | '/leitura'
     | '/login'
-    | '/leitura'
     | '/memoria'
     | '/perfil'
     | '/perfil-ig'
@@ -252,7 +240,6 @@ export interface RootRouteChildren {
   HistoricoRoute: typeof HistoricoRoute
   LeituraRoute: typeof LeituraRoute
   LoginRoute: typeof LoginRoute
-  LeituraRoute: typeof LeituraRoute
   MemoriaRoute: typeof MemoriaRoute
   PerfilRoute: typeof PerfilRoute
   PerfilIgRoute: typeof PerfilIgRoute
@@ -320,13 +307,6 @@ declare module '@tanstack/react-router' {
       path: '/memoria'
       fullPath: '/memoria'
       preLoaderRoute: typeof MemoriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/leitura': {
-      id: '/leitura'
-      path: '/leitura'
-      fullPath: '/leitura'
-      preLoaderRoute: typeof LeituraRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -404,7 +384,6 @@ const rootRouteChildren: RootRouteChildren = {
   HistoricoRoute: HistoricoRoute,
   LeituraRoute: LeituraRoute,
   LoginRoute: LoginRoute,
-  LeituraRoute: LeituraRoute,
   MemoriaRoute: MemoriaRoute,
   PerfilRoute: PerfilRoute,
   PerfilIgRoute: PerfilIgRoute,
