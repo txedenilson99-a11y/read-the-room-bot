@@ -7,10 +7,11 @@ import { analisarFoto, type MensagemResult } from "@/lib/foto.functions";
 export const Route = createFileRoute("/foto-mensagem")({
   head: () => ({
     meta: [
-      { title: "Foto para mandar mensagem — ScanSocial" },
-      { name: "description", content: "Envie uma foto e deixe a IA criar a mensagem perfeita." },
+      { title: "Print → Resposta — ScanSocial" },
+      { name: "description", content: "Manda o print. A IA entende o contexto e cria respostas naturais." },
     ],
   }),
+
   component: FotoMensagemPage,
 });
 
