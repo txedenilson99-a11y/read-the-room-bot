@@ -148,7 +148,7 @@ function FotoStoryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {result.respostas.map((r, i) => (
                 <div key={i} className="p-5 rounded-2xl bg-card/60 ring-1 ring-border hover:ring-violet/30 transition">
-                  <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-2">
+                  <div className={`text-[10px] font-medium uppercase tracking-widest mb-2 ${MODO_COR[r.modo] ?? "text-accent"}`}>
                     {r.modo}
                   </div>
                   <p className="text-sm text-foreground leading-relaxed mb-4">{r.texto}</p>
