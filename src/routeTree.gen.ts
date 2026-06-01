@@ -22,6 +22,7 @@ import { Route as LeituraRouteImport } from './routes/leitura'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as FotoStoryRouteImport } from './routes/foto-story'
 import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
+import { Route as FlowRouteImport } from './routes/flow'
 import { Route as CantadasRouteImport } from './routes/cantadas'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
@@ -92,6 +93,11 @@ const FotoMensagemRoute = FotoMensagemRouteImport.update({
   path: '/foto-mensagem',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FlowRoute = FlowRouteImport.update({
+  id: '/flow',
+  path: '/flow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CantadasRoute = CantadasRouteImport.update({
   id: '/cantadas',
   path: '/cantadas',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
+  '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
+  '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
+  '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/cantadas'
+    | '/flow'
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/cantadas'
+    | '/flow'
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/cantadas'
+    | '/flow'
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
@@ -235,6 +247,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CadastroRoute: typeof CadastroRoute
   CantadasRoute: typeof CantadasRoute
+  FlowRoute: typeof FlowRoute
   FotoMensagemRoute: typeof FotoMensagemRoute
   FotoStoryRoute: typeof FotoStoryRoute
   HistoricoRoute: typeof HistoricoRoute
@@ -344,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FotoMensagemRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/flow': {
+      id: '/flow'
+      path: '/flow'
+      fullPath: '/flow'
+      preLoaderRoute: typeof FlowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cantadas': {
       id: '/cantadas'
       path: '/cantadas'
@@ -379,6 +399,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CadastroRoute: CadastroRoute,
   CantadasRoute: CantadasRoute,
+  FlowRoute: FlowRoute,
   FotoMensagemRoute: FotoMensagemRoute,
   FotoStoryRoute: FotoStoryRoute,
   HistoricoRoute: HistoricoRoute,
