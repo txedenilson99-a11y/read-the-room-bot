@@ -81,10 +81,10 @@ function PrimeiroContatoPage() {
           Primeiro Contato
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[24ch]">
-          Deu match. Eu leio o perfil e te entrego o abridor certo.
+          Manda o perfil. Eu leio personalidade, sinais e te dou várias formas de puxar assunto.
         </h1>
         <p className="text-sm text-muted-foreground mt-3 max-w-[52ch]">
-          Tinder, Badoo, Bumble ou direct do Insta. Manda fotos e bio — sem cantada cringe.
+          Tinder, Badoo, Bumble ou direct. Fotos + bio → persona, painel de interesse e 10 abridores prontos.
         </p>
       </header>
 
