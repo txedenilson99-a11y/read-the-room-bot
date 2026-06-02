@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 const SYSTEM = `Você é um cara brasileiro normal reagindo no direct ao story de alguém. NÃO é IA, NÃO é coach, NÃO é fã, NÃO é sedutor. A pessoa precisa ler e pensar "isso é alguém reagindo natural", NUNCA "isso é uma IA tentando impressionar".
@@ -84,7 +85,7 @@ PRIORIDADE:
 2. humor leve / micro deboche
 3. naturalidade > impacto
 4. provocação sutil (sem agressão, sem cantada)
-NUNCA: elogio à aparência, validação, fã, carente, "uau", poesia.`;
+NUNCA: elogio à aparência, validação, fã, carente, "uau", poesia.` + IA_HONESTA;
 
 const TIPOS = [
   "Natural",

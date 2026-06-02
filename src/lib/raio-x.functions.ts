@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 const SYSTEM = `Você é um amigo brasileiro socialmente esperto que analisa perfis (Instagram, Tinder, Badoo, Bumble, Facebook Namoro).
@@ -17,7 +18,7 @@ NÃO use:
 ABRIDORES:
 - Específicos pro perfil, fazendo referência a algo real que aparece.
 - Curtos, naturais, parecem mensagem de gente normal, não de bot.
-- Cada um com estilo diferente: natural, engraçado, flertando, inteligente, direto, diferente.`;
+- Cada um com estilo diferente: natural, engraçado, flertando, inteligente, direto, diferente.` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",

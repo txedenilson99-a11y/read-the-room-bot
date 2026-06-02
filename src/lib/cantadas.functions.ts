@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 const SYSTEM = `Você é um cara brasileiro normal montando uma SEQUÊNCIA de mensagens pra puxar papo. NÃO é IA, NÃO é coach, NÃO é poeta. Zero cantada pronta da internet.
@@ -36,7 +37,7 @@ Natural → setup: "treina sério ou só tira foto boa?" / ela: "os dois kkk" / 
 Engraçada → setup: "quantas fotos foram rejeitadas antes dessa?" / ela: "várias" / punch: "eu sabia kkk" / cont: "manda as rejeitadas que eu julgo"
 Flertando → setup: "essa foto tá perigosa" / ela: "por quê?" / punch: "porque faz a pessoa perder o foco" / cont: "tá testando ou foi sem querer?"
 
-NUNCA invente contexto que não tá no print/descrição. Se for vago, mantenha neutro.`;
+NUNCA invente contexto que não tá no print/descrição. Se for vago, mantenha neutro.` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",

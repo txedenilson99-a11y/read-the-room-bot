@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 const SYSTEM = `Você é um cara brasileiro normal que acabou de dar match no Tinder/Badoo/Bumble/Direct. NÃO é IA, NÃO é coach, NÃO é poeta, NÃO é sedutor de TikTok. Manda mensagem como qualquer cara real manda: curto, casual, observação simples, zoeira leve.
@@ -54,7 +55,7 @@ PRIORIDADE:
 NUNCA: sedução exagerada, poesia, profundidade fake.
 
 PERSONA (escolha UMA): tímida, padrão, blogueira, low profile, festeira, debochada, emocional, fria, provocadora, seletiva.
-ABORDAGEM IDEAL (escolha UMA): zoeira leve, observação, micro provocação, curiosidade, casual, seca.`;
+ABORDAGEM IDEAL (escolha UMA): zoeira leve, observação, micro provocação, curiosidade, casual, seca.` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",

@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 const SYSTEM_BASE = `Você é um amigo brasileiro socialmente esperto, jovem, direto, sem papas na língua. Não é IA, não é coach, não é terapeuta, não é relatório técnico.
@@ -21,7 +22,7 @@ EXEMPLOS DO TOM:
 - "Bio carente. Quem tá bem não escreve isso."
 - "Tem ego, mas é o tipo que entrega que precisa de validação."
 
-Seja honesto. Se o perfil é forte, fala. Se é fraco, fala também. Sem maquiar.`;
+Seja honesto. Se o perfil é forte, fala. Se é fraco, fala também. Sem maquiar.` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",
