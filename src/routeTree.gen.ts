@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResponderStoryRouteImport } from './routes/responder-story'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as RaioXRouteImport } from './routes/raio-x'
 import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PerfilRouteImport } from './routes/perfil'
@@ -46,6 +47,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
   id: '/recuperar-senha',
   path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RaioXRoute = RaioXRouteImport.update({
+  id: '/raio-x',
+  path: '/raio-x',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrimeiroContatoRoute = PrimeiroContatoRouteImport.update({
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
@@ -257,6 +269,7 @@ export interface RootRouteChildren {
   PerfilRoute: typeof PerfilRoute
   PerfilIgRoute: typeof PerfilIgRoute
   PrimeiroContatoRoute: typeof PrimeiroContatoRoute
+  RaioXRoute: typeof RaioXRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResponderStoryRoute: typeof ResponderStoryRoute
@@ -292,6 +305,13 @@ declare module '@tanstack/react-router' {
       path: '/recuperar-senha'
       fullPath: '/recuperar-senha'
       preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/raio-x': {
+      id: '/raio-x'
+      path: '/raio-x'
+      fullPath: '/raio-x'
+      preLoaderRoute: typeof RaioXRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/primeiro-contato': {
@@ -409,6 +429,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilRoute: PerfilRoute,
   PerfilIgRoute: PerfilIgRoute,
   PrimeiroContatoRoute: PrimeiroContatoRoute,
+  RaioXRoute: RaioXRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResponderStoryRoute: ResponderStoryRoute,
