@@ -184,6 +184,44 @@ function Home() {
         </div>
       </Link>
 
+      {/* Modo 18+ */}
+      <Link
+        to="/modo-18"
+        className="group relative block mt-6 p-4 md:p-5 rounded-2xl overflow-hidden card-premium animate-fade-up"
+        style={{
+          background:
+            "linear-gradient(135deg, color-mix(in oklab, var(--destructive) 18%, transparent), color-mix(in oklab, var(--violet) 14%, transparent) 70%, transparent)",
+          animationDelay: "50ms",
+        }}
+      >
+        <div
+          className="pointer-events-none absolute -top-16 -right-16 size-40 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity"
+          style={{ background: "radial-gradient(closest-side, var(--destructive), transparent 70%)" }}
+        />
+        <div className="relative flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-[0.2em]"
+                style={{ background: "var(--destructive)", color: "var(--destructive-foreground, #fff)" }}>
+                18+
+              </span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-foreground/80">
+                Flerte avançado
+              </span>
+            </div>
+            <div className="text-sm md:text-[15px] font-medium text-foreground leading-snug">
+              🔥 Modo 18+
+            </div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Mais química. Menos carência.
+            </div>
+          </div>
+          <span className="shrink-0 text-xs font-medium text-foreground/90 px-3 py-1.5 rounded-full glass group-hover:bg-foreground group-hover:text-background transition-colors">
+            Abrir →
+          </span>
+        </div>
+      </Link>
+
       {/* hero card */}
       <Link
         to="/foto-mensagem"
