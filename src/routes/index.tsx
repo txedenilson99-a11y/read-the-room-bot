@@ -146,8 +146,45 @@ function Home() {
         </p>
       </header>
 
-      {/* hero card */}
+      {/* v5.20 release banner */}
       <Link
+        to="/novidades"
+        className="group relative block mt-6 p-4 md:p-5 rounded-2xl overflow-hidden card-premium animate-fade-up"
+        style={{
+          background:
+            "linear-gradient(135deg, color-mix(in oklab, var(--violet) 18%, transparent), color-mix(in oklab, var(--accent) 12%, transparent) 70%, transparent)",
+          animationDelay: "40ms",
+        }}
+      >
+        <div
+          className="pointer-events-none absolute -top-16 -right-16 size-40 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity"
+          style={{ background: "radial-gradient(closest-side, var(--violet), transparent 70%)" }}
+        />
+        <div className="relative flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span className="px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[9px] font-bold uppercase tracking-[0.2em]">
+                Novo
+              </span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-foreground/80">
+                🚀 Versão 5.20
+              </span>
+            </div>
+            <div className="text-sm md:text-[15px] font-medium text-foreground leading-snug">
+              IA mais honesta. Melhor leitura de contexto.
+            </div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Menos interpretações precipitadas. Mais precisão em fotos, stories e conversas.
+            </div>
+          </div>
+          <span className="shrink-0 text-xs font-medium text-foreground/90 px-3 py-1.5 rounded-full glass group-hover:bg-foreground group-hover:text-background transition-colors">
+            Ver Novidades →
+          </span>
+        </div>
+      </Link>
+
+      {/* hero card */}
+
         to="/foto-mensagem"
         className="group relative block mt-8 md:mt-10 p-6 md:p-8 rounded-3xl overflow-hidden card-premium animate-fade-up"
         style={{
