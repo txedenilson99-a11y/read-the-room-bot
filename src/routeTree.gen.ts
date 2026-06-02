@@ -17,6 +17,7 @@ import { Route as RaioXRouteImport } from './routes/raio-x'
 import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as NovidadesRouteImport } from './routes/novidades'
 import { Route as MemoriaRouteImport } from './routes/memoria'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LeituraRouteImport } from './routes/leitura'
@@ -67,6 +68,11 @@ const PerfilIgRoute = PerfilIgRouteImport.update({
 const PerfilRoute = PerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NovidadesRoute = NovidadesRouteImport.update({
+  id: '/novidades',
+  path: '/novidades',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MemoriaRoute = MemoriaRouteImport.update({
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/memoria': typeof MemoriaRoute
+  '/novidades': typeof NovidadesRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
@@ -157,6 +164,7 @@ export interface FileRoutesByTo {
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/memoria': typeof MemoriaRoute
+  '/novidades': typeof NovidadesRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/memoria': typeof MemoriaRoute
+  '/novidades': typeof NovidadesRoute
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
@@ -202,6 +211,7 @@ export interface FileRouteTypes {
     | '/leitura'
     | '/login'
     | '/memoria'
+    | '/novidades'
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
@@ -223,6 +233,7 @@ export interface FileRouteTypes {
     | '/leitura'
     | '/login'
     | '/memoria'
+    | '/novidades'
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
@@ -244,6 +255,7 @@ export interface FileRouteTypes {
     | '/leitura'
     | '/login'
     | '/memoria'
+    | '/novidades'
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
@@ -266,6 +278,7 @@ export interface RootRouteChildren {
   LeituraRoute: typeof LeituraRoute
   LoginRoute: typeof LoginRoute
   MemoriaRoute: typeof MemoriaRoute
+  NovidadesRoute: typeof NovidadesRoute
   PerfilRoute: typeof PerfilRoute
   PerfilIgRoute: typeof PerfilIgRoute
   PrimeiroContatoRoute: typeof PrimeiroContatoRoute
@@ -333,6 +346,13 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/novidades': {
+      id: '/novidades'
+      path: '/novidades'
+      fullPath: '/novidades'
+      preLoaderRoute: typeof NovidadesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/memoria': {
@@ -426,6 +446,7 @@ const rootRouteChildren: RootRouteChildren = {
   LeituraRoute: LeituraRoute,
   LoginRoute: LoginRoute,
   MemoriaRoute: MemoriaRoute,
+  NovidadesRoute: NovidadesRoute,
   PerfilRoute: PerfilRoute,
   PerfilIgRoute: PerfilIgRoute,
   PrimeiroContatoRoute: PrimeiroContatoRoute,
@@ -439,3 +460,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
