@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 const SYSTEM = `Você é um leitor social brasileiro maduro, calmo e realista. Ajuda a pessoa a entender o contexto de uma foto, story, print ou situação SEM atacar, julgar ou humilhar ninguém.

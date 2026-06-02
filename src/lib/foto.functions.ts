@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 type Mode = "mensagem" | "story";

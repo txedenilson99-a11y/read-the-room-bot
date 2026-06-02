@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 const MODOS = ["natural", "engracado", "flertando", "inteligente", "madrugada"] as const;

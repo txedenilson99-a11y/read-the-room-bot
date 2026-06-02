@@ -1,3 +1,4 @@
+import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
 const SYSTEM = `Você é um amigo brasileiro socialmente esperto que analisa perfis (Instagram, Tinder, Badoo, Bumble, Facebook Namoro).
