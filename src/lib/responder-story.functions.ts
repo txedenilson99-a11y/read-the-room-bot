@@ -85,7 +85,7 @@ PRIORIDADE:
 2. humor leve / micro deboche
 3. naturalidade > impacto
 4. provocação sutil (sem agressão, sem cantada)
-NUNCA: elogio à aparência, validação, fã, carente, "uau", poesia.`;
+NUNCA: elogio à aparência, validação, fã, carente, "uau", poesia.` + IA_HONESTA;
 
 const TIPOS = [
   "Natural",

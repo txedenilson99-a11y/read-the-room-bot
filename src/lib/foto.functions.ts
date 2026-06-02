@@ -71,7 +71,7 @@ LEITURA (campo "leitura")
 ━━━━━━━━━━━━━━━━━━━
 1-2 linhas em tom de amigo resumindo o que tá rolando.
 Ex: "Ela respondeu rindo e entrou na brincadeira. Dá pra continuar leve, sem exagerar."
-NÃO: "ela está no jogo, mantenha o frame".`;
+NÃO: "ela está no jogo, mantenha o frame".` + IA_HONESTA;
 
 const MENSAGEM_SCHEMA = {
   type: "object",

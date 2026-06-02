@@ -23,7 +23,7 @@ TOM DOS EXEMPLOS (use esse estilo):
 - "É uma foto de viagem comum. Não dá pra cravar interesse, mas é um gancho fácil pra comentar algo do lugar."
 - "A mensagem foi curta e educada. Pode ser que ela tava ocupada, pode ser desinteresse leve. Vale esperar antes de mandar de novo."
 
-Se não dá pra ler com o que foi enviado, fala isso com tranquilidade. Sem inventar.`;
+Se não dá pra ler com o que foi enviado, fala isso com tranquilidade. Sem inventar.` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",

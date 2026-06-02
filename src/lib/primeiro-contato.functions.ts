@@ -55,7 +55,7 @@ PRIORIDADE:
 NUNCA: sedução exagerada, poesia, profundidade fake.
 
 PERSONA (escolha UMA): tímida, padrão, blogueira, low profile, festeira, debochada, emocional, fria, provocadora, seletiva.
-ABORDAGEM IDEAL (escolha UMA): zoeira leve, observação, micro provocação, curiosidade, casual, seca.`;
+ABORDAGEM IDEAL (escolha UMA): zoeira leve, observação, micro provocação, curiosidade, casual, seca.` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",

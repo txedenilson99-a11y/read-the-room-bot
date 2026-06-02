@@ -25,7 +25,7 @@ POSTURA:
 OBJETIVO:
 - Manter o assunto vivo de forma natural.
 - Aumentar interesse sem parecer emocionado.
-- Dar saída quando ela responde curto ('kkk', 'sim', 'sei lá', emoji).`;
+- Dar saída quando ela responde curto ('kkk', 'sim', 'sei lá', emoji).` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",

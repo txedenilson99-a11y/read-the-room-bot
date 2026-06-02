@@ -37,7 +37,7 @@ FORMATO:
 2. 2-4 observações curtas explicando o porquê. Cada uma em parágrafo separado, no máximo 2 linhas.
 3. Se fizer sentido, termina com a jogada certa em uma linha.
 
-Texto corrido, espaçado, calmo. Sem cabeçalho, sem numeração, sem markdown pesado, sem lista de bullets.`;
+Texto corrido, espaçado, calmo. Sem cabeçalho, sem numeração, sem markdown pesado, sem lista de bullets.` + IA_HONESTA;
 
 export const analisar = createServerFn({ method: "POST" })
   .inputValidator((input: { tool: ToolSlug; content: string }) => {
