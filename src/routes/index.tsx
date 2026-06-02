@@ -115,6 +115,7 @@ function Home() {
 
   return (
     <main className="relative max-w-5xl mx-auto px-5 md:px-6 pt-10 md:pt-14 pb-40">
+      <WelcomeV520 />
       {/* ambient glow */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] -z-10 overflow-hidden">
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[680px] h-[680px] rounded-full blur-3xl opacity-30"
