@@ -197,6 +197,13 @@ function Home() {
       {/* tools grid */}
       <section className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 animate-fade-up" style={{ animationDelay: "120ms" }}>
         <ToolCard
+          to="/raio-x"
+          label="Raio-X"
+          title="🔍 Raio-X de Perfil"
+          sub="Fotos + bio → 10 abridores únicos. A IA acha assuntos que passam despercebidos."
+          span="col-span-2"
+        />
+        <ToolCard
           to="/foto-mensagem"
           label="Foto"
           title="Foto → Mensagem"

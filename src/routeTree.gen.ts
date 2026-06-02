@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResponderStoryRouteImport } from './routes/responder-story'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as RaioXRouteImport } from './routes/raio-x'
 import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PerfilRouteImport } from './routes/perfil'
@@ -26,6 +27,7 @@ import { Route as FlowRouteImport } from './routes/flow'
 import { Route as CantadasRouteImport } from './routes/cantadas'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RaioXRouteImport } from './routes/raio-x'
 import { Route as ScanToolRouteImport } from './routes/scan.$tool'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -46,6 +48,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
   id: '/recuperar-senha',
   path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RaioXRoute = RaioXRouteImport.update({
+  id: '/raio-x',
+  path: '/raio-x',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrimeiroContatoRoute = PrimeiroContatoRouteImport.update({
@@ -113,6 +120,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RaioXRoute = RaioXRouteImport.update({
+  id: '/raio-x',
+  path: '/raio-x',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ScanToolRoute = ScanToolRouteImport.update({
   id: '/scan/$tool',
   path: '/scan/$tool',
@@ -133,10 +145,12 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/raio-x': typeof RaioXRoute
   '/scan/$tool': typeof ScanToolRoute
 }
 export interface FileRoutesByTo {
@@ -153,10 +167,12 @@ export interface FileRoutesByTo {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/raio-x': typeof RaioXRoute
   '/scan/$tool': typeof ScanToolRoute
 }
 export interface FileRoutesById {
@@ -174,10 +190,12 @@ export interface FileRoutesById {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/raio-x': typeof RaioXRoute
   '/scan/$tool': typeof ScanToolRoute
 }
 export interface FileRouteTypes {
@@ -196,10 +214,12 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
     | '/sitemap.xml'
+    | '/raio-x'
     | '/scan/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -216,10 +236,12 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
     | '/sitemap.xml'
+    | '/raio-x'
     | '/scan/$tool'
   id:
     | '__root__'
@@ -236,10 +258,12 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
     | '/sitemap.xml'
+    | '/raio-x'
     | '/scan/$tool'
   fileRoutesById: FileRoutesById
 }
@@ -257,10 +281,12 @@ export interface RootRouteChildren {
   PerfilRoute: typeof PerfilRoute
   PerfilIgRoute: typeof PerfilIgRoute
   PrimeiroContatoRoute: typeof PrimeiroContatoRoute
+  RaioXRoute: typeof RaioXRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResponderStoryRoute: typeof ResponderStoryRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  RaioXRoute: typeof RaioXRoute
   ScanToolRoute: typeof ScanToolRoute
 }
 
@@ -292,6 +318,13 @@ declare module '@tanstack/react-router' {
       path: '/recuperar-senha'
       fullPath: '/recuperar-senha'
       preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/raio-x': {
+      id: '/raio-x'
+      path: '/raio-x'
+      fullPath: '/raio-x'
+      preLoaderRoute: typeof RaioXRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/primeiro-contato': {
@@ -385,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/raio-x': {
+      id: '/raio-x'
+      path: '/raio-x'
+      fullPath: '/raio-x'
+      preLoaderRoute: typeof RaioXRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/scan/$tool': {
       id: '/scan/$tool'
       path: '/scan/$tool'
@@ -409,22 +449,14 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilRoute: PerfilRoute,
   PerfilIgRoute: PerfilIgRoute,
   PrimeiroContatoRoute: PrimeiroContatoRoute,
+  RaioXRoute: RaioXRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResponderStoryRoute: ResponderStoryRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  RaioXRoute: RaioXRoute,
   ScanToolRoute: ScanToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
