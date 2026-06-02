@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth, useProfile } from "@/lib/use-auth";
 import { TOOLS } from "@/lib/tools";
+import { WelcomeV520 } from "@/components/WelcomeV520";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -114,6 +115,7 @@ function Home() {
 
   return (
     <main className="relative max-w-5xl mx-auto px-5 md:px-6 pt-10 md:pt-14 pb-40">
+      <WelcomeV520 />
       {/* ambient glow */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] -z-10 overflow-hidden">
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[680px] h-[680px] rounded-full blur-3xl opacity-30"
@@ -144,6 +146,43 @@ function Home() {
           <Typing text={VIBES[vibe]} />
         </p>
       </header>
+
+      {/* v5.20 release banner */}
+      <Link
+        to="/novidades"
+        className="group relative block mt-6 p-4 md:p-5 rounded-2xl overflow-hidden card-premium animate-fade-up"
+        style={{
+          background:
+            "linear-gradient(135deg, color-mix(in oklab, var(--violet) 18%, transparent), color-mix(in oklab, var(--accent) 12%, transparent) 70%, transparent)",
+          animationDelay: "40ms",
+        }}
+      >
+        <div
+          className="pointer-events-none absolute -top-16 -right-16 size-40 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity"
+          style={{ background: "radial-gradient(closest-side, var(--violet), transparent 70%)" }}
+        />
+        <div className="relative flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span className="px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[9px] font-bold uppercase tracking-[0.2em]">
+                Novo
+              </span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-foreground/80">
+                🚀 Versão 5.20
+              </span>
+            </div>
+            <div className="text-sm md:text-[15px] font-medium text-foreground leading-snug">
+              IA mais honesta. Melhor leitura de contexto.
+            </div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Menos interpretações precipitadas. Mais precisão em fotos, stories e conversas.
+            </div>
+          </div>
+          <span className="shrink-0 text-xs font-medium text-foreground/90 px-3 py-1.5 rounded-full glass group-hover:bg-foreground group-hover:text-background transition-colors">
+            Ver Novidades →
+          </span>
+        </div>
+      </Link>
 
       {/* hero card */}
       <Link
