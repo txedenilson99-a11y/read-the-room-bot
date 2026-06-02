@@ -184,7 +184,7 @@ function Home() {
       </Link>
 
       {/* hero card */}
-
+      <Link
         to="/foto-mensagem"
         className="group relative block mt-8 md:mt-10 p-6 md:p-8 rounded-3xl overflow-hidden card-premium animate-fade-up"
         style={{
