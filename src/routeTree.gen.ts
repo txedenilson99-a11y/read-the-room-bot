@@ -27,7 +27,6 @@ import { Route as FlowRouteImport } from './routes/flow'
 import { Route as CantadasRouteImport } from './routes/cantadas'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as RaioXRouteImport } from './routes/raio-x'
 import { Route as ScanToolRouteImport } from './routes/scan.$tool'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -120,11 +119,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RaioXRoute = RaioXRouteImport.update({
-  id: '/raio-x',
-  path: '/raio-x',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ScanToolRoute = ScanToolRouteImport.update({
   id: '/scan/$tool',
   path: '/scan/$tool',
@@ -150,7 +144,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/raio-x': typeof RaioXRoute
   '/scan/$tool': typeof ScanToolRoute
 }
 export interface FileRoutesByTo {
@@ -172,7 +165,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/raio-x': typeof RaioXRoute
   '/scan/$tool': typeof ScanToolRoute
 }
 export interface FileRoutesById {
@@ -195,7 +187,6 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/raio-x': typeof RaioXRoute
   '/scan/$tool': typeof ScanToolRoute
 }
 export interface FileRouteTypes {
@@ -219,7 +210,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/responder-story'
     | '/sitemap.xml'
-    | '/raio-x'
     | '/scan/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -241,7 +231,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/responder-story'
     | '/sitemap.xml'
-    | '/raio-x'
     | '/scan/$tool'
   id:
     | '__root__'
@@ -263,7 +252,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/responder-story'
     | '/sitemap.xml'
-    | '/raio-x'
     | '/scan/$tool'
   fileRoutesById: FileRoutesById
 }
@@ -286,7 +274,6 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResponderStoryRoute: typeof ResponderStoryRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  RaioXRoute: typeof RaioXRoute
   ScanToolRoute: typeof ScanToolRoute
 }
 
@@ -418,13 +405,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/raio-x': {
-      id: '/raio-x'
-      path: '/raio-x'
-      fullPath: '/raio-x'
-      preLoaderRoute: typeof RaioXRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/scan/$tool': {
       id: '/scan/$tool'
       path: '/scan/$tool'
@@ -454,7 +434,6 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ResponderStoryRoute: ResponderStoryRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  RaioXRoute: RaioXRoute,
   ScanToolRoute: ScanToolRoute,
 }
 export const routeTree = rootRouteImport
