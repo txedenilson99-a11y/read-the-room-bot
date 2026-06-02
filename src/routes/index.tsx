@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth, useProfile } from "@/lib/use-auth";
 import { TOOLS } from "@/lib/tools";
+import { WelcomeV520 } from "@/components/WelcomeV520";
 
 export const Route = createFileRoute("/")({
   head: () => ({
