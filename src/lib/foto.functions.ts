@@ -151,7 +151,7 @@ const STORY_SCHEMA = {
         properties: {
           modo: {
             type: "string",
-            enum: ["Calmo", "Engraçado", "Irônico", "Ousado", "Misterioso", "Sedutor", "Direto"],
+            enum: ["Calmo", "Engraçado", "Irônico", "Líder", "Ousado", "Misterioso", "Direto"],
           },
           texto: { type: "string" },
         },
@@ -209,7 +209,37 @@ export const analisarFoto = createServerFn({ method: "POST" })
 
     const userText = isMensagem
       ? `Olha essa imagem. PRIMEIRO identifica o tipo (conversa / story / perfil / foto). Se for PRINT DE CONVERSA, lê as mensagens trocadas e me dá 4 respostas pra eu mandar agora continuando o papo de forma natural. Não inventa contexto que não tá ali. ${data.extra ? `Contexto extra do usuário: ${data.extra}` : ""}`
-      : `Analisa esse print de story (Instagram/WhatsApp/Snap/Facebook). Lê legenda, expressão, pose, ambiente, emoção, intenção. Devolve a leitura, estratégia, timing, o que evitar, métricas de 0 a 100 e 7 respostas prontas (uma por modo). ${data.extra ? `Contexto extra: ${data.extra}` : ""}`;
+      : `MODO STORY — PROMPT V5.20
+
+Analisa esse story e devolve LEITURA SOCIAL, não descrição óbvia.
+
+PROIBIDO escrever coisas tipo:
+- "ela postou selfie"
+- "ela está em casa"
+- "ela está ouvindo música"
+- "ela parece relaxada"
+- "ela tá na academia"
+Isso é descrição de legendador, não leitura social.
+
+O QUE EU QUERO em "leitura":
+O que esse story tenta PROVOCAR. Escolhe entre: atenção, humor, rotina, validação, indireta, abertura pra conversa, ou só postagem normal. 1-2 linhas, tom de amigo.
+
+"estrategia": melhor jeito de responder sem parecer carente. Curto.
+"timing": responder agora / depois / nem responder. Curto, sem enrolar.
+"evitar": elogio óbvio, cantada pronta, pergunta sem graça, mensagem longa, energia de fã. Liste o que NÃO mandar nesse caso específico.
+
+"metricas" (0-100): clima da conversa, abertura pra responder, nível de interesse, energia do story, chance dela continuar o papo. Seja honesto — se for story normal sem sinal, dá nota baixa mesmo.
+
+"respostas": 7 prontas, uma por modo (Calmo, Engraçado, Irônico, Líder, Ousado, Misterioso, Direto). Cada uma:
+- curta (1 linha de preferência, no máx 2)
+- parece humano, não IA
+- minúsculo, gírias reais, pontuação relaxada
+- não explica, não filosofa, não elogia direto
+- ENCAIXA no que apareceu no story
+
+REGRA DE OURO: se NÃO der pra ler nada do story (imagem sem contexto, story em branco, só letra), a "leitura" deve começar com "Não dá pra cravar. Mas dá pra responder assim:" e as respostas devem ser genéricas porém naturais.
+
+${data.extra ? `Contexto extra do usuário: ${data.extra}` : ""}`;
 
     const toolName = isMensagem ? "responder_foto" : "responder_story";
     const schema = isMensagem ? MENSAGEM_SCHEMA : STORY_SCHEMA;
