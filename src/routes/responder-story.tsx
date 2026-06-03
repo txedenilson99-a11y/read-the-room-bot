@@ -91,10 +91,10 @@ function ResponderStoryPage() {
           Responder Story
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[26ch]">
-          Responde o story sem parecer carente.
+          Manda o print do story.
         </h1>
         <p className="text-sm text-muted-foreground mt-3 max-w-[52ch]">
-          Cola o link, joga o print ou o vídeo. Eu leio a vibe e te dou 8 respostas — humano, leve, desapegado.
+          Eu leio o que realmente aparece e te dou respostas naturais. IA Honesta v5.20 — sem inventar emoção, sem psicologia chutada.
         </p>
       </header>
 
