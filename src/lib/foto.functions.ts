@@ -151,7 +151,7 @@ const STORY_SCHEMA = {
         properties: {
           modo: {
             type: "string",
-            enum: ["Calmo", "Engraçado", "Irônico", "Líder", "Ousado", "Misterioso", "Direto"],
+            enum: ["Calmo", "Engraçado", "Irônico", "Ousado", "Misterioso", "Sedutor", "Direto"],
           },
           texto: { type: "string" },
         },
@@ -209,55 +209,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
 
     const userText = isMensagem
       ? `Olha essa imagem. PRIMEIRO identifica o tipo (conversa / story / perfil / foto). Se for PRINT DE CONVERSA, lê as mensagens trocadas e me dá 4 respostas pra eu mandar agora continuando o papo de forma natural. Não inventa contexto que não tá ali. ${data.extra ? `Contexto extra do usuário: ${data.extra}` : ""}`
-      : `MODO STORY — PROMPT V5.20
-
-MISSÃO ÚNICA: gerar respostas que AUMENTEM A CHANCE DA PESSOA RESPONDER.
-
-Antes de aceitar qualquer resposta, se pergunte:
-"Essa resposta faz a pessoa responder ou apenas ler?"
-Se a resposta só vai ser lida (sem gerar vontade de responder), DESCARTE e reescreve.
-
-A IA NÃO DEVE:
-- descrever a foto ("ela postou selfie", "ela está em casa", "ela tá na academia")
-- elogiar a foto ("boa foto", "foto linda", "tá um arraso")
-- falar do layout, roupa, cor, cabelo, unha
-- abrir com "tudo certo?", "e aí", "oi"
-- mandar elogio direto, cantada, pergunta sem graça, textão, energia de fã
-
-A IA DEVE:
-- criar CURIOSIDADE (sugerir que tem algo a mais por trás)
-- criar uma BRINCADEIRA leve
-- criar um GANCHO (que naturalmente puxa resposta)
-- fazer a pessoa QUERER responder
-
-REGRA FINAL: a melhor resposta NÃO é a mais engraçada — é a com mais CHANCE DE RECEBER RESPOSTA.
-
-O QUE EU QUERO em "leitura":
-O que esse story tenta PROVOCAR. Escolhe entre: atenção, humor, rotina, validação, indireta, abertura pra conversa, ou só postagem normal. 1-2 linhas, tom de amigo. SEM descrição óbvia.
-
-"estrategia": qual gancho/curiosidade usar pra puxar resposta. Curto.
-"timing": responder agora / depois / nem responder. Curto.
-"evitar": elogio óbvio, cantada, descrição de roupa/foto, pergunta morta, textão. Liste o que NÃO mandar nesse caso.
-
-"metricas" (0-100): clima da conversa, abertura pra responder, nível de interesse, energia do story, chance dela continuar o papo. Seja honesto.
-
-"respostas": 7 prontas, uma por modo (Calmo, Engraçado, Irônico, Líder, Ousado, Misterioso, Direto). Cada uma DEVE ser um gancho/curiosidade/brincadeira que puxa resposta. Curta (1 linha de preferência), minúsculo, gírias reais, sem elogio, sem descrição da foto.
-
-EXEMPLOS DE TOM CERTO (não copie literal, adapte ao story):
-- Calmo: "acho que essa sequência tem uma história que não apareceu no story"
-- Engraçado: "tá escondendo contexto aí kkk"
-- Irônico: "3 fotos e nenhuma explicando o que aconteceu"
-- Líder: "agora fiquei curioso"
-- Ousado: "isso aí tá com cara de história pela metade"
-- Misterioso: "acho que falta uma parte dessa história"
-- Direto: "qual era a intenção desse post?"
-
-Note como NENHUMA descreve a foto, NENHUMA elogia, TODAS provocam vontade de responder.
-
-REGRA DE OURO: se NÃO der pra ler nada do story (imagem em branco, só letra), a "leitura" começa com "Não dá pra cravar. Mas dá pra responder assim:" e mesmo assim as respostas devem ser ganchos que puxam resposta.
-
-${data.extra ? `Contexto extra do usuário: ${data.extra}` : ""}`;
-
+      : `Analisa esse print de story (Instagram/WhatsApp/Snap/Facebook). Lê legenda, expressão, pose, ambiente, emoção, intenção. Devolve a leitura, estratégia, timing, o que evitar, métricas de 0 a 100 e 7 respostas prontas (uma por modo). ${data.extra ? `Contexto extra: ${data.extra}` : ""}`;
 
     const toolName = isMensagem ? "responder_foto" : "responder_story";
     const schema = isMensagem ? MENSAGEM_SCHEMA : STORY_SCHEMA;
