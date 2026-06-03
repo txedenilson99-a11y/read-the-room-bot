@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResponderStoryRouteImport } from './routes/responder-story'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as ReativacaoRouteImport } from './routes/reativacao'
 import { Route as RaioXRouteImport } from './routes/raio-x'
 import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
@@ -49,6 +50,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
   id: '/recuperar-senha',
   path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReativacaoRoute = ReativacaoRouteImport.update({
+  id: '/reativacao',
+  path: '/reativacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RaioXRoute = RaioXRouteImport.update({
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/raio-x': typeof RaioXRoute
+  '/reativacao': typeof ReativacaoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/raio-x': typeof RaioXRoute
+  '/reativacao': typeof ReativacaoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/raio-x': typeof RaioXRoute
+  '/reativacao': typeof ReativacaoRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder-story': typeof ResponderStoryRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/perfil-ig'
     | '/primeiro-contato'
     | '/raio-x'
+    | '/reativacao'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/perfil-ig'
     | '/primeiro-contato'
     | '/raio-x'
+    | '/reativacao'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
@@ -272,6 +283,7 @@ export interface FileRouteTypes {
     | '/perfil-ig'
     | '/primeiro-contato'
     | '/raio-x'
+    | '/reativacao'
     | '/recuperar-senha'
     | '/reset-password'
     | '/responder-story'
@@ -296,6 +308,7 @@ export interface RootRouteChildren {
   PerfilIgRoute: typeof PerfilIgRoute
   PrimeiroContatoRoute: typeof PrimeiroContatoRoute
   RaioXRoute: typeof RaioXRoute
+  ReativacaoRoute: typeof ReativacaoRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResponderStoryRoute: typeof ResponderStoryRoute
@@ -331,6 +344,13 @@ declare module '@tanstack/react-router' {
       path: '/recuperar-senha'
       fullPath: '/recuperar-senha'
       preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reativacao': {
+      id: '/reativacao'
+      path: '/reativacao'
+      fullPath: '/reativacao'
+      preLoaderRoute: typeof ReativacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/raio-x': {
@@ -472,6 +492,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilIgRoute: PerfilIgRoute,
   PrimeiroContatoRoute: PrimeiroContatoRoute,
   RaioXRoute: RaioXRoute,
+  ReativacaoRoute: ReativacaoRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResponderStoryRoute: ResponderStoryRoute,
@@ -481,3 +502,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
