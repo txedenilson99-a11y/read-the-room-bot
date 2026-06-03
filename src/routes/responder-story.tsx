@@ -7,8 +7,8 @@ import { responderStory, type ResponderStoryResult } from "@/lib/responder-story
 export const Route = createFileRoute("/responder-story")({
   head: () => ({
     meta: [
-      { title: "Responder Story — ScanSocial" },
-      { name: "description", content: "Cola o link, manda o print ou o vídeo. 8 respostas sem parecer carente." },
+      { title: "Reação a Stories — ScanSocial" },
+      { name: "description", content: "Responda stories de forma natural, sem parecer forçado. IA lê a vibe e devolve respostas reais." },
     ],
   }),
   component: ResponderStoryPage,
@@ -23,15 +23,28 @@ async function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
+const MODOS = [
+  { key: "calmo", emoji: "😌", label: "Calmo", sub: "Leve e confortável" },
+  { key: "ironico", emoji: "😏", label: "Irônico", sub: "Provocação suave" },
+  { key: "observador", emoji: "🧠", label: "Observador", sub: "Contexto inteligente" },
+  { key: "ousado", emoji: "🔥", label: "Ousado", sub: "Confiança e tensão leve" },
+] as const;
+
+const VELOCIDADES = [
+  { key: "rapida", label: "Rápida" },
+  { key: "normal", label: "Normal" },
+  { key: "pensada", label: "Pensada" },
+] as const;
+
 const SLIDERS = [
-  { key: "humor", label: "Humor" },
-  { key: "misterio", label: "Mistério" },
-  { key: "provocacao", label: "Provocação" },
-  { key: "dominancia", label: "Dominância" },
-  { key: "naturalidade", label: "Naturalidade" },
+  { key: "flertar", label: "Flertar", min: "amigável", max: "tensão" },
+  { key: "confianca", label: "Confiança", min: "discreto", max: "direto" },
+  { key: "misterio", label: "Mistério", min: "previsível", max: "instigante" },
 ] as const;
 
 type SliderKey = typeof SLIDERS[number]["key"];
+type ModoKey = typeof MODOS[number]["key"];
+type VelKey = typeof VELOCIDADES[number]["key"];
 
 function ResponderStoryPage() {
   const fn = useServerFn(responderStory);
@@ -42,16 +55,16 @@ function ResponderStoryPage() {
   const [link, setLink] = useState("");
   const [legenda, setLegenda] = useState("");
   const [copied, setCopied] = useState<number | null>(null);
+  const [modo, setModo] = useState<ModoKey>("calmo");
+  const [velocidade, setVelocidade] = useState<VelKey>("normal");
   const [sliders, setSliders] = useState<Record<SliderKey, number>>({
-    humor: 60,
-    misterio: 40,
-    provocacao: 50,
-    dominancia: 55,
-    naturalidade: 80,
+    flertar: 40,
+    confianca: 60,
+    misterio: 50,
   });
 
   const mutation = useMutation({
-    mutationFn: () => fn({ data: { imageDataUrl, link, legenda, sliders } }),
+    mutationFn: () => fn({ data: { imageDataUrl, link, legenda, modo, velocidade, sliders } }),
   });
 
   const result = mutation.data?.result as ResponderStoryResult | undefined;
@@ -65,7 +78,6 @@ function ResponderStoryPage() {
     setPreview(url);
     if (file.type.startsWith("video/")) {
       setFileKind("video");
-      // gemini não consome vídeo aqui — só usamos a vibe via legenda/link
       setImageDataUrl(undefined);
     } else {
       setFileKind("image");
@@ -88,13 +100,13 @@ function ResponderStoryPage() {
 
       <header className="mt-8 mb-10 animate-fade-up">
         <div className="text-[11px] font-medium uppercase tracking-[0.25em] text-violet mb-3">
-          Responder Story
+          Reação a Stories
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[26ch]">
-          Manda o print do story.
+          Responda stories sem parecer forçado.
         </h1>
         <p className="text-sm text-muted-foreground mt-3 max-w-[52ch]">
-          Eu leio o que realmente aparece e te dou respostas naturais. IA Honesta v5.20 — sem inventar emoção, sem psicologia chutada.
+          Cola o link, manda o print ou o vídeo. A IA lê o que realmente aparece e te devolve 4 respostas naturais.
         </p>
       </header>
 
@@ -155,10 +167,39 @@ function ResponderStoryPage() {
         />
       </section>
 
+      {/* Modos */}
+      <section className="mt-6">
+        <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-3">
+          Modo
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {MODOS.map((m) => {
+            const active = modo === m.key;
+            return (
+              <button
+                key={m.key}
+                type="button"
+                onClick={() => setModo(m.key)}
+                className={`text-left p-3 rounded-2xl ring-1 transition ${
+                  active
+                    ? "ring-violet/60 bg-violet/10"
+                    : "ring-border bg-card/30 hover:ring-violet/30"
+                }`}
+              >
+                <div className="text-sm font-medium text-foreground">
+                  {m.emoji} {m.label}
+                </div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">{m.sub}</div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Sliders */}
       <section className="mt-6 p-5 rounded-3xl ring-1 ring-border bg-card/30">
         <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
-          Ajuste IA
+          Ajustes
         </div>
         <div className="grid gap-4">
           {SLIDERS.map((s) => (
@@ -175,8 +216,37 @@ function ResponderStoryPage() {
                 onChange={(e) => setSliders((p) => ({ ...p, [s.key]: Number(e.target.value) }))}
                 className="w-full accent-violet"
               />
+              <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                <span>{s.min}</span>
+                <span>{s.max}</span>
+              </div>
             </label>
           ))}
+        </div>
+
+        <div className="mt-5">
+          <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-2">
+            Velocidade
+          </div>
+          <div className="flex gap-2">
+            {VELOCIDADES.map((v) => {
+              const active = velocidade === v.key;
+              return (
+                <button
+                  key={v.key}
+                  type="button"
+                  onClick={() => setVelocidade(v.key)}
+                  className={`flex-1 py-2 rounded-xl text-xs ring-1 transition ${
+                    active
+                      ? "ring-accent/60 bg-accent/10 text-foreground"
+                      : "ring-border text-muted-foreground hover:ring-accent/30"
+                  }`}
+                >
+                  {v.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -187,7 +257,7 @@ function ResponderStoryPage() {
         onClick={() => mutation.mutate()}
         className="mt-6 w-full py-4 rounded-2xl font-medium text-base bg-gradient-to-r from-violet to-accent text-background disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition shadow-[0_0_40px_-10px_var(--violet)]"
       >
-        {mutation.isPending ? "IA lendo o story…" : "RESPONDER STORY"}
+        {mutation.isPending ? "IA lendo o story…" : "⚡ GERAR RESPOSTAS"}
       </button>
 
       {mutation.isError && (
@@ -208,7 +278,7 @@ function ResponderStoryPage() {
                 <div className="text-foreground mt-0.5">{result.vibe}</div>
               </div>
               <div>
-                <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Intenção</div>
+                <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Contexto</div>
                 <div className="text-foreground mt-0.5">{result.intencao}</div>
               </div>
             </div>
@@ -226,14 +296,12 @@ function ResponderStoryPage() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] uppercase tracking-[0.18em] text-accent">{r.tipo}</span>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => copy(r.texto, i)}
-                      className="text-[11px] px-2.5 py-1 rounded-full ring-1 ring-border hover:ring-accent/40 hover:text-accent transition"
-                    >
-                      {copied === i ? "copiado ✓" : "copiar"}
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => copy(r.texto, i)}
+                    className="text-[11px] px-2.5 py-1 rounded-full ring-1 ring-border hover:ring-accent/40 hover:text-accent transition"
+                  >
+                    {copied === i ? "copiado ✓" : "copiar"}
+                  </button>
                 </div>
                 <p className="text-[15px] text-foreground leading-snug">{r.texto}</p>
               </div>
