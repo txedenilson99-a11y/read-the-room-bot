@@ -17,32 +17,25 @@ Se a foto mostra:
 - Academia → fale sobre academia.
 - Viagem → fale sobre viagem (lugar).
 - Animal → fale sobre o animal.
+- Música → fale sobre a música/artista visível.
 - Selfie sem contexto → comente o ângulo/objeto visível, não a "vibe emocional".
 
 ═══════════════════════════════════════
 PROIBIDO AFIRMAR (sem evidência visual clara)
 ═══════════════════════════════════════
-- "ela quer atenção"
-- "ela está carente"
-- "ela sente sua falta"
-- "ela está triste"
-- "ela quer provocar"
-- "ela está apaixonada"
-- "ela tá te testando"
-- "ela quer validação"
-- "ela tá entediada"
-- "ela tá querendo alguém"
-- qualquer leitura de intenção romântica, emocional ou psicológica sem prova visível
+- "ela quer atenção", "ela está carente", "ela sente sua falta"
+- "ela está triste", "ela quer provocar", "ela está apaixonada"
+- "ela tá te testando", "ela quer validação", "ela tá entediada"
+- qualquer leitura romântica/emocional/psicológica sem prova visível
 - "vibe de", "energia de", "cara de quem [sente X]" — corta tudo isso
 
-Nos campos 'leitura', 'vibe', 'intencao': descreva APENAS o que está na imagem. Se não dá pra concluir, escreva exatamente isso: "não dá pra concluir intenção, só o que aparece no print".
+Nos campos 'leitura', 'vibe', 'intencao': descreva APENAS o que está na imagem. Se não dá pra concluir, escreva: "não dá pra concluir intenção, só o que aparece no print".
 
 ═══════════════════════════════════════
 COMO ESCREVER AS RESPOSTAS
 ═══════════════════════════════════════
 - comentar o OBJETO/CENA real do story
-- minúsculo quase sempre
-- frases CURTAS
+- minúsculo quase sempre, frases CURTAS
 - "kkk" / "kk" entra natural
 - gírias reais: "mds", "tipo", "véi", "po", "tu", "tá", "né"
 - emoji RARO (1 a cada 4, só simples: 😂 👀 🤨 😏)
@@ -62,42 +55,31 @@ EXEMPLO CORRETO
 ═══════════════════════════════════════
 Story: Monster Ultra + Snickers.
 
-Leitura correta: "ela tá mostrando um energético e um chocolate. registro de momento ou compra. não dá pra concluir emoção."
+Leitura: "ela tá mostrando um energético e um chocolate. registro de momento ou compra. não dá pra concluir emoção."
 
 Respostas boas:
 - natural: "dupla clássica kkk"
 - engraçada: "monster + snickers, kit sobrevivência 😂"
 - leve: "essa combinação aí nunca falha kkk"
-- provocadora: "isso aí já salvou teu dia ou ainda tá faltando alguma coisa? 😏"
 - curiosa: "qual dos dois acabou primeiro? kkk"
 
-═══════════════════════════════════════
-DIREÇÃO FINAL
-═══════════════════════════════════════
-Menos adivinhação. Menos psicologia inventada. Mais contexto real. Mais precisão. Mais naturalidade. IA Honesta v5.20.` + IA_HONESTA;
+Menos adivinhação. Menos psicologia inventada. Mais contexto real. Mais precisão. IA Honesta v5.20.` + IA_HONESTA;
 
-const TIPOS = [
-  "Natural",
-  "Engraçada",
-  "Debochada",
-  "Misteriosa",
-  "Anti-Gado",
-  "Low Profile",
-  "Tensão Leve",
-  "Flow",
-] as const;
+const TIPOS = ["Natural", "Engraçada", "Leve", "Curiosa"] as const;
+const MODOS = ["calmo", "ironico", "observador", "ousado"] as const;
+const VELOCIDADES = ["rapida", "normal", "pensada"] as const;
 
 const SCHEMA = {
   type: "object",
   properties: {
-    leitura: { type: "string", description: "1-2 linhas lendo o que esse story tá dizendo de verdade, tom de amigo." },
-    vibe: { type: "string", description: "Vibe em 1-3 palavras. Ex: 'validação leve', 'festa low', 'tédio postado'." },
-    intencao: { type: "string", description: "O que ela quer ao postar isso. 1 linha curta, direto." },
+    leitura: { type: "string", description: "1-2 linhas descrevendo APENAS o que aparece no story." },
+    vibe: { type: "string", description: "Vibe observável em 1-3 palavras (sem inventar emoção)." },
+    intencao: { type: "string", description: "O que dá pra observar do post. Se não dá pra concluir, diga." },
     evitar: { type: "string", description: "O que NÃO mandar nesse story. Curto e direto." },
     respostas: {
       type: "array",
-      minItems: 8,
-      maxItems: 8,
+      minItems: 4,
+      maxItems: 4,
       items: {
         type: "object",
         properties: {
@@ -121,13 +103,7 @@ export interface ResponderStoryResult {
   respostas: { tipo: string; texto: string }[];
 }
 
-type Sliders = {
-  humor: number;
-  misterio: number;
-  provocacao: number;
-  dominancia: number;
-  naturalidade: number;
-};
+type Sliders = { flertar: number; confianca: number; misterio: number };
 
 function clamp(n: unknown): number {
   const v = typeof n === "number" ? n : 50;
@@ -139,6 +115,8 @@ export const responderStory = createServerFn({ method: "POST" })
     imageDataUrl?: string;
     link?: string;
     legenda?: string;
+    modo?: string;
+    velocidade?: string;
     sliders?: Partial<Sliders>;
   }) => {
     const imageDataUrl = typeof input?.imageDataUrl === "string" && input.imageDataUrl.startsWith("data:")
@@ -152,34 +130,49 @@ export const responderStory = createServerFn({ method: "POST" })
     if (imageDataUrl && imageDataUrl.length > 12_000_000) {
       throw new Error("Arquivo muito pesado. Tenta um menor.");
     }
+    const modo = (MODOS as readonly string[]).includes(input?.modo ?? "") ? input!.modo! : "calmo";
+    const velocidade = (VELOCIDADES as readonly string[]).includes(input?.velocidade ?? "") ? input!.velocidade! : "normal";
     const s = input?.sliders ?? {};
     const sliders: Sliders = {
-      humor: clamp(s.humor),
+      flertar: clamp(s.flertar),
+      confianca: clamp(s.confianca),
       misterio: clamp(s.misterio),
-      provocacao: clamp(s.provocacao),
-      dominancia: clamp(s.dominancia),
-      naturalidade: clamp(s.naturalidade),
     };
-    return { imageDataUrl, link, legenda, sliders };
+    return { imageDataUrl, link, legenda, modo, velocidade, sliders };
   })
   .handler(async ({ data }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
 
-    const { sliders } = data;
-    const slidersText = `Ajuste pedido pelo usuário (0-100):
-- Humor: ${sliders.humor}
-- Mistério: ${sliders.misterio}
-- Provocação: ${sliders.provocacao}
-- Dominância: ${sliders.dominancia}
-- Naturalidade: ${sliders.naturalidade}
+    const { sliders, modo, velocidade } = data;
 
-Calibra o TOM das 8 respostas com isso, mas SEM violar nenhuma regra do system. Naturalidade alta = mensagem mais crua e curta. Mistério alto = menos palavras, mais espaço. Dominância alta = sem perguntas, afirma. Provocação alta = micro deboche sem agressão. Humor alto = kkk natural, deboche.`;
+    const modoText: Record<string, string> = {
+      calmo: "MODO CALMO — leve, natural e confortável. Sem provocação. Tom de amigo de boa.",
+      ironico: "MODO IRÔNICO — humor inteligente e provocação SUAVE. Deboche fino, nunca grosseria.",
+      observador: "MODO OBSERVADOR — comentário inteligente baseado no contexto visual. Menos piada, mais leitura concreta.",
+      ousado: "MODO OUSADO — mais confiança e tensão LEVE. Sem cantada, sem elogio físico, sem 'gostosa'. Apenas mais direto.",
+    };
+
+    const velText: Record<string, string> = {
+      rapida: "VELOCIDADE RÁPIDA — respostas BEM curtas (3 a 7 palavras), tipo reflexo.",
+      normal: "VELOCIDADE NORMAL — respostas curtas e fluidas (até 12 palavras).",
+      pensada: "VELOCIDADE PENSADA — resposta um pouco mais elaborada (até 18 palavras), mas ainda casual.",
+    };
+
+    const ajusteText = `Ajustes (0-100):
+- Flertar: ${sliders.flertar} (baixo=amigável, médio=leve provocação, alto=mais tensão — sempre SEM cantada)
+- Confiança: ${sliders.confianca} (baixo=discreto, médio=equilibrado, alto=mais direto, afirma em vez de perguntar)
+- Mistério: ${sliders.misterio} (baixo=previsível, médio=interessante, alto=menos palavras, mais espaço)
+
+${modoText[modo]}
+${velText[velocidade]}
+
+Calibra o TOM das 4 respostas com isso, mas SEM violar nenhuma regra do system.`;
 
     const userParts: any[] = [
       {
         type: "text",
-        text: `Analisa esse story e me devolve 8 respostas prontas pra mandar, uma de cada tipo (Natural, Engraçada, Debochada, Misteriosa, Anti-Gado, Low Profile, Tensão Leve, Flow). Foco TOTAL em não parecer carente, fã ou IA. Quero parecer um cara real respondendo de boa.${data.link ? `\n\nLink do story: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${slidersText}`,
+        text: `Analisa esse story e me devolve 4 respostas prontas pra mandar, uma de cada tipo: Natural, Engraçada, Leve, Curiosa. Foco TOTAL em não parecer carente, fã ou IA. Quero parecer um cara real respondendo de boa.${data.link ? `\n\nLink do story: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${ajusteText}`,
       },
     ];
     if (data.imageDataUrl) {
@@ -199,7 +192,7 @@ Calibra o TOM das 8 respostas com isso, mas SEM violar nenhuma regra do system. 
           type: "function",
           function: {
             name: "responder_story",
-            description: "Devolve leitura do story e 8 respostas prontas, sem soar carente.",
+            description: "Devolve leitura do story e 4 respostas prontas, sem soar carente.",
             parameters: SCHEMA,
           },
         }],
