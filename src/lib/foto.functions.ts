@@ -151,7 +151,7 @@ const STORY_SCHEMA = {
         properties: {
           modo: {
             type: "string",
-            enum: ["Calmo", "Engraçado", "Irônico", "Ousado", "Misterioso", "Sedutor", "Direto"],
+            enum: ["Calmo", "Engraçado", "Irônico", "Líder", "Ousado", "Misterioso", "Direto"],
           },
           texto: { type: "string" },
         },
