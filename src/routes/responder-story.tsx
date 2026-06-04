@@ -317,6 +317,30 @@ function ResponderStoryPage() {
               <p className="text-xs text-muted-foreground mt-3 italic">
                 {result.melhor_motivo}
               </p>
+
+              {result.previsao && (
+                <div className="mt-5 pt-4 border-t border-violet/20">
+                  <div className="text-[10px] uppercase tracking-wider text-violet/80 mb-3">📈 Previsão se mandar essa</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { label: "Responder", v: result.previsao.chance_responder, invert: false },
+                      { label: "Curtir", v: result.previsao.chance_curtir, invert: false },
+                      { label: "Continuar conversa", v: result.previsao.chance_continuar, invert: false },
+                      { label: "Parecer carente", v: result.previsao.chance_parecer_carente, invert: true },
+                    ].map((m) => (
+                      <div key={m.label}>
+                        <div className="flex justify-between text-[11px] mb-1">
+                          <span className="text-muted-foreground">{m.label}</span>
+                          <span className="text-foreground tabular-nums">{m.v}%</span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-card overflow-hidden">
+                          <div className={`h-full ${corBar(m.v, m.invert)}`} style={{ width: `${m.v}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
