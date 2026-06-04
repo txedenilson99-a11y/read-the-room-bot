@@ -56,6 +56,14 @@ Se uma resposta tiver naturalidade<80, OU originalidade<70, OU carencia>20 — R
 - duracao_estimada: "Curta" | "Média" | "Longa"
 - potencial_conversa (0-100): quanto esse story dá pra puxar papo de verdade
 
+🔎 LEITURA HONESTA (CRÍTICO — IA HONESTA):
+Separe em DOIS arrays distintos:
+- identificado: lista de FATOS VISÍVEIS no story (ex: "Selfie no espelho", "Vestido preto", "Quarto", "Flash forte", "Música: Celebridade"). Só o que dá pra ver/ouvir/ler de verdade. Cada item curto (2-5 palavras).
+- nao_confirmado: lista do que NÃO dá pra cravar e seria CHUTE (ex: "Ela vai sair", "Ela quer chamar atenção", "Ela está solteira", "Ela quer flertar"). Intenção, sentimento, estado civil, motivação — NUNCA cravar.
+- nivel_confianca (0-100): o quanto a leitura do story é sólida com base no que é visível. Selfie nítida com vários elementos = alto. Foto vaga/escura/só texto = baixo.
+
+Mínimo 3 itens em cada array. Seja específico ao story atual, não genérico.
+
 🏆 MELHOR RESPOSTA: escolha o índice (0-7) da resposta mais humana — mais natural + menos carente + maior chance de resposta + menos cara de IA. Justifique em 1 linha curta.
 
 🏅 RANKING: marque 1 resposta pra cada categoria (pode repetir índice se necessário):
@@ -93,6 +101,17 @@ const SCHEMA = {
     evitar: { type: "string", description: "O que NÃO mandar nesse story." },
     duracao_estimada: { type: "string", enum: ["Curta", "Média", "Longa"] },
     potencial_conversa: { type: "number", description: "0-100" },
+    nivel_confianca: { type: "number", description: "0-100, quão sólida é a leitura baseada no visível." },
+    identificado: {
+      type: "array",
+      minItems: 3,
+      items: { type: "string", description: "Fato visível no story. Curto, 2-5 palavras." },
+    },
+    nao_confirmado: {
+      type: "array",
+      minItems: 3,
+      items: { type: "string", description: "O que NÃO dá pra cravar (intenção/sentimento/estado)." },
+    },
     respostas: {
       type: "array",
       minItems: 8,
@@ -125,7 +144,7 @@ const SCHEMA = {
       additionalProperties: false,
     },
   },
-  required: ["leitura", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: ["leitura", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
   additionalProperties: false,
 } as const;
 
@@ -145,6 +164,9 @@ export interface ResponderStoryResult {
   evitar: string;
   duracao_estimada: "Curta" | "Média" | "Longa";
   potencial_conversa: number;
+  nivel_confianca: number;
+  identificado: string[];
+  nao_confirmado: string[];
   respostas: RespostaScored[];
   melhor_indice: number;
   melhor_motivo: string;
