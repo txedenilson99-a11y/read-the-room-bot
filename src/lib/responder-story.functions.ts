@@ -56,6 +56,14 @@ Se uma resposta tiver naturalidade<80, OU originalidade<70, OU carencia>20 — R
 - duracao_estimada: "Curta" | "Média" | "Longa"
 - potencial_conversa (0-100): quanto esse story dá pra puxar papo de verdade
 
+🔎 LEITURA HONESTA (CRÍTICO — IA HONESTA):
+Separe em DOIS arrays distintos:
+- identificado: lista de FATOS VISÍVEIS no story (ex: "Selfie no espelho", "Vestido preto", "Quarto", "Flash forte", "Música: Celebridade"). Só o que dá pra ver/ouvir/ler de verdade. Cada item curto (2-5 palavras).
+- nao_confirmado: lista do que NÃO dá pra cravar e seria CHUTE (ex: "Ela vai sair", "Ela quer chamar atenção", "Ela está solteira", "Ela quer flertar"). Intenção, sentimento, estado civil, motivação — NUNCA cravar.
+- nivel_confianca (0-100): o quanto a leitura do story é sólida com base no que é visível. Selfie nítida com vários elementos = alto. Foto vaga/escura/só texto = baixo.
+
+Mínimo 3 itens em cada array. Seja específico ao story atual, não genérico.
+
 🏆 MELHOR RESPOSTA: escolha o índice (0-7) da resposta mais humana — mais natural + menos carente + maior chance de resposta + menos cara de IA. Justifique em 1 linha curta.
 
 🏅 RANKING: marque 1 resposta pra cada categoria (pode repetir índice se necessário):
