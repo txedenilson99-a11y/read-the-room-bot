@@ -239,24 +239,64 @@ function ResponderStoryPage() {
             </div>
           </div>
 
-          {/* Detector de assunto */}
-          <div className="p-5 rounded-3xl ring-1 ring-accent/25 bg-accent/5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Detector de Assunto</div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full ring-1 ring-accent/40 text-accent">
-                {result.duracao_estimada}
-              </span>
+          {/* 🔥 Raio-X do Story */}
+          <div className="p-5 rounded-3xl ring-1 ring-violet/30 bg-gradient-to-br from-violet/10 to-transparent">
+            <div className="text-[11px] uppercase tracking-[0.2em] text-violet mb-4">🔥 Raio-X do Story</div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="p-3 rounded-2xl bg-card/50 ring-1 ring-border">
+                <div className="text-muted-foreground uppercase tracking-wider text-[10px]">📸 Tipo</div>
+                <div className="text-foreground mt-0.5 font-medium">{result.tipo_story}</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-card/50 ring-1 ring-border">
+                <div className="text-muted-foreground uppercase tracking-wider text-[10px]">🎯 Transmite</div>
+                <div className="text-foreground mt-0.5 font-medium">{result.transmitir}</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-card/50 ring-1 ring-border">
+                <div className="text-muted-foreground uppercase tracking-wider text-[10px]">🎭 Vibe Principal</div>
+                <div className="text-foreground mt-0.5 font-medium">{result.vibe_principal}</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-card/50 ring-1 ring-border">
+                <div className="text-muted-foreground uppercase tracking-wider text-[10px]">🏆 Melhor Abordagem</div>
+                <div className="text-foreground mt-0.5 font-medium">{result.melhor_abordagem}</div>
+              </div>
             </div>
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="text-muted-foreground">Potencial de Conversa</span>
-              <span className="text-foreground tabular-nums">{result.potencial_conversa}/100</span>
+
+            <div className="grid gap-3 mt-4">
+              {[
+                { label: "🧠 Nível de Abertura", v: result.nivel_abertura, invert: false, hint: "+ alto = + fácil responder" },
+                { label: "⚠️ Risco de Ignorar", v: result.risco_ignorar, invert: true, hint: "+ alto = + concorrência" },
+                { label: "❤️ Potencial de Conversa", v: result.potencial_conversa, invert: false, hint: result.duracao_estimada },
+              ].map((m) => (
+                <div key={m.label}>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-foreground">{m.label}</span>
+                    <span className="text-muted-foreground tabular-nums">{m.v}% <span className="text-[10px] opacity-60">· {m.hint}</span></span>
+                  </div>
+                  <div className="h-2 rounded-full bg-card overflow-hidden">
+                    <div className={`h-full ${corBar(m.v, m.invert)} transition-all`} style={{ width: `${m.v}%` }} />
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="h-2 rounded-full bg-card overflow-hidden">
-              <div
-                className={`h-full ${corBar(result.potencial_conversa)} transition-all`}
-                style={{ width: `${result.potencial_conversa}%` }}
-              />
+
+            <div className="mt-4 p-3 rounded-2xl bg-card/40 ring-1 ring-border">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Motivo da abordagem</div>
+              <div className="text-xs text-foreground">{result.melhor_abordagem_motivo}</div>
             </div>
+
+            {result.evitar_lista?.length > 0 && (
+              <div className="mt-3">
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">🚫 Evitar</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {result.evitar_lista.map((e, i) => (
+                    <span key={i} className="text-[11px] px-2 py-1 rounded-full bg-destructive/10 text-destructive ring-1 ring-destructive/20">
+                      {e}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Melhor resposta destaque */}
