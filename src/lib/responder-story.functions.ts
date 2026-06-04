@@ -112,7 +112,7 @@ const SCHEMA = {
         type: "object",
         properties: {
           tipo: { type: "string", enum: [...TIPOS] },
-          texto: { type: "string", description: "Resposta pronta. Curta, humana, com micro imperfeição." },
+          texto: { type: "string", description: "Resposta pronta. MÁX 12 palavras. Humana, curta, sem cara de IA." },
         },
         required: ["tipo", "texto"],
         additionalProperties: false,
