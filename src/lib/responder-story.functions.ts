@@ -27,7 +27,7 @@ O QUE FAZER:
 ✓ Priorizar humor + observação > qualquer outra coisa
 
 O QUE EVITAR (proibido absoluto):
-✗ "linda", "perfeita", "maravilhosa", "que gata", "gata", "musa", "deusa", "gostosa", "deslumbrante", "mulherão"
+✗ "linda", "linda demais", "perfeita", "maravilhosa", "gostosa", "que mulher", "que gata", "gata", "musa", "deusa", "deslumbrante", "mulherão", "casava"
 ✗ qualquer elogio direto à APARÊNCIA, corpo, cabelo, sorriso, rosto, olhos
 ✗ cantadas prontas, frases "perfeitas"
 ✗ emoji em excesso (máx 1 a cada 4 respostas; só 😂 👀 🤨)
