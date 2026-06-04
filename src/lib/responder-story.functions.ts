@@ -88,13 +88,13 @@ NUNCA: elogio à aparência, validação, fã, carente, "uau", poesia.` + IA_HON
 
 const TIPOS = [
   "Natural",
-  "Engraçada",
   "Debochada",
-  "Misteriosa",
+  "Irônica",
   "Anti-Gado",
-  "Low Profile",
-  "Tensão Leve",
+  "Misteriosa",
   "Flow",
+  "Ousada",
+  "Líder",
 ] as const;
 
 const SCHEMA = {
