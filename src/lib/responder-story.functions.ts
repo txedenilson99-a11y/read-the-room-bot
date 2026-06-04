@@ -144,7 +144,7 @@ const SCHEMA = {
       additionalProperties: false,
     },
   },
-  required: ["leitura", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: ["leitura", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
   additionalProperties: false,
 } as const;
 
@@ -164,6 +164,9 @@ export interface ResponderStoryResult {
   evitar: string;
   duracao_estimada: "Curta" | "Média" | "Longa";
   potencial_conversa: number;
+  nivel_confianca: number;
+  identificado: string[];
+  nao_confirmado: string[];
   respostas: RespostaScored[];
   melhor_indice: number;
   melhor_motivo: string;
