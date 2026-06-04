@@ -84,6 +84,24 @@ const TIPOS = [
   "Líder",
 ] as const;
 
+const TIPOS_STORY = [
+  "Selfie", "Espelho", "Academia", "Viagem", "Com Amigos", "Meme",
+  "Música", "Indireta", "Aniversário", "Comida", "Aleatório",
+] as const;
+
+const TRANSMITIR = [
+  "Confiança", "Diversão", "Mistério", "Status", "Atenção",
+  "Humor", "Sedução", "Apenas Compartilhar",
+] as const;
+
+const VIBES_PRINCIPAIS = [
+  "Leve", "Engraçada", "Debochada", "Misteriosa", "Sedutora", "Feliz", "Reflexiva",
+] as const;
+
+const ABORDAGENS = [
+  "Humor", "Curiosidade", "Provocação", "Observação", "Flertar", "Conversa",
+] as const;
+
 const SCHEMA = {
   type: "object",
   properties: {
@@ -93,6 +111,20 @@ const SCHEMA = {
     evitar: { type: "string", description: "O que NÃO mandar nesse story." },
     duracao_estimada: { type: "string", enum: ["Curta", "Média", "Longa"] },
     potencial_conversa: { type: "number", description: "0-100" },
+
+    // 🔥 RAIO-X DO STORY
+    tipo_story: { type: "string", enum: [...TIPOS_STORY] },
+    transmitir: { type: "string", enum: [...TRANSMITIR], description: "O que ela quer transmitir." },
+    nivel_abertura: { type: "number", description: "0-100. Maior = mais fácil responder." },
+    risco_ignorar: { type: "number", description: "0-100. Maior = mais concorrência." },
+    vibe_principal: { type: "string", enum: [...VIBES_PRINCIPAIS] },
+    evitar_lista: {
+      type: "array", minItems: 3, maxItems: 6,
+      items: { type: "string", description: "Coisa específica a evitar nesse story." },
+    },
+    melhor_abordagem: { type: "string", enum: [...ABORDAGENS] },
+    melhor_abordagem_motivo: { type: "string", description: "Por que essa abordagem. 1 linha." },
+
     respostas: {
       type: "array",
       minItems: 8,
@@ -124,8 +156,26 @@ const SCHEMA = {
       required: ["engracada", "ousada", "misteriosa", "segura"],
       additionalProperties: false,
     },
+
+    // 📈 PREVISÃO (se mandar a melhor resposta)
+    previsao: {
+      type: "object",
+      properties: {
+        chance_responder: { type: "number", description: "0-100" },
+        chance_curtir: { type: "number", description: "0-100" },
+        chance_continuar: { type: "number", description: "0-100" },
+        chance_parecer_carente: { type: "number", description: "0-100. Quanto menor, melhor." },
+      },
+      required: ["chance_responder", "chance_curtir", "chance_continuar", "chance_parecer_carente"],
+      additionalProperties: false,
+    },
   },
-  required: ["leitura", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: [
+    "leitura", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa",
+    "tipo_story", "transmitir", "nivel_abertura", "risco_ignorar", "vibe_principal",
+    "evitar_lista", "melhor_abordagem", "melhor_abordagem_motivo",
+    "respostas", "melhor_indice", "melhor_motivo", "ranking", "previsao",
+  ],
   additionalProperties: false,
 } as const;
 
