@@ -101,6 +101,17 @@ const SCHEMA = {
     evitar: { type: "string", description: "O que NÃO mandar nesse story." },
     duracao_estimada: { type: "string", enum: ["Curta", "Média", "Longa"] },
     potencial_conversa: { type: "number", description: "0-100" },
+    nivel_confianca: { type: "number", description: "0-100, quão sólida é a leitura baseada no visível." },
+    identificado: {
+      type: "array",
+      minItems: 3,
+      items: { type: "string", description: "Fato visível no story. Curto, 2-5 palavras." },
+    },
+    nao_confirmado: {
+      type: "array",
+      minItems: 3,
+      items: { type: "string", description: "O que NÃO dá pra cravar (intenção/sentimento/estado)." },
+    },
     respostas: {
       type: "array",
       minItems: 8,
