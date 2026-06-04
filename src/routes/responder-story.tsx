@@ -219,6 +219,46 @@ function ResponderStoryPage() {
 
         return (
         <section className="mt-10 grid gap-5 animate-fade-up">
+          {/* Nível de Confiança + Identificação */}
+          <div className="p-5 rounded-3xl ring-1 ring-emerald-400/25 bg-emerald-400/5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-emerald-400">Nível de Confiança</div>
+              <span className="text-foreground tabular-nums text-sm font-medium">{result.nivel_confianca}%</span>
+            </div>
+            <div className="h-2 rounded-full bg-card overflow-hidden mb-5">
+              <div
+                className={`h-full ${corBar(result.nivel_confianca)} transition-all`}
+                style={{ width: `${result.nivel_confianca}%` }}
+              />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-emerald-400 mb-2">✓ O que foi identificado</div>
+                <ul className="grid gap-1.5">
+                  {result.identificado.map((item, i) => (
+                    <li key={i} className="text-sm text-foreground flex gap-2">
+                      <span className="text-emerald-400 shrink-0">✓</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-red-400 mb-2">✗ O que não pode ser confirmado</div>
+                <ul className="grid gap-1.5">
+                  {result.nao_confirmado.map((item, i) => (
+                    <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                      <span className="text-red-400 shrink-0">✗</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+
           {/* Leitura */}
           <div className="p-5 rounded-3xl ring-1 ring-violet/25 bg-violet/5">
             <div className="text-[11px] uppercase tracking-[0.2em] text-violet mb-2">Leitura</div>
