@@ -197,8 +197,29 @@ function ResponderStoryPage() {
       )}
 
       {/* Result */}
-      {result && (
+      {result && (() => {
+        const ranking = result.ranking;
+        const tagsPorIdx = new Map<number, string[]>();
+        const add = (i: number, tag: string) => {
+          const arr = tagsPorIdx.get(i) ?? [];
+          arr.push(tag);
+          tagsPorIdx.set(i, arr);
+        };
+        add(result.melhor_indice, "🏆 Melhor");
+        add(ranking.engracada, "😂 Engraçada");
+        add(ranking.ousada, "😏 Ousada");
+        add(ranking.misteriosa, "👀 Misteriosa");
+        add(ranking.segura, "🛡️ Segura");
+
+        const corBar = (v: number, invert = false) => {
+          const ok = invert ? v <= 20 : v >= 70;
+          const mid = invert ? v <= 40 : v >= 50;
+          return ok ? "bg-emerald-400" : mid ? "bg-amber-400" : "bg-red-400";
+        };
+
+        return (
         <section className="mt-10 grid gap-5 animate-fade-up">
+          {/* Leitura */}
           <div className="p-5 rounded-3xl ring-1 ring-violet/25 bg-violet/5">
             <div className="text-[11px] uppercase tracking-[0.2em] text-violet mb-2">Leitura</div>
             <p className="text-sm text-foreground">{result.leitura}</p>
@@ -218,15 +239,66 @@ function ResponderStoryPage() {
             </div>
           </div>
 
-          <div className="grid gap-3">
-            {result.respostas.map((r, i) => (
+          {/* Detector de assunto */}
+          <div className="p-5 rounded-3xl ring-1 ring-accent/25 bg-accent/5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Detector de Assunto</div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full ring-1 ring-accent/40 text-accent">
+                {result.duracao_estimada}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-muted-foreground">Potencial de Conversa</span>
+              <span className="text-foreground tabular-nums">{result.potencial_conversa}/100</span>
+            </div>
+            <div className="h-2 rounded-full bg-card overflow-hidden">
               <div
-                key={i}
-                className="group p-4 rounded-2xl ring-1 ring-border bg-card/40 hover:ring-accent/30 transition"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-accent">{r.tipo}</span>
-                  <div className="flex gap-2">
+                className={`h-full ${corBar(result.potencial_conversa)} transition-all`}
+                style={{ width: `${result.potencial_conversa}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Melhor resposta destaque */}
+          {result.respostas[result.melhor_indice] && (
+            <div className="p-5 rounded-3xl ring-2 ring-violet bg-gradient-to-br from-violet/15 to-accent/5 shadow-[0_0_40px_-10px_var(--violet)]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] uppercase tracking-[0.2em] text-violet font-medium">🏆 Melhor Resposta</span>
+                <button
+                  onClick={() => copy(result.respostas[result.melhor_indice].texto, -1)}
+                  className="text-[11px] px-3 py-1 rounded-full bg-violet text-background hover:brightness-110 transition"
+                >
+                  {copied === -1 ? "copiado ✓" : "copiar"}
+                </button>
+              </div>
+              <p className="text-[17px] text-foreground leading-snug font-medium">
+                {result.respostas[result.melhor_indice].texto}
+              </p>
+              <p className="text-xs text-muted-foreground mt-3 italic">
+                {result.melhor_motivo}
+              </p>
+            </div>
+          )}
+
+          {/* Todas as respostas com scores */}
+          <div className="grid gap-3">
+            <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Todas as respostas</div>
+            {result.respostas.map((r, i) => {
+              const tags = tagsPorIdx.get(i) ?? [];
+              return (
+                <div
+                  key={i}
+                  className="group p-4 rounded-2xl ring-1 ring-border bg-card/40 hover:ring-accent/30 transition"
+                >
+                  <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-accent">{r.tipo}</span>
+                      {tags.map((t) => (
+                        <span key={t} className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet/15 text-violet">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                     <button
                       onClick={() => copy(r.texto, i)}
                       className="text-[11px] px-2.5 py-1 rounded-full ring-1 ring-border hover:ring-accent/40 hover:text-accent transition"
@@ -234,10 +306,30 @@ function ResponderStoryPage() {
                       {copied === i ? "copiado ✓" : "copiar"}
                     </button>
                   </div>
+                  <p className="text-[15px] text-foreground leading-snug mb-3">{r.texto}</p>
+
+                  {/* Score de humanidade */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                    {[
+                      { label: "Naturalidade", v: r.naturalidade, invert: false },
+                      { label: "Originalidade", v: r.originalidade, invert: false },
+                      { label: "Carência", v: r.carencia, invert: true },
+                      { label: "Chance Resposta", v: r.chance_resposta, invert: false },
+                    ].map((m) => (
+                      <div key={m.label}>
+                        <div className="flex justify-between text-[10px] mb-0.5">
+                          <span className="text-muted-foreground">{m.label}</span>
+                          <span className="text-foreground tabular-nums">{m.v}</span>
+                        </div>
+                        <div className="h-1 rounded-full bg-card overflow-hidden">
+                          <div className={`h-full ${corBar(m.v, m.invert)}`} style={{ width: `${m.v}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-[15px] text-foreground leading-snug">{r.texto}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <button
@@ -249,7 +341,8 @@ function ResponderStoryPage() {
             {mutation.isPending ? "Gerando outra leva…" : "↻ Regenerar respostas"}
           </button>
         </section>
-      )}
+        );
+      })()}
     </main>
   );
 }
