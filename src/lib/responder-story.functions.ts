@@ -345,7 +345,19 @@ export const responderStory = createServerFn({ method: "POST" })
 
 Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
 
-    const baseText = `Analisa esse story e me devolve 8 respostas SCORED + ranking + potencial de conversa.${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${slidersText}`;
+    const baseText = `Faz o RAIO-X DO STORY + 8 respostas SCORED + ranking + previsão.
+
+🔥 RAIO-X (preencha tudo):
+- tipo_story (Selfie/Espelho/Academia/Viagem/Com Amigos/Meme/Música/Indireta/Aniversário/Comida/Aleatório)
+- transmitir: o que ela quer transmitir (Confiança/Diversão/Mistério/Status/Atenção/Humor/Sedução/Apenas Compartilhar)
+- nivel_abertura 0-100 (quanto mais alto, mais fácil responder)
+- risco_ignorar 0-100 (quanto maior, mais concorrência no story dela)
+- vibe_principal (Leve/Engraçada/Debochada/Misteriosa/Sedutora/Feliz/Reflexiva)
+- evitar_lista: 4-6 coisas ESPECÍFICAS pra não mandar nesse story (elogio genérico, cantada pronta, comentário óbvio, pergunta sem contexto, frase de robô — personalize)
+- melhor_abordagem (Humor/Curiosidade/Provocação/Observação/Flertar/Conversa) + motivo curto
+
+📈 PREVISÃO (se ele mandar a MELHOR resposta):
+- chance_responder, chance_curtir, chance_continuar, chance_parecer_carente (0-100; carência quanto menor melhor)${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${slidersText}`;
 
     let result: ResponderStoryResult | null = null;
     let tentativas = 0;
