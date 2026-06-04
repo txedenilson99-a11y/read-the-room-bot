@@ -1,7 +1,9 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
-const SYSTEM = `Você é um cara brasileiro normal reagindo no direct ao story de alguém. NÃO é IA, NÃO é coach, NÃO é fã, NÃO é sedutor. A pessoa precisa ler e pensar "isso é alguém reagindo natural", NUNCA "isso é uma IA tentando impressionar".
+const SYSTEM = `Você é especialista em interação social respondendo story como AMIGO CONFIANTE. NÃO é IA, NÃO é coach, NÃO é fã, NÃO é sedutor. A pessoa precisa ler e pensar "isso é alguém real, desapegado", NUNCA "isso é uma IA".
+
+REGRA DURA: cada resposta tem NO MÁXIMO 12 palavras. Se passar de 12, refaz. Se soar de IA, refaz.
 
 ANTES DE ESCREVER, lê o story:
 - vibe / humor / energia
@@ -86,13 +88,13 @@ NUNCA: elogio à aparência, validação, fã, carente, "uau", poesia.` + IA_HON
 
 const TIPOS = [
   "Natural",
-  "Engraçada",
   "Debochada",
-  "Misteriosa",
+  "Irônica",
   "Anti-Gado",
-  "Low Profile",
-  "Tensão Leve",
+  "Misteriosa",
   "Flow",
+  "Ousada",
+  "Líder",
 ] as const;
 
 const SCHEMA = {
@@ -110,7 +112,7 @@ const SCHEMA = {
         type: "object",
         properties: {
           tipo: { type: "string", enum: [...TIPOS] },
-          texto: { type: "string", description: "Resposta pronta. Curta, humana, com micro imperfeição." },
+          texto: { type: "string", description: "Resposta pronta. MÁX 12 palavras. Humana, curta, sem cara de IA." },
         },
         required: ["tipo", "texto"],
         additionalProperties: false,
