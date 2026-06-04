@@ -26,7 +26,6 @@ import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as FotoStoryRouteImport } from './routes/foto-story'
 import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
 import { Route as FlowRouteImport } from './routes/flow'
-import { Route as DetectorRoboRouteImport } from './routes/detector-robo'
 import { Route as CantadasRouteImport } from './routes/cantadas'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
@@ -117,11 +116,6 @@ const FlowRoute = FlowRouteImport.update({
   path: '/flow',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DetectorRoboRoute = DetectorRoboRouteImport.update({
-  id: '/detector-robo',
-  path: '/detector-robo',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CantadasRoute = CantadasRouteImport.update({
   id: '/cantadas',
   path: '/cantadas',
@@ -147,7 +141,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
-  '/detector-robo': typeof DetectorRoboRoute
   '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
@@ -171,7 +164,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
-  '/detector-robo': typeof DetectorRoboRoute
   '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
@@ -196,7 +188,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
-  '/detector-robo': typeof DetectorRoboRoute
   '/flow': typeof FlowRoute
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
@@ -222,7 +213,6 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/cantadas'
-    | '/detector-robo'
     | '/flow'
     | '/foto-mensagem'
     | '/foto-story'
@@ -246,7 +236,6 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/cantadas'
-    | '/detector-robo'
     | '/flow'
     | '/foto-mensagem'
     | '/foto-story'
@@ -270,7 +259,6 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/cantadas'
-    | '/detector-robo'
     | '/flow'
     | '/foto-mensagem'
     | '/foto-story'
@@ -295,7 +283,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CadastroRoute: typeof CadastroRoute
   CantadasRoute: typeof CantadasRoute
-  DetectorRoboRoute: typeof DetectorRoboRoute
   FlowRoute: typeof FlowRoute
   FotoMensagemRoute: typeof FotoMensagemRoute
   FotoStoryRoute: typeof FotoStoryRoute
@@ -437,13 +424,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlowRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/detector-robo': {
-      id: '/detector-robo'
-      path: '/detector-robo'
-      fullPath: '/detector-robo'
-      preLoaderRoute: typeof DetectorRoboRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/cantadas': {
       id: '/cantadas'
       path: '/cantadas'
@@ -479,7 +459,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CadastroRoute: CadastroRoute,
   CantadasRoute: CantadasRoute,
-  DetectorRoboRoute: DetectorRoboRoute,
   FlowRoute: FlowRoute,
   FotoMensagemRoute: FotoMensagemRoute,
   FotoStoryRoute: FotoStoryRoute,
@@ -502,13 +481,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
