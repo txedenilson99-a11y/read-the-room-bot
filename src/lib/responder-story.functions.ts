@@ -195,6 +195,14 @@ export interface ResponderStoryResult {
   evitar: string;
   duracao_estimada: "Curta" | "Média" | "Longa";
   potencial_conversa: number;
+  tipo_story: string;
+  transmitir: string;
+  nivel_abertura: number;
+  risco_ignorar: number;
+  vibe_principal: string;
+  evitar_lista: string[];
+  melhor_abordagem: string;
+  melhor_abordagem_motivo: string;
   respostas: RespostaScored[];
   melhor_indice: number;
   melhor_motivo: string;
@@ -203,6 +211,12 @@ export interface ResponderStoryResult {
     ousada: number;
     misteriosa: number;
     segura: number;
+  };
+  previsao: {
+    chance_responder: number;
+    chance_curtir: number;
+    chance_continuar: number;
+    chance_parecer_carente: number;
   };
 }
 
