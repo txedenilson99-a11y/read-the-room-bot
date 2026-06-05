@@ -238,13 +238,25 @@ function FlowPage() {
             }}
           >
             <div className="flex items-center justify-between mb-3">
-              <Chip>🎯 Melhor resposta</Chip>
-              <button onClick={copyMain} className="text-xs text-muted-foreground hover:text-foreground transition">
-                {copiedMain ? "Copiado ✓" : "Copiar"}
-              </button>
+              <Chip>🏆 Melhor resposta</Chip>
+              <div className="flex items-center gap-3">
+                <span className="text-xs tabular-nums text-foreground/90">
+                  Nota <span className="font-semibold">{result.melhor_resposta_nota.toFixed(1)}</span>/10
+                </span>
+                <button onClick={copyMain} className="text-xs text-muted-foreground hover:text-foreground transition">
+                  {copiedMain ? "Copiado ✓" : "Copiar"}
+                </button>
+              </div>
             </div>
             <p className="text-lg md:text-xl font-medium text-foreground leading-snug">"{result.proxima_mensagem}"</p>
             <p className="mt-3 text-xs text-muted-foreground italic">{result.porque_funciona}</p>
+            {result.melhor_resposta_motivos?.length > 0 && (
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {result.melhor_resposta_motivos.map((m, i) => (
+                  <li key={i} className="text-[11px] px-2.5 py-1 rounded-full bg-card/60 ring-1 ring-border text-foreground/85">✓ {m}</li>
+                ))}
+              </ul>
+            )}
             <div className="mt-4 grid grid-cols-3 gap-3">
               <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 text-center">
                 <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">Chance de resposta</div>
@@ -259,6 +271,32 @@ function FlowPage() {
                 <div className="text-lg font-medium tabular-nums mt-1" style={{ color: result.score_carencia > 20 ? "var(--destructive)" : undefined }}>{result.score_carencia}%</div>
               </div>
             </div>
+          </div>
+
+          {/* 🧠 O QUE ELA QUIS DIZER */}
+          <div className="card-premium p-5 md:p-6">
+            <div className="flex items-center justify-between mb-3">
+              <Chip tone="violet">🧠 O que ela quis dizer</Chip>
+              {(() => {
+                const map = {
+                  positivo: { label: "POSITIVO ✅", color: "var(--accent)" },
+                  neutro: { label: "NEUTRO ◐", color: "var(--muted-foreground)" },
+                  negativo: { label: "NEGATIVO ⚠", color: "var(--destructive)" },
+                } as const;
+                const m = map[result.traducao_sinal];
+                return (
+                  <span className="text-[10px] font-semibold tracking-[0.2em] px-2.5 py-1 rounded-full ring-1"
+                    style={{ color: m.color, borderColor: m.color, boxShadow: `0 0 14px color-mix(in oklab, ${m.color} 30%, transparent)` }}>
+                    {m.label}
+                  </span>
+                );
+              })()}
+            </div>
+            <p className="text-sm text-foreground/90 italic mb-3">"{result.gancho_ultima_msg}"</p>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">Tradução da IA</div>
+            <ul className="space-y-1.5 text-sm text-foreground/90">
+              {result.traducao_bullets.map((b, i) => <li key={i}>• {b}</li>)}
+            </ul>
           </div>
 
           {/* 🧠 LEITURA */}
