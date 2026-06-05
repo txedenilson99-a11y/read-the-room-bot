@@ -245,6 +245,20 @@ function FlowPage() {
             </div>
             <p className="text-lg md:text-xl font-medium text-foreground leading-snug">"{result.proxima_mensagem}"</p>
             <p className="mt-3 text-xs text-muted-foreground italic">{result.porque_funciona}</p>
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 text-center">
+                <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">Chance de resposta</div>
+                <div className="text-lg font-medium tabular-nums mt-1">{result.score_chance_resposta}%</div>
+              </div>
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 text-center">
+                <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">Naturalidade</div>
+                <div className="text-lg font-medium tabular-nums mt-1">{result.score_naturalidade}%</div>
+              </div>
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 text-center">
+                <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">Carência</div>
+                <div className="text-lg font-medium tabular-nums mt-1" style={{ color: result.score_carencia > 20 ? "var(--destructive)" : undefined }}>{result.score_carencia}%</div>
+              </div>
+            </div>
           </div>
 
           {/* 🧠 LEITURA */}
