@@ -64,6 +64,13 @@ Separe em DOIS arrays distintos:
 
 Mínimo 3 itens em cada array. Seja específico ao story atual, não genérico.
 
+🚨 RISCO DE GADO — pra CADA resposta, classifique:
+- risco_gado: "Baixo" | "Médio" | "Alto"
+- ALTO: elogio direto, validação, "linda 😍", "perfeita", "gata", coração, parece fã.
+- MÉDIO: meio próximo demais, esforço pra agradar, simpatia exagerada, "tá top demais".
+- BAIXO: observação real, deboche, humor seco, provocação leve, indiferente. Ex: "esse flash acabou com a foto kkk", "monster pra sobreviver à segunda?".
+Nenhuma resposta entregue pode ter risco_gado = "Alto". Se tiver, reescreve.
+
 🏆 MELHOR RESPOSTA: escolha o índice (0-7) da resposta mais humana — mais natural + menos carente + maior chance de resposta + menos cara de IA. Justifique em 1 linha curta.
 
 🏅 RANKING: marque 1 resposta pra cada categoria (pode repetir índice se necessário):
@@ -179,8 +186,9 @@ const SCHEMA = {
           originalidade: { type: "number" },
           carencia: { type: "number" },
           chance_resposta: { type: "number" },
+          risco_gado: { type: "string", enum: ["Baixo", "Médio", "Alto"] },
         },
-        required: ["tipo", "texto", "naturalidade", "originalidade", "carencia", "chance_resposta"],
+        required: ["tipo", "texto", "naturalidade", "originalidade", "carencia", "chance_resposta", "risco_gado"],
         additionalProperties: false,
       },
     },
@@ -209,6 +217,7 @@ export interface RespostaScored {
   originalidade: number;
   carencia: number;
   chance_resposta: number;
+  risco_gado: "Baixo" | "Médio" | "Alto";
 }
 
 export interface ResponderStoryResult {
@@ -280,6 +289,7 @@ function respostaPassa(r: RespostaScored): boolean {
   if (r.naturalidade < 80) return false;
   if (r.originalidade < 70) return false;
   if (r.carencia > 20) return false;
+  if (r.risco_gado === "Alto") return false;
   if (temFraseIA(r.texto)) return false;
   return true;
 }
@@ -386,6 +396,7 @@ Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
         if (r.naturalidade < 80) motivos.push(`naturalidade=${r.naturalidade}<80`);
         if (r.originalidade < 70) motivos.push(`originalidade=${r.originalidade}<70`);
         if (r.carencia > 20) motivos.push(`carencia=${r.carencia}>20`);
+        if (r.risco_gado === "Alto") motivos.push("risco_gado=Alto");
         if (temFraseIA(r.texto)) motivos.push("contém frase proibida (IA)");
         return motivos.length ? `[${i}] "${r.texto}" → ${motivos.join(", ")}` : null;
       }).filter(Boolean);
