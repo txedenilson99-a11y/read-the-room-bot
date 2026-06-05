@@ -299,6 +299,17 @@ export interface FlowResult {
     confianca: number;
     nota: string;
   };
+  status_conversa: {
+    checklist: { ok: boolean; texto: string }[];
+    o_que_aconteceu: string;
+    nao_significa: string[];
+    pode_significar: string[];
+    investimento_dela: string;
+    energia_dela_status: string;
+    risco_real: string;
+    veredito_ia: string;
+    proximo_passo_status: string[];
+  };
 }
 
 export const continuarConversa = createServerFn({ method: "POST" })
