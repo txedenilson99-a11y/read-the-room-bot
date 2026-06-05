@@ -1,87 +1,150 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 
-const SYSTEM = `Você é um amigo brasileiro socialmente esperto que analisa perfis (Instagram, Tinder, Badoo, Bumble, Facebook Namoro).
+const TIPOS_PERFIL = [
+  "Visual",
+  "Selfie",
+  "Social",
+  "Viajante",
+  "Fitness",
+  "Cultural",
+  "Interior",
+  "Pet Lover",
+  "Automotivo",
+  "Foodie",
+  "Gamer",
+  "Intelectual",
+  "Low Profile",
+] as const;
 
-TOM:
-- Português brasileiro real, direto, sem coach, sem clichê.
-- Frases curtas, com opinião e leitura fina.
-- Lê detalhes que quase ninguém percebe: objeto no fundo, escolha de roupa, escolha de palavra na bio, contexto da foto.
-- Sem julgar corpo, sem chamar de carente/biscoiteira. Foco em ler vibe e dar abridores que funcionam.
+const SYSTEM = `Você é um amigo brasileiro socialmente esperto. Faz o Raio-X v5.20 de um perfil (Instagram, Tinder, Badoo, Bumble, Facebook Namoro).
 
-NÃO use:
-- "transmite confiança", "presença social", "celebrar a vida"
-- emoji em excesso (no máx 1 por bloco)
-- cantadas prontas tipo "oi sumida", "e aí, tudo bem?"
-- elogios genéricos tipo "você é linda"
+REGRA DE OURO:
+- SÓ fatos observáveis. NUNCA inventa personalidade, intenção, sentimento ou objetivo dela no app.
+- Se não dá pra ver, diga que não dá pra ver. Honestidade > adivinhação.
+- Foco em CONTEXTO REAL do perfil, não em fantasia.
 
-ABRIDORES:
-- Específicos pro perfil, fazendo referência a algo real que aparece.
-- Curtos, naturais, parecem mensagem de gente normal, não de bot.
-- Cada um com estilo diferente: natural, engraçado, flertando, inteligente, direto, diferente.` + IA_HONESTA;
+DETECTOR DE PERFIL — escolha UM tipo principal (com confiança 0-100 e 3-5 motivos curtos):
+Visual, Selfie, Social, Viajante, Fitness, Cultural, Interior, Pet Lover, Automotivo, Foodie, Gamer, Intelectual, Low Profile.
+
+FATOS OBSERVADOS — só o que dá pra ver/ler:
+quantidade de fotos, presença de selfies, presença de amigos, locais, objetos recorrentes, estilo visual, info da bio, cidade, trabalho, hobbies visíveis.
+Se não aparece, NÃO inclua.
+
+ASSUNTOS ENCONTRADOS — ganchos reais (cidade, trabalho, lugares, música, pets, esporte, estilo, viagens, rotina, hobbies). Só os que aparecem.
+
+ABRIDORES (10) — naturais, curtos, parecem mensagem de gente real:
+- minúsculo na maioria, frases curtas, "kkk" quando couber, sem cantada
+- ancorados em algo que aparece no perfil
+- nada de "oi linda", "tudo bem?", elogio físico, pergunta de entrevista
+Mais o MELHOR ABRIDOR (escolha 1 dos 10 ou outro).
+
+CONFIANÇA DA LEITURA — 4 medidores 0-100:
+fatos_observados (alto), interesses (médio), personalidade (baixo), objetivo_no_app (muito baixo).
+
+O QUE A IA NÃO SABE — liste o que não dá pra cravar (timidez, extroversão, intenção, nível de interesse, como ela conversa, se quer relacionamento).
+
+RESUMO FINAL — tipo de perfil, assunto mais forte, melhor estratégia, risco (Baixo/Médio/Alto), objetivo.` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",
   properties: {
-    leitura: { type: "string", description: "Resumo curto e afiado da vibe do perfil. 2-4 linhas." },
-    persona: { type: "string", description: "Persona em 2-4 palavras." },
-    melhor_abordagem: { type: "string", description: "Em 1 frase, qual abordagem combina melhor." },
-    chance_resposta: { type: "number", minimum: 0, maximum: 100 },
-    fotos_observacoes: {
-      type: "array", minItems: 3, maxItems: 6,
-      items: { type: "string", description: "Observação sobre as fotos: estilo, vibe, ambiente, linguagem corporal." },
+    tipo_perfil: {
+      type: "object",
+      properties: {
+        principal: { type: "string", enum: TIPOS_PERFIL as unknown as string[] },
+        confianca: { type: "number", minimum: 0, maximum: 100 },
+        motivos: { type: "array", minItems: 3, maxItems: 5, items: { type: "string" } },
+      },
+      required: ["principal", "confianca", "motivos"],
+      additionalProperties: false,
     },
-    bio_observacoes: {
-      type: "array", minItems: 2, maxItems: 5,
-      items: { type: "string", description: "Observação sobre a bio: tom, humor, intenção, palavras-chave." },
+    fatos_observados: {
+      type: "array", minItems: 3, maxItems: 12,
+      items: { type: "string", description: "Fato curto e concreto sobre o perfil." },
     },
-    pontos_interesse: {
-      type: "array", minItems: 3, maxItems: 6,
-      items: { type: "string", description: "Tema concreto que aumenta a chance de resposta." },
+    assuntos_encontrados: {
+      type: "array", minItems: 3, maxItems: 10,
+      items: { type: "string", description: "Assunto/gancho real pra conversa." },
     },
-    observacoes_inteligentes: {
-      type: "array", minItems: 2, maxItems: 5,
-      items: { type: "string", description: "Detalhe que quase ninguém percebe." },
-    },
+    melhor_abridor: { type: "string", description: "Mensagem pronta. Curta, natural, ancorada em algo do perfil." },
     abridores: {
       type: "array", minItems: 10, maxItems: 10,
-      items: {
-        type: "object",
-        properties: {
-          estilo: { type: "string", enum: ["natural", "engracado", "flertando", "inteligente", "direto", "diferente"] },
-          texto: { type: "string", description: "A mensagem pronta pra mandar. Curta, específica do perfil." },
-          continuacao: { type: "string", description: "O que mandar depois se ela responder qualquer coisa." },
-        },
-        required: ["estilo", "texto", "continuacao"],
-        additionalProperties: false,
-      },
+      items: { type: "string", description: "Mensagem pronta. Curta, humana, sem cantada." },
     },
     evitar: {
-      type: "array", minItems: 3, maxItems: 6,
-      items: { type: "string", description: "Mensagem genérica ou comentário previsível que NÃO funciona aqui." },
+      type: "array", minItems: 4, maxItems: 8,
+      items: { type: "string", description: "Mensagem genérica/cringe que NÃO funciona." },
+    },
+    chance_resposta: {
+      type: "object",
+      properties: {
+        valor: { type: "number", minimum: 0, maximum: 100 },
+        motivos: { type: "array", minItems: 2, maxItems: 5, items: { type: "string" } },
+      },
+      required: ["valor", "motivos"],
+      additionalProperties: false,
+    },
+    confianca_leitura: {
+      type: "object",
+      properties: {
+        fatos_observados: { type: "number", minimum: 0, maximum: 100 },
+        interesses: { type: "number", minimum: 0, maximum: 100 },
+        personalidade: { type: "number", minimum: 0, maximum: 100 },
+        objetivo_no_app: { type: "number", minimum: 0, maximum: 100 },
+      },
+      required: ["fatos_observados", "interesses", "personalidade", "objetivo_no_app"],
+      additionalProperties: false,
+    },
+    nao_sabe: {
+      type: "array", minItems: 3, maxItems: 8,
+      items: { type: "string", description: "Algo que a IA honestamente não pode cravar." },
+    },
+    resumo: {
+      type: "object",
+      properties: {
+        tipo_perfil: { type: "string" },
+        assunto_mais_forte: { type: "string" },
+        melhor_estrategia: { type: "string" },
+        risco: { type: "string", enum: ["Baixo", "Médio", "Alto"] },
+        objetivo: { type: "string" },
+      },
+      required: ["tipo_perfil", "assunto_mais_forte", "melhor_estrategia", "risco", "objetivo"],
+      additionalProperties: false,
     },
   },
   required: [
-    "leitura", "persona", "melhor_abordagem", "chance_resposta",
-    "fotos_observacoes", "bio_observacoes", "pontos_interesse",
-    "observacoes_inteligentes", "abridores", "evitar",
+    "tipo_perfil", "fatos_observados", "assuntos_encontrados",
+    "melhor_abridor", "abridores", "evitar",
+    "chance_resposta", "confianca_leitura", "nao_sabe", "resumo",
   ],
   additionalProperties: false,
 } as const;
 
-export type EstiloAbridor = "natural" | "engracado" | "flertando" | "inteligente" | "direto" | "diferente";
+export type TipoPerfil = (typeof TIPOS_PERFIL)[number];
 
 export interface RaioXResult {
-  leitura: string;
-  persona: string;
-  melhor_abordagem: string;
-  chance_resposta: number;
-  fotos_observacoes: string[];
-  bio_observacoes: string[];
-  pontos_interesse: string[];
-  observacoes_inteligentes: string[];
-  abridores: Array<{ estilo: EstiloAbridor; texto: string; continuacao: string }>;
+  tipo_perfil: { principal: TipoPerfil; confianca: number; motivos: string[] };
+  fatos_observados: string[];
+  assuntos_encontrados: string[];
+  melhor_abridor: string;
+  abridores: string[];
   evitar: string[];
+  chance_resposta: { valor: number; motivos: string[] };
+  confianca_leitura: {
+    fatos_observados: number;
+    interesses: number;
+    personalidade: number;
+    objetivo_no_app: number;
+  };
+  nao_sabe: string[];
+  resumo: {
+    tipo_perfil: string;
+    assunto_mais_forte: string;
+    melhor_estrategia: string;
+    risco: "Baixo" | "Médio" | "Alto";
+    objetivo: string;
+  };
 }
 
 export const raioXPerfil = createServerFn({ method: "POST" })
@@ -103,7 +166,7 @@ export const raioXPerfil = createServerFn({ method: "POST" })
     if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
 
     const partes = [
-      "Faz o raio-x desse perfil. Lê fotos, bio e contexto. Devolve leitura, observações sobre fotos e bio, pontos de interesse, observações inteligentes que quase ninguém percebe, 10 abridores únicos (cada um num estilo: natural, engracado, flertando, inteligente, direto, diferente — distribui os 10 entre esses estilos), continuação pra cada um, e o que evitar.",
+      "Faz o Raio-X v5.20 desse perfil. Detecta o tipo, lista só fatos observáveis, assuntos reais, 10 abridores naturais, melhor abridor, o que evitar, chance de resposta com motivos, confiança da leitura (4 medidores), o que a IA não sabe e o resumo final.",
       data.bio ? `Bio:\n${data.bio}` : "",
       data.contexto ? `Contexto: ${data.contexto}` : "",
       data.images.length ? `Use as ${data.images.length} imagem(ns) do perfil.` : "Sem fotos, baseia em bio/contexto.",
@@ -125,7 +188,7 @@ export const raioXPerfil = createServerFn({ method: "POST" })
         ],
         tools: [{
           type: "function",
-          function: { name: "raio_x_perfil", description: "Raio-x do perfil.", parameters: SCHEMA },
+          function: { name: "raio_x_perfil", description: "Raio-X v5.20 do perfil.", parameters: SCHEMA },
         }],
         tool_choice: { type: "function", function: { name: "raio_x_perfil" } },
       }),
