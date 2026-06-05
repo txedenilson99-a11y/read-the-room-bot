@@ -165,6 +165,20 @@ const SCHEMA = {
     },
     resumo_ia: { type: "string", description: "🎯 RESUMO da IA: 2-3 linhas falando o estado da conversa e o melhor caminho a seguir." },
     direcao: { type: "string", description: "🎯 DIREÇÃO FINAL: 1 frase sobre o melhor caminho pra continuar sem parecer robô e sem parecer carente." },
+    leitor_interesse: {
+      type: "object",
+      description: "🧠 LEITOR DE INTERESSE: por que ela respondeu?",
+      properties: {
+        gostou_conversa: { type: "boolean", description: "Ela respondeu porque gostou da conversa / tá interessada." },
+        educacao: { type: "boolean", description: "Ela respondeu só por educação / formalidade." },
+        resposta_automatica: { type: "boolean", description: "Parece resposta automática, reação mecânica ou sem pensar." },
+        sem_interesse: { type: "boolean", description: "A resposta indica falta de interesse real em continuar." },
+        confianca: { type: "number", minimum: 0, maximum: 100, description: "Confiança da leitura (0-100)." },
+        nota: { type: "string", description: "1 frase justificando a leitura." },
+      },
+      required: ["gostou_conversa","educacao","resposta_automatica","sem_interesse","confianca","nota"],
+      additionalProperties: false,
+    },
   },
   required: [
     "assunto_principal","clima","clima_tag","energia_dela_nivel","interesse_nivel",
@@ -177,6 +191,7 @@ const SCHEMA = {
     "investimento","investimento_nivel",
     "respostas_alternativas","escalar_interesse","assunto_ideal","evitar","continuacao_curta",
     "chance_encontro","perfil_tipo","perfil_funciona_com","resumo_ia","direcao",
+    "leitor_interesse",
   ],
   additionalProperties: false,
 } as const;
@@ -239,6 +254,14 @@ export interface FlowResult {
   perfil_funciona_com: string[];
   resumo_ia: string;
   direcao: string;
+  leitor_interesse: {
+    gostou_conversa: boolean;
+    educacao: boolean;
+    resposta_automatica: boolean;
+    sem_interesse: boolean;
+    confianca: number;
+    nota: string;
+  };
 }
 
 export const continuarConversa = createServerFn({ method: "POST" })

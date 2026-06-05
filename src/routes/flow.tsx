@@ -299,6 +299,40 @@ function FlowPage() {
             </ul>
           </div>
 
+          {/* 🧠 LEITOR DE INTERESSE */}
+          <div className="card-premium p-5 md:p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="size-1.5 rounded-full bg-accent animate-pulse" style={{ boxShadow: "0 0 10px var(--accent)" }} />
+              <span className="text-[10px] uppercase tracking-[0.22em] text-accent">🧠 Leitor de interesse</span>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">Ela respondeu porque:</p>
+            <div className="space-y-2 mb-4">
+              {[
+                { key: "gostou_conversa", label: "Gostou da conversa" },
+                { key: "educacao", label: "Educação" },
+                { key: "resposta_automatica", label: "Resposta automática" },
+                { key: "sem_interesse", label: "Sem interesse" },
+              ].map((item) => {
+                const checked = result.leitor_interesse[item.key as keyof typeof result.leitor_interesse] as boolean;
+                return (
+                  <div key={item.key} className="flex items-center gap-3">
+                    <div className={`size-5 rounded-md flex items-center justify-center text-xs font-bold transition ${checked ? "bg-accent text-background" : "bg-card/60 ring-1 ring-border text-transparent"}`}>
+                      {checked ? "✓" : ""}
+                    </div>
+                    <span className={`text-sm ${checked ? "text-foreground font-medium" : "text-muted-foreground"}`}>{item.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex items-center justify-between rounded-xl bg-card/50 ring-1 ring-border p-3">
+              <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Confiança da leitura</span>
+              <span className="text-sm font-semibold tabular-nums text-accent">{result.leitor_interesse.confianca}%</span>
+            </div>
+            {result.leitor_interesse.nota && (
+              <p className="mt-3 text-xs text-foreground/75 italic">“{result.leitor_interesse.nota}”</p>
+            )}
+          </div>
+
           {/* 🧠 LEITURA */}
           <div className="card-premium p-5 md:p-6">
             <div className="flex items-center gap-2 mb-4">
