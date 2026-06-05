@@ -80,6 +80,14 @@ COMO ESCREVER:
 - comenta UMA coisa específica do story
 - desapego > impacto.
 
+🧠 DETALHE QUE CHAMOU ATENÇÃO (CRÍTICO — antes de gerar respostas):
+Liste 3 a 5 detalhes REAIS e VISÍVEIS da foto. Nada de interpretação, só o que dá pra ver.
+- detalhes_encontrados: array de 3-5 itens curtos (2-5 palavras cada), ex: "Flash estourado", "Vestido preto", "Almofada tropical", "Música 'Celebridade'", "Quarto iluminado".
+- melhor_assunto: a frase mais natural pra puxar conversa baseada NESSES detalhes. MÁX 12 palavras. Ex: "esse flash acabou com a foto kkk"
+- melhor_assunto_porque: 1 linha curta explicando por que esse gancho funciona. Ex: "Foca num detalhe real e não na aparência."
+
+Regra: o melhor assunto NÃO pode ser elogio de beleza. Tem que ser observação, deboche ou curiosidade sobre um elemento real da imagem.
+
 🎯 DETECTOR DE TIPO DE STORY (CRÍTICO — ANTES de gerar respostas):
 Classifique o story em UM tipo (use exatamente um destes rótulos):
 "📸 Selfie / Espelho", "🥤 Bebida / Comida", "🎂 Aniversário", "🎵 Música", "🐶 Pet", "🚗 Carro", "🏋️ Academia", "✈️ Viagem", "🧉 Chimarrão", "😂 Meme", "🌅 Paisagem", "🎮 Game", "🧩 Outro".
