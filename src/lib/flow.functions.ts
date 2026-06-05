@@ -198,6 +198,23 @@ export interface FlowResult {
   gancho_direcao: string;
   proxima_mensagem: string;
   porque_funciona: string;
+  melhor_resposta_nota: number;
+  melhor_resposta_motivos: string[];
+  traducao_bullets: string[];
+  traducao_sinal: "positivo"|"neutro"|"negativo";
+  chance_resposta_por_modo: {
+    natural: number;
+    engracada: number;
+    flertando: number;
+    inteligente: number;
+    provocando: number;
+  };
+  proximo_passo: {
+    se_rir: string;
+    se_concordar: string;
+    se_mudar_assunto: string;
+    se_sumir: string;
+  };
   score_chance_resposta: number;
   score_naturalidade: number;
   score_carencia: number;
