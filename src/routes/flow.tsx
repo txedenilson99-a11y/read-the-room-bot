@@ -360,28 +360,57 @@ function FlowPage() {
             </div>
           </div>
 
-          {/* MEDIDORES FINAIS */}
-          <div className="card-premium p-5 md:p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Meter label="📈 Chance de continuar" value={result.chance_continuar} />
-            <Meter label="🔥 Potencial de conexão" value={result.potencial_conexao} tone="violet" />
-            <div>
-              <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
-                <span className="uppercase tracking-[0.18em]">⚡ Risco morrer</span>
-                <span className="font-medium text-foreground capitalize">{result.risco_morrer_nivel}</span>
+          {/* 📈 PREVISÃO */}
+          <div className="card-premium p-5 md:p-6">
+            <Chip>📈 Previsão</Chip>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Meter label="Continuar conversa" value={result.chance_continuar} />
+              <Meter label="Chance de encontro" value={result.chance_encontro} tone="violet" />
+              <div>
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
+                  <span className="uppercase tracking-[0.18em]">Risco morrer</span>
+                  <span className="font-medium text-foreground capitalize">{result.risco_morrer_nivel}</span>
+                </div>
+                <Meter label="" value={result.risco_morrer} tone="destructive" />
               </div>
-              <Meter label="" value={result.risco_morrer} tone="destructive" />
+            </div>
+            <div className="mt-4">
+              <Meter label="🔥 Potencial de conexão" value={result.potencial_conexao} tone="violet" />
             </div>
           </div>
 
-          {/* 🎯 DIREÇÃO FINAL */}
+          {/* 🧬 PERFIL DELA */}
+          <div className="card-premium p-5 md:p-6">
+            <Chip tone="violet">🧬 Perfil dela</Chip>
+            <div className="mt-4 space-y-3">
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Tipo detectado</div>
+                <p className="text-base font-medium text-foreground">{result.perfil_tipo}</p>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">Conversa funciona melhor com</div>
+                <ul className="flex flex-wrap gap-2">
+                  {result.perfil_funciona_com.map((s, i) => (
+                    <li key={i} className="text-xs px-2.5 py-1 rounded-full bg-card/60 ring-1 ring-border text-foreground/85">✓ {s}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* 🎯 RESUMO IA */}
           <div className="card-premium p-5 md:p-6"
             style={{
               background:
                 "linear-gradient(135deg, color-mix(in oklab, var(--accent) 10%, transparent), transparent 60%)",
             }}
           >
-            <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-2">🎯 Direção final</div>
-            <p className="text-sm md:text-base text-foreground/90">{result.direcao}</p>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-2">🎯 Resumo da IA</div>
+            <p className="text-sm md:text-base text-foreground/90 leading-relaxed mb-3">{result.resumo_ia}</p>
+            <div className="pt-3 border-t border-border/50">
+              <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Direção final</div>
+              <p className="text-sm text-foreground/90">{result.direcao}</p>
+            </div>
           </div>
 
           <button
