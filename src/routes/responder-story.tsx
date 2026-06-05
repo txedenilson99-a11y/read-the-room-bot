@@ -259,7 +259,48 @@ function ResponderStoryPage() {
           </div>
 
 
-          {/* Leitura */}
+          {/* Detector de Tipo de Story */}
+          <div className="p-5 rounded-3xl ring-1 ring-accent/30 bg-gradient-to-br from-accent/10 to-violet/5">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Tipo Detectado</div>
+              <span className="text-[10px] tabular-nums text-muted-foreground">
+                confiança {result.nivel_confianca}%
+              </span>
+            </div>
+            <div className="text-xl font-medium text-foreground mb-4">{result.tipo_story}</div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-emerald-400 mb-2">Assuntos que dá pra usar</div>
+                <ul className="grid gap-1.5">
+                  {result.tipo_assuntos_usar.map((item, i) => (
+                    <li key={i} className="text-sm text-foreground flex gap-2">
+                      <span className="text-emerald-400 shrink-0">→</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-red-400 mb-2">O que evitar</div>
+                <ul className="grid gap-1.5">
+                  {result.tipo_assuntos_evitar.map((item, i) => (
+                    <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                      <span className="text-red-400 shrink-0">✗</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {result.intencao_incerta && (
+              <div className="mt-4 p-3 rounded-2xl bg-amber-400/10 ring-1 ring-amber-400/30 text-xs text-amber-200">
+                ⚠️ Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story.
+              </div>
+            )}
+          </div>
+
           <div className="p-5 rounded-3xl ring-1 ring-violet/25 bg-violet/5">
             <div className="text-[11px] uppercase tracking-[0.2em] text-violet mb-2">Leitura</div>
             <p className="text-sm text-foreground">{result.leitura}</p>
