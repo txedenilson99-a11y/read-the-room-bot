@@ -198,7 +198,7 @@ const SCHEMA = {
       additionalProperties: false,
     },
   },
-  required: ["leitura", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: ["leitura", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "detalhes_encontrados", "melhor_assunto", "melhor_assunto_porque", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
   additionalProperties: false,
 } as const;
 
