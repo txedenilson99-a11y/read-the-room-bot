@@ -343,7 +343,7 @@ function FlowPage() {
               <CopyableMsg label="😂 Engraçada" text={result.respostas_alternativas.engracada} />
               <CopyableMsg label="🔥 Flertando" text={result.respostas_alternativas.flertando} />
               <CopyableMsg label="🧠 Inteligente" text={result.respostas_alternativas.inteligente} />
-              <CopyableMsg label="🌙 Madrugada" text={result.respostas_alternativas.madrugada} />
+              <CopyableMsg label="😏 Provocando" text={result.respostas_alternativas.provocando} />
             </div>
           </div>
 
