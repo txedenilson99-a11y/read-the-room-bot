@@ -191,6 +191,7 @@ const SCHEMA = {
     "investimento","investimento_nivel",
     "respostas_alternativas","escalar_interesse","assunto_ideal","evitar","continuacao_curta",
     "chance_encontro","perfil_tipo","perfil_funciona_com","resumo_ia","direcao",
+    "leitor_interesse",
   ],
   additionalProperties: false,
 } as const;
