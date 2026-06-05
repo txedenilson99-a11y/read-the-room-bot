@@ -76,17 +76,22 @@ const SCHEMA = {
     gancho_direcao: { type: "string", description: "Melhor direção pra continuar a partir do gancho. 1 linha." },
     proxima_mensagem: { type: "string", description: "🎯 A MELHOR resposta. Maior chance de manter a conversa fluindo. Natural, curta, no tom do modo escolhido." },
     porque_funciona: { type: "string", description: "1-2 linhas explicando por que essa mensagem combina agora." },
+    score_chance_resposta: { type: "number", minimum: 0, maximum: 100, description: "Chance dela responder a próxima mensagem." },
+    score_naturalidade: { type: "number", minimum: 0, maximum: 100 },
+    score_carencia: { type: "number", minimum: 0, maximum: 100, description: "Carência percebida. Quanto menor, melhor. Idealmente 0." },
+    investimento: { type: "number", minimum: 0, maximum: 100, description: "Quanto ela tá investindo na conversa (escrevendo, perguntando, mantendo o assunto)." },
+    investimento_nivel: { type: "string", enum: ["baixo","medio","alto"] },
     respostas_alternativas: {
       type: "object",
-      description: "Uma resposta pronta pra cada modo, além da principal.",
+      description: "Uma resposta pronta pra cada tom: natural, engraçada, flertando, inteligente e provocando.",
       properties: {
         natural: { type: "string" },
         engracada: { type: "string" },
         flertando: { type: "string" },
         inteligente: { type: "string" },
-        madrugada: { type: "string" },
+        provocando: { type: "string", description: "Provocação leve, sem ofender, com humor. Não confundir com cantada." },
       },
-      required: ["natural","engracada","flertando","inteligente","madrugada"],
+      required: ["natural","engracada","flertando","inteligente","provocando"],
       additionalProperties: false,
     },
     escalar_interesse: { type: "string", description: "1 linha sobre como aumentar conexão sem parecer emocionado." },
@@ -110,6 +115,14 @@ const SCHEMA = {
       required: ["kkk","sim","nao","talvez","sei_la","emoji"],
       additionalProperties: false,
     },
+    chance_encontro: { type: "number", minimum: 0, maximum: 100, description: "Chance de evoluir pra um encontro real, com base no clima atual." },
+    perfil_tipo: { type: "string", description: "Tipo dela detectado em 1 linha curta (ex: 'Emocional e brincalhona', 'Direta e seca', 'Reservada e curiosa')." },
+    perfil_funciona_com: {
+      type: "array", minItems: 2, maxItems: 5,
+      items: { type: "string" },
+      description: "O que funciona melhor com esse tipo (ex: 'Humor', 'Histórias', 'Provocação leve', 'Profundidade').",
+    },
+    resumo_ia: { type: "string", description: "🎯 RESUMO da IA: 2-3 linhas falando o estado da conversa e o melhor caminho a seguir." },
     direcao: { type: "string", description: "🎯 DIREÇÃO FINAL: 1 frase sobre o melhor caminho pra continuar sem parecer robô e sem parecer carente." },
   },
   required: [
@@ -117,8 +130,11 @@ const SCHEMA = {
     "nivel_interesse","energia_dela","risco_morrer","risco_morrer_nivel",
     "chance_continuar","potencial_conexao",
     "gancho_ultima_msg","gancho_entregou","gancho_direcao",
-    "proxima_mensagem","porque_funciona","respostas_alternativas",
-    "escalar_interesse","assunto_ideal","evitar","continuacao_curta","direcao",
+    "proxima_mensagem","porque_funciona",
+    "score_chance_resposta","score_naturalidade","score_carencia",
+    "investimento","investimento_nivel",
+    "respostas_alternativas","escalar_interesse","assunto_ideal","evitar","continuacao_curta",
+    "chance_encontro","perfil_tipo","perfil_funciona_com","resumo_ia","direcao",
   ],
   additionalProperties: false,
 } as const;
@@ -140,12 +156,17 @@ export interface FlowResult {
   gancho_direcao: string;
   proxima_mensagem: string;
   porque_funciona: string;
+  score_chance_resposta: number;
+  score_naturalidade: number;
+  score_carencia: number;
+  investimento: number;
+  investimento_nivel: "baixo"|"medio"|"alto";
   respostas_alternativas: {
     natural: string;
     engracada: string;
     flertando: string;
     inteligente: string;
-    madrugada: string;
+    provocando: string;
   };
   escalar_interesse: string;
   assunto_ideal: string;
@@ -154,6 +175,10 @@ export interface FlowResult {
     kkk: string; sim: string; nao: string;
     talvez: string; sei_la: string; emoji: string;
   };
+  chance_encontro: number;
+  perfil_tipo: string;
+  perfil_funciona_com: string[];
+  resumo_ia: string;
   direcao: string;
 }
 
