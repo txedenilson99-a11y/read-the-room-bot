@@ -76,6 +76,47 @@ const SCHEMA = {
     gancho_direcao: { type: "string", description: "Melhor direção pra continuar a partir do gancho. 1 linha." },
     proxima_mensagem: { type: "string", description: "🎯 A MELHOR resposta. Maior chance de manter a conversa fluindo. Natural, curta, no tom do modo escolhido." },
     porque_funciona: { type: "string", description: "1-2 linhas explicando por que essa mensagem combina agora." },
+    melhor_resposta_nota: { type: "number", minimum: 0, maximum: 10, description: "Nota da melhor resposta de 0 a 10 (ex: 9.4)." },
+    melhor_resposta_motivos: {
+      type: "array", minItems: 2, maxItems: 5,
+      items: { type: "string" },
+      description: "Motivos curtos do porquê a melhor resposta funciona (ex: 'Natural', 'Engraçada', 'Gera resposta', 'Sem pressão').",
+    },
+    traducao_bullets: {
+      type: "array", minItems: 2, maxItems: 5,
+      items: { type: "string" },
+      description: "🧠 O que ela quis dizer com a última mensagem. 2-4 bullets curtos (ex: 'Ela entrou na brincadeira.', 'Compartilhou uma emoção.').",
+    },
+    traducao_sinal: {
+      type: "string",
+      enum: ["positivo","neutro","negativo"],
+      description: "Sinal geral da última mensagem dela.",
+    },
+    chance_resposta_por_modo: {
+      type: "object",
+      description: "Chance estimada (0-100) de ela responder cada modo de mensagem.",
+      properties: {
+        natural: { type: "number", minimum: 0, maximum: 100 },
+        engracada: { type: "number", minimum: 0, maximum: 100 },
+        flertando: { type: "number", minimum: 0, maximum: 100 },
+        inteligente: { type: "number", minimum: 0, maximum: 100 },
+        provocando: { type: "number", minimum: 0, maximum: 100 },
+      },
+      required: ["natural","engracada","flertando","inteligente","provocando"],
+      additionalProperties: false,
+    },
+    proximo_passo: {
+      type: "object",
+      description: "🎮 Próximo passo dependendo da reação dela.",
+      properties: {
+        se_rir: { type: "string", description: "O que fazer se ela rir (ex: 'continuar brincadeira')." },
+        se_concordar: { type: "string", description: "Se ela concordar (ex: 'aprofundar assunto')." },
+        se_mudar_assunto: { type: "string", description: "Se ela mudar de assunto (ex: 'seguir o assunto dela')." },
+        se_sumir: { type: "string", description: "Se ela sumir (ex: 'não cobrar resposta')." },
+      },
+      required: ["se_rir","se_concordar","se_mudar_assunto","se_sumir"],
+      additionalProperties: false,
+    },
     score_chance_resposta: { type: "number", minimum: 0, maximum: 100, description: "Chance dela responder a próxima mensagem." },
     score_naturalidade: { type: "number", minimum: 0, maximum: 100 },
     score_carencia: { type: "number", minimum: 0, maximum: 100, description: "Carência percebida. Quanto menor, melhor. Idealmente 0." },
@@ -130,7 +171,8 @@ const SCHEMA = {
     "nivel_interesse","energia_dela","risco_morrer","risco_morrer_nivel",
     "chance_continuar","potencial_conexao",
     "gancho_ultima_msg","gancho_entregou","gancho_direcao",
-    "proxima_mensagem","porque_funciona",
+    "proxima_mensagem","porque_funciona","melhor_resposta_nota","melhor_resposta_motivos",
+    "traducao_bullets","traducao_sinal","chance_resposta_por_modo","proximo_passo",
     "score_chance_resposta","score_naturalidade","score_carencia",
     "investimento","investimento_nivel",
     "respostas_alternativas","escalar_interesse","assunto_ideal","evitar","continuacao_curta",
@@ -156,6 +198,23 @@ export interface FlowResult {
   gancho_direcao: string;
   proxima_mensagem: string;
   porque_funciona: string;
+  melhor_resposta_nota: number;
+  melhor_resposta_motivos: string[];
+  traducao_bullets: string[];
+  traducao_sinal: "positivo"|"neutro"|"negativo";
+  chance_resposta_por_modo: {
+    natural: number;
+    engracada: number;
+    flertando: number;
+    inteligente: number;
+    provocando: number;
+  };
+  proximo_passo: {
+    se_rir: string;
+    se_concordar: string;
+    se_mudar_assunto: string;
+    se_sumir: string;
+  };
   score_chance_resposta: number;
   score_naturalidade: number;
   score_carencia: number;
