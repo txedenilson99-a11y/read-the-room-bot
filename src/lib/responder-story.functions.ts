@@ -197,6 +197,10 @@ export interface RespostaScored {
 
 export interface ResponderStoryResult {
   leitura: string;
+  tipo_story: string;
+  tipo_assuntos_usar: string[];
+  tipo_assuntos_evitar: string[];
+  intencao_incerta: boolean;
   vibe: string;
   intencao: string;
   evitar: string;
