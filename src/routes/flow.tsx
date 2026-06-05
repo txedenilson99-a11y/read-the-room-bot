@@ -286,31 +286,29 @@ function FlowPage() {
               </div>
             </div>
             <p className="text-sm text-foreground/85 mb-4">{result.clima}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <Meter label="Interesse" value={result.nivel_interesse} />
+              <Meter label="Investimento" value={result.investimento} />
               <Meter label="Energia dela" value={result.energia_dela} tone="violet" />
               <Meter label="Risco de morrer" value={result.risco_morrer} tone="destructive" />
             </div>
           </div>
 
-          {/* 🚀 GANCHO */}
+          {/* 🎯 O QUE ELA ENTREGOU + GANCHO */}
           <div className="card-premium p-5 md:p-6">
-            <Chip tone="violet">🚀 Gancho detectado</Chip>
+            <Chip tone="violet">🎯 O que ela entregou</Chip>
             <div className="mt-4 space-y-3">
               <div>
                 <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Última mensagem dela</div>
                 <p className="text-sm text-foreground/90 italic">"{result.gancho_ultima_msg}"</p>
               </div>
+              <ul className="flex flex-wrap gap-2">
+                {result.gancho_entregou.map((s, i) => (
+                  <li key={i} className="text-xs px-2.5 py-1 rounded-full bg-card/60 ring-1 ring-border text-foreground/85">✓ {s}</li>
+                ))}
+              </ul>
               <div>
-                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">O que ela entregou</div>
-                <ul className="flex flex-wrap gap-2">
-                  {result.gancho_entregou.map((s, i) => (
-                    <li key={i} className="text-xs px-2.5 py-1 rounded-full bg-card/60 ring-1 ring-border text-foreground/85">✓ {s}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Melhor direção</div>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">🚀 Melhor direção</div>
                 <p className="text-sm text-foreground/90">{result.gancho_direcao}</p>
               </div>
             </div>
