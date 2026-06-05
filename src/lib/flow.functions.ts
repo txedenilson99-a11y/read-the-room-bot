@@ -165,6 +165,43 @@ const SCHEMA = {
     },
     resumo_ia: { type: "string", description: "🎯 RESUMO da IA: 2-3 linhas falando o estado da conversa e o melhor caminho a seguir." },
     direcao: { type: "string", description: "🎯 DIREÇÃO FINAL: 1 frase sobre o melhor caminho pra continuar sem parecer robô e sem parecer carente." },
+    status_conversa: {
+      type: "object",
+      description: "📊 STATUS DA CONVERSA: diagnóstico honesto do estado atual.",
+      properties: {
+        checklist: {
+          type: "array", minItems: 4, maxItems: 8,
+          items: {
+            type: "object",
+            properties: {
+              ok: { type: "boolean", description: "true = ✅ aconteceu, false = ❌ não aconteceu." },
+              texto: { type: "string", description: "Frase curta (ex: 'Ela respondeu.', 'Entrou na brincadeira.', 'Não criou assunto novo.', 'Não fez pergunta.')." },
+            },
+            required: ["ok","texto"],
+            additionalProperties: false,
+          },
+        },
+        o_que_aconteceu: { type: "string", description: "2-3 linhas descrevendo o que aconteceu na conversa de forma honesta e calma." },
+        nao_significa: {
+          type: "array", minItems: 2, maxItems: 5, items: { type: "string" },
+          description: "O que isso NÃO significa (ex: 'Ela perdeu interesse.', 'Ela está te ignorando.'). Lista de fantasias a descartar.",
+        },
+        pode_significar: {
+          type: "array", minItems: 2, maxItems: 5, items: { type: "string" },
+          description: "O que isso PODE significar (ex: 'Estava ocupada.', 'Achou agradável, mas o tema acabou.'). Possibilidades reais.",
+        },
+        investimento_dela: { type: "string", description: "1-2 linhas sobre o investimento dela (ex: 'Baixo a médio. Responde quando provocada, mas não puxa muito.')." },
+        energia_dela_status: { type: "string", description: "1 linha sobre a energia dela (ex: 'Leve. Confortável. Sem sinais de desconforto.')." },
+        risco_real: { type: "string", description: "1-2 linhas sobre o risco real (ex: 'Baixo. Não existe rejeição explícita, apenas falta de impulso.')." },
+        veredito_ia: { type: "string", description: "Veredito honesto em 1-2 linhas (ex: 'A conversa foi positiva. O assunto perdeu força, não a conexão.')." },
+        proximo_passo_status: {
+          type: "array", minItems: 1, maxItems: 4, items: { type: "string" },
+          description: "Próximos passos práticos (ex: 'Não insistir no mesmo tema.', 'Abrir assunto novo ou esperar um momento melhor.').",
+        },
+      },
+      required: ["checklist","o_que_aconteceu","nao_significa","pode_significar","investimento_dela","energia_dela_status","risco_real","veredito_ia","proximo_passo_status"],
+      additionalProperties: false,
+    },
     leitor_interesse: {
       type: "object",
       description: "🧠 LEITOR DE INTERESSE: por que ela respondeu?",
