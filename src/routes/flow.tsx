@@ -333,6 +333,82 @@ function FlowPage() {
             )}
           </div>
 
+          {/* 📊 STATUS DA CONVERSA */}
+          {result.status_conversa && (
+            <div className="card-premium p-5 md:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="size-1.5 rounded-full bg-violet animate-pulse" style={{ background: "var(--violet)", boxShadow: "0 0 10px var(--violet)" }} />
+                <span className="text-[10px] uppercase tracking-[0.22em]" style={{ color: "var(--violet)" }}>📊 Status da conversa</span>
+              </div>
+
+              <ul className="space-y-1.5 mb-5 text-sm">
+                {result.status_conversa.checklist.map((c, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <span className={`shrink-0 mt-0.5 ${c.ok ? "text-accent" : "text-destructive"}`}>{c.ok ? "✅" : "❌"}</span>
+                    <span className={c.ok ? "text-foreground/90" : "text-muted-foreground"}>{c.texto}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 mb-4">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1.5">O que aconteceu</div>
+                <p className="text-sm text-foreground/90">{result.status_conversa.o_que_aconteceu}</p>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-3 mb-4">
+                <div className="rounded-xl bg-card/50 ring-1 ring-destructive/20 p-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">O que isso NÃO significa</div>
+                  <ul className="space-y-1 text-sm text-foreground/85">
+                    {result.status_conversa.nao_significa.map((s, i) => (
+                      <li key={i} className="flex gap-2"><span className="text-destructive">✖</span><span>{s}</span></li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="rounded-xl bg-card/50 ring-1 ring-accent/20 p-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">O que isso PODE significar</div>
+                  <ul className="space-y-1 text-sm text-foreground/85">
+                    {result.status_conversa.pode_significar.map((s, i) => (
+                      <li key={i} className="flex gap-2"><span className="text-accent">•</span><span>{s}</span></li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-3 gap-3 mb-4">
+                <div className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Investimento dela</div>
+                  <p className="text-sm text-foreground/90">{result.status_conversa.investimento_dela}</p>
+                </div>
+                <div className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Energia dela</div>
+                  <p className="text-sm text-foreground/90">{result.status_conversa.energia_dela_status}</p>
+                </div>
+                <div className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Risco real</div>
+                  <p className="text-sm text-foreground/90">{result.status_conversa.risco_real}</p>
+                </div>
+              </div>
+
+              <div className="rounded-xl p-4 mb-4"
+                style={{
+                  background: "linear-gradient(135deg, color-mix(in oklab, var(--accent) 12%, transparent), color-mix(in oklab, var(--violet) 10%, transparent))",
+                }}
+              >
+                <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-1.5">⚖️ Veredito da IA</div>
+                <p className="text-sm text-foreground font-medium">{result.status_conversa.veredito_ia}</p>
+              </div>
+
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">→ Próximo passo</div>
+                <ul className="space-y-1 text-sm text-foreground/90">
+                  {result.status_conversa.proximo_passo_status.map((p, i) => (
+                    <li key={i} className="flex gap-2"><span className="text-accent">→</span><span>{p}</span></li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+
           {/* 🧠 LEITURA */}
           <div className="card-premium p-5 md:p-6">
             <div className="flex items-center gap-2 mb-4">
