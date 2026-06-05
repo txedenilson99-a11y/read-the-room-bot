@@ -396,6 +396,19 @@ function ResponderStoryPage() {
                   <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-[10px] uppercase tracking-[0.18em] text-accent">{r.tipo}</span>
+                      {(() => {
+                        const cor =
+                          r.risco_gado === "Baixo"
+                            ? "bg-emerald-400/15 text-emerald-300 ring-emerald-400/30"
+                            : r.risco_gado === "Médio"
+                            ? "bg-amber-400/15 text-amber-300 ring-amber-400/30"
+                            : "bg-red-400/15 text-red-300 ring-red-400/30";
+                        return (
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ring-1 ${cor}`}>
+                            🚨 Gado: {r.risco_gado}
+                          </span>
+                        );
+                      })()}
                       {tags.map((t) => (
                         <span key={t} className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet/15 text-violet">
                           {t}
