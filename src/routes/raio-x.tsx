@@ -2,13 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { raioXPerfil, type EstiloAbridor, type RaioXResult } from "@/lib/raio-x.functions";
+import { raioXPerfil, type RaioXResult } from "@/lib/raio-x.functions";
 
 export const Route = createFileRoute("/raio-x")({
   head: () => ({
     meta: [
-      { title: "Raio-X de Perfil — ScanSocial" },
-      { name: "description", content: "Analise fotos e bio. A IA gera 10 abridores únicos pro perfil." },
+      { title: "Raio-X de Perfil v5.20 — ScanSocial" },
+      { name: "description", content: "Detecta tipo de perfil, fatos reais e gera abridores naturais." },
     ],
   }),
   component: RaioXPage,
@@ -25,20 +25,11 @@ function fileToDataUrl(file: File): Promise<string> {
 
 const LOADING = [
   "lendo as fotos…",
-  "captando a vibe…",
-  "achando detalhes que ninguém vê…",
-  "montando abridores únicos…",
+  "detectando o tipo de perfil…",
+  "achando assuntos reais…",
+  "montando abridores naturais…",
   "calibrando o tom…",
 ];
-
-const ESTILO_META: Record<EstiloAbridor, { label: string; icon: string }> = {
-  natural: { label: "Natural", icon: "😎" },
-  engracado: { label: "Engraçado", icon: "😂" },
-  flertando: { label: "Flertando", icon: "😏" },
-  inteligente: { label: "Inteligente", icon: "🧠" },
-  direto: { label: "Direto", icon: "🎯" },
-  diferente: { label: "Diferente", icon: "🌙" },
-};
 
 function RaioXPage() {
   const fn = useServerFn(raioXPerfil);
@@ -46,8 +37,7 @@ function RaioXPage() {
   const [images, setImages] = useState<string[]>([]);
   const [bio, setBio] = useState("");
   const [contexto, setContexto] = useState("");
-  const [copied, setCopied] = useState<number | null>(null);
-  const [filter, setFilter] = useState<EstiloAbridor | "todos">("todos");
+  const [copied, setCopied] = useState<string | null>(null);
   const [phrase, setPhrase] = useState(LOADING[0]);
 
   const mutation = useMutation({ mutationFn: () => fn({ data: { bio, contexto, images } }) });
@@ -70,16 +60,14 @@ function RaioXPage() {
     mutation.reset();
   };
 
-  const copy = async (text: string, i: number) => {
+  const copy = async (text: string, key: string) => {
     await navigator.clipboard.writeText(text);
-    setCopied(i);
+    setCopied(key);
     setTimeout(() => setCopied(null), 1500);
   };
 
   const result: RaioXResult | undefined = mutation.data?.result;
   const canGenerate = images.length > 0 || bio.trim().length > 3 || contexto.trim().length > 3;
-
-  const filtered = result?.abridores.filter((a) => filter === "todos" || a.estilo === filter) ?? [];
 
   return (
     <main className="max-w-3xl mx-auto px-6 pt-16 pb-40">
@@ -87,13 +75,13 @@ function RaioXPage() {
 
       <header className="mt-8 mb-10 animate-fade-up">
         <div className="text-[11px] font-medium uppercase tracking-[0.25em] text-accent mb-3">
-          Raio-X de Perfil
+          Raio-X de Perfil v5.20
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[26ch]">
-          Manda as fotos e a bio. A IA acha assuntos que passam despercebidos.
+          Manda as fotos e a bio. A IA acha assuntos reais.
         </h1>
         <p className="text-sm text-muted-foreground mt-3 max-w-[52ch]">
-          Instagram, Tinder, Badoo, Bumble, Facebook Namoro. 10 abridores únicos, continuação pra cada um, e o que evitar.
+          Sem cantadas prontas. Sem psicologia inventada. Sem resposta robótica.
         </p>
       </header>
 
@@ -150,83 +138,113 @@ function RaioXPage() {
 
       {result && (
         <section className="mt-12 space-y-10 animate-fade-up">
-          <div className="border-t border-border pt-8">
-            <span className="inline-block px-3 py-1 rounded-full bg-secondary text-[10px] font-medium uppercase tracking-wider text-muted-foreground ring-1 ring-border mb-4">
-              Leitura
-            </span>
-            <p className="text-xl md:text-2xl font-medium text-balance leading-snug">{result.leitura}</p>
-            <div className="flex flex-wrap gap-2 mt-4">
-              <Tag label="Persona" value={result.persona} />
-              <Tag label="Melhor abordagem" value={result.melhor_abordagem} tone="accent" />
+          {/* TIPO PRINCIPAL */}
+          <div className="rounded-3xl bg-gradient-to-br from-accent/10 to-violet/10 ring-1 ring-accent/30 p-6">
+            <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-2">🧬 Tipo detectado</div>
+            <div className="flex items-baseline gap-3 mb-4">
+              <div className="text-3xl font-medium tracking-tight">Perfil {result.tipo_perfil.principal}</div>
+              <div className="text-xs text-muted-foreground">confiança {Math.round(result.tipo_perfil.confianca)}%</div>
             </div>
+            <ul className="space-y-1.5">
+              {result.tipo_perfil.motivos.map((m, i) => (
+                <li key={i} className="text-sm text-muted-foreground">• {m}</li>
+              ))}
+            </ul>
           </div>
 
-          <div className="rounded-3xl bg-card/60 ring-1 ring-border p-5">
-            <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-3">Chance de resposta</div>
-            <Bar value={result.chance_resposta} />
+          {/* MELHOR ABRIDOR */}
+          <div className="rounded-3xl bg-card/80 ring-1 ring-accent/40 p-6">
+            <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-3">🏆 Melhor abridor</div>
+            <p className="text-xl md:text-2xl font-medium leading-snug text-balance mb-4">"{result.melhor_abridor}"</p>
+            <button
+              onClick={() => copy(result.melhor_abridor, "best")}
+              className="text-xs px-3 py-1.5 rounded-full bg-accent text-accent-foreground hover:opacity-90 transition"
+            >
+              {copied === "best" ? "Copiado ✓" : "Copiar"}
+            </button>
           </div>
 
-          <Block title="📸 Sobre as fotos" items={result.fotos_observacoes} />
-          {result.bio_observacoes.length > 0 && <Block title="📝 Sobre a bio" items={result.bio_observacoes} />}
-          <Block title="🔥 Pontos de interesse" items={result.pontos_interesse} tone="violet" />
-          <Block title="😎 Observações inteligentes" items={result.observacoes_inteligentes} />
+          {/* FATOS */}
+          <Block title="👁️ Fatos observados" items={result.fatos_observados} />
 
+          {/* ASSUNTOS */}
+          <Block title="🔥 Assuntos encontrados" items={result.assuntos_encontrados} tone="violet" />
+
+          {/* 10 ABRIDORES */}
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-[10px] font-medium uppercase tracking-widest text-accent">
-                💬 Abridores únicos
-              </div>
-              <div className="text-xs text-muted-foreground">{filtered.length} de {result.abridores.length}</div>
-            </div>
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              <FilterChip active={filter === "todos"} onClick={() => setFilter("todos")} label="Todos" />
-              {(Object.keys(ESTILO_META) as EstiloAbridor[]).map((k) => (
-                <FilterChip key={k} active={filter === k} onClick={() => setFilter(k)} label={`${ESTILO_META[k].icon} ${ESTILO_META[k].label}`} />
+            <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-4">💬 10 abridores naturais</div>
+            <div className="space-y-2">
+              {result.abridores.map((a, i) => (
+                <div key={i} className="p-4 rounded-2xl bg-card/60 ring-1 ring-border hover:ring-accent/30 transition flex items-start gap-3">
+                  <div className="text-xs text-muted-foreground mt-0.5 w-5 shrink-0">{i + 1}.</div>
+                  <p className="text-sm leading-relaxed flex-1">{a}</p>
+                  <button
+                    onClick={() => copy(a, `a${i}`)}
+                    className="text-[11px] text-muted-foreground hover:text-foreground transition shrink-0"
+                  >
+                    {copied === `a${i}` ? "✓" : "copiar"}
+                  </button>
+                </div>
               ))}
             </div>
+          </div>
+
+          {/* EVITAR */}
+          <Block title="🚫 O que evitar" items={result.evitar} tone="danger" />
+
+          {/* CHANCE DE RESPOSTA */}
+          <div className="rounded-3xl bg-card/60 ring-1 ring-border p-5">
+            <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-3">📈 Chance de resposta</div>
+            <Bar value={result.chance_resposta.valor} />
+            <ul className="mt-4 space-y-1">
+              {result.chance_resposta.motivos.map((m, i) => (
+                <li key={i} className="text-xs text-muted-foreground">• {m}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* CONFIANÇA DA LEITURA */}
+          <div className="rounded-3xl bg-card/60 ring-1 ring-border p-5">
+            <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-4">🎯 Confiança da leitura</div>
             <div className="space-y-3">
-              {filtered.map((a, i) => {
-                const idx = result.abridores.indexOf(a);
-                const meta = ESTILO_META[a.estilo];
-                return (
-                  <div key={idx} className="p-5 rounded-2xl bg-card/60 ring-1 ring-border hover:ring-accent/30 transition">
-                    <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-2">
-                      {meta.icon} {meta.label}
-                    </div>
-                    <p className="text-sm text-foreground leading-relaxed mb-3">{a.texto}</p>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">se ela responder</div>
-                    <p className="text-xs text-muted-foreground leading-relaxed mb-4 italic">"{a.continuacao}"</p>
-                    <button
-                      onClick={() => copy(a.texto, idx)}
-                      className="text-xs text-muted-foreground hover:text-foreground transition"
-                    >
-                      {copied === idx ? "Copiado ✓" : "Copiar abridor"}
-                    </button>
-                  </div>
-                );
-              })}
+              <MiniBar label="Fatos observados" value={result.confianca_leitura.fatos_observados} />
+              <MiniBar label="Interesses" value={result.confianca_leitura.interesses} />
+              <MiniBar label="Personalidade" value={result.confianca_leitura.personalidade} />
+              <MiniBar label="Objetivo no app" value={result.confianca_leitura.objetivo_no_app} />
             </div>
           </div>
 
-          <Block title="⚠️ Evitar" items={result.evitar} tone="danger" />
+          {/* O QUE A IA NÃO SABE */}
+          <div className="rounded-3xl bg-muted/30 ring-1 ring-border p-5">
+            <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-3">🤔 O que a IA não sabe</div>
+            <ul className="space-y-1.5">
+              {result.nao_sabe.map((m, i) => (
+                <li key={i} className="text-sm text-muted-foreground">• {m}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* RESUMO FINAL */}
+          <div className="rounded-3xl bg-gradient-to-br from-card to-card/40 ring-1 ring-border p-6">
+            <div className="text-[10px] font-medium uppercase tracking-widest text-accent mb-4">📋 Resumo final</div>
+            <dl className="space-y-3 text-sm">
+              <Row k="Tipo de perfil" v={result.resumo.tipo_perfil} />
+              <Row k="Assunto mais forte" v={result.resumo.assunto_mais_forte} />
+              <Row k="Melhor estratégia" v={result.resumo.melhor_estrategia} />
+              <Row k="Risco" v={result.resumo.risco} />
+              <Row k="Objetivo" v={result.resumo.objetivo} />
+            </dl>
+          </div>
 
           <button
             onClick={() => mutation.mutate()}
             className="rounded-full bg-secondary px-4 py-2 text-sm hover:bg-secondary/70 transition"
           >
-            Gerar novos
+            Gerar novo raio-x
           </button>
         </section>
       )}
     </main>
-  );
-}
-
-function Tag({ label, value, tone }: { label: string; value: string; tone?: "accent" }) {
-  return (
-    <span className={`px-3 py-1.5 rounded-full text-xs ring-1 ${tone === "accent" ? "bg-accent/10 ring-accent/30 text-accent" : "bg-card/60 ring-border text-foreground"}`}>
-      <span className="text-muted-foreground mr-1.5">{label}:</span>{value}
-    </span>
   );
 }
 
@@ -249,6 +267,21 @@ function Bar({ value }: { value: number }) {
   );
 }
 
+function MiniBar({ label, value }: { label: string; value: number }) {
+  const v = Math.max(0, Math.min(100, Math.round(value ?? 0)));
+  return (
+    <div>
+      <div className="flex items-center justify-between text-xs mb-1">
+        <span className="text-muted-foreground">{label}</span>
+        <span className="font-medium">{v}%</span>
+      </div>
+      <div className="h-1 rounded-full bg-secondary overflow-hidden">
+        <div className="h-full rounded-full bg-accent" style={{ width: `${v}%` }} />
+      </div>
+    </div>
+  );
+}
+
 function Block({ title, items, tone }: { title: string; items: string[]; tone?: "violet" | "danger" }) {
   const color = tone === "violet" ? "text-violet" : tone === "danger" ? "text-destructive" : "text-accent";
   return (
@@ -265,13 +298,11 @@ function Block({ title, items, tone }: { title: string; items: string[]; tone?: 
   );
 }
 
-function FilterChip({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+function Row({ k, v }: { k: string; v: string }) {
   return (
-    <button
-      onClick={onClick}
-      className={`px-3 py-1.5 rounded-full text-xs transition ring-1 ${active ? "bg-accent text-accent-foreground ring-accent" : "bg-card/40 text-muted-foreground ring-border hover:text-foreground"}`}
-    >
-      {label}
-    </button>
+    <div className="flex flex-col sm:flex-row sm:gap-3">
+      <dt className="text-xs uppercase tracking-widest text-muted-foreground sm:w-40 shrink-0">{k}</dt>
+      <dd className="text-foreground">{v}</dd>
+    </div>
   );
 }
