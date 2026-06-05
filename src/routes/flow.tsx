@@ -230,6 +230,7 @@ function FlowPage() {
 
       {result && (
         <section className="mt-12 space-y-8 animate-fade-up">
+          {/* 🎯 MELHOR RESPOSTA */}
           <div className="card-premium p-5 md:p-6"
             style={{
               background:
@@ -237,7 +238,7 @@ function FlowPage() {
             }}
           >
             <div className="flex items-center justify-between mb-3">
-              <Chip>🌊 Próxima mensagem</Chip>
+              <Chip>🎯 Melhor resposta</Chip>
               <button onClick={copyMain} className="text-xs text-muted-foreground hover:text-foreground transition">
                 {copiedMain ? "Copiado ✓" : "Copiar"}
               </button>
@@ -246,16 +247,58 @@ function FlowPage() {
             <p className="mt-3 text-xs text-muted-foreground italic">{result.porque_funciona}</p>
           </div>
 
+          {/* 🧠 LEITURA */}
           <div className="card-premium p-5 md:p-6">
             <div className="flex items-center gap-2 mb-4">
               <span className="size-1.5 rounded-full bg-accent animate-pulse" style={{ boxShadow: "0 0 10px var(--accent)" }} />
-              <span className="text-[10px] uppercase tracking-[0.22em] text-accent">Leitura do flow</span>
+              <span className="text-[10px] uppercase tracking-[0.22em] text-accent">🧠 Leitura da conversa</span>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mb-5 text-sm">
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Assunto principal</div>
+                <p className="text-foreground/90">{result.assunto_principal}</p>
+              </div>
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Clima</div>
+                <p className="text-foreground/90 capitalize">{result.clima_tag}</p>
+              </div>
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Energia dela</div>
+                <p className="text-foreground/90 capitalize">{result.energia_dela_nivel}</p>
+              </div>
+              <div className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Interesse</div>
+                <p className="text-foreground/90 capitalize">{result.interesse_nivel}</p>
+              </div>
             </div>
             <p className="text-sm text-foreground/85 mb-4">{result.clima}</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Meter label="Interesse" value={result.nivel_interesse} />
               <Meter label="Energia dela" value={result.energia_dela} tone="violet" />
               <Meter label="Risco de morrer" value={result.risco_morrer} tone="destructive" />
+            </div>
+          </div>
+
+          {/* 🚀 GANCHO */}
+          <div className="card-premium p-5 md:p-6">
+            <Chip tone="violet">🚀 Gancho detectado</Chip>
+            <div className="mt-4 space-y-3">
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Última mensagem dela</div>
+                <p className="text-sm text-foreground/90 italic">"{result.gancho_ultima_msg}"</p>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">O que ela entregou</div>
+                <ul className="flex flex-wrap gap-2">
+                  {result.gancho_entregou.map((s, i) => (
+                    <li key={i} className="text-xs px-2.5 py-1 rounded-full bg-card/60 ring-1 ring-border text-foreground/85">✓ {s}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">Melhor direção</div>
+                <p className="text-sm text-foreground/90">{result.gancho_direcao}</p>
+              </div>
             </div>
           </div>
 
@@ -270,6 +313,7 @@ function FlowPage() {
             </div>
           </div>
 
+          {/* ⚠️ EVITAR */}
           <div className="card-premium p-5 md:p-6">
             <div className="text-[10px] uppercase tracking-[0.22em] mb-3" style={{ color: "var(--destructive)" }}>
               ⚠️ O que evitar
@@ -279,8 +323,21 @@ function FlowPage() {
             </ul>
           </div>
 
+          {/* 💬 ALTERNATIVAS */}
           <div className="card-premium p-5 md:p-6">
-            <Chip tone="violet">💬 Se ela mandar resposta curta</Chip>
+            <Chip>💬 Respostas alternativas</Chip>
+            <div className="mt-4 space-y-2">
+              <CopyableMsg label="😎 Natural" text={result.respostas_alternativas.natural} />
+              <CopyableMsg label="😂 Engraçada" text={result.respostas_alternativas.engracada} />
+              <CopyableMsg label="🔥 Flertando" text={result.respostas_alternativas.flertando} />
+              <CopyableMsg label="🧠 Inteligente" text={result.respostas_alternativas.inteligente} />
+              <CopyableMsg label="🌙 Madrugada" text={result.respostas_alternativas.madrugada} />
+            </div>
+          </div>
+
+          {/* 📩 RESPOSTA CURTA */}
+          <div className="card-premium p-5 md:p-6">
+            <Chip tone="violet">📩 Se ela responder curto</Chip>
             <div className="mt-4 space-y-2">
               <CopyableMsg label="kkk" text={result.continuacao_curta.kkk} />
               <CopyableMsg label="sim" text={result.continuacao_curta.sim} />
@@ -291,9 +348,28 @@ function FlowPage() {
             </div>
           </div>
 
-          <div className="card-premium p-5 md:p-6">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-2">Direção</div>
-            <p className="text-sm text-foreground/90">{result.direcao}</p>
+          {/* MEDIDORES FINAIS */}
+          <div className="card-premium p-5 md:p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Meter label="📈 Chance de continuar" value={result.chance_continuar} />
+            <Meter label="🔥 Potencial de conexão" value={result.potencial_conexao} tone="violet" />
+            <div>
+              <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
+                <span className="uppercase tracking-[0.18em]">⚡ Risco morrer</span>
+                <span className="font-medium text-foreground capitalize">{result.risco_morrer_nivel}</span>
+              </div>
+              <Meter label="" value={result.risco_morrer} tone="destructive" />
+            </div>
+          </div>
+
+          {/* 🎯 DIREÇÃO FINAL */}
+          <div className="card-premium p-5 md:p-6"
+            style={{
+              background:
+                "linear-gradient(135deg, color-mix(in oklab, var(--accent) 10%, transparent), transparent 60%)",
+            }}
+          >
+            <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-2">🎯 Direção final</div>
+            <p className="text-sm md:text-base text-foreground/90">{result.direcao}</p>
           </div>
 
           <button

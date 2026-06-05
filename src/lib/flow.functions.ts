@@ -52,16 +52,47 @@ POSTURA:
 const SCHEMA = {
   type: "object",
   properties: {
-    clima: { type: "string", description: "1 linha sobre o clima atual da conversa." },
+    assunto_principal: { type: "string", description: "O tema que está dominando a conversa agora. 1 linha curta." },
+    clima: { type: "string", description: "1 linha sobre o clima atual: leve, divertido, sério, flertando, provocativo ou neutro." },
+    clima_tag: {
+      type: "string",
+      enum: ["leve","divertido","serio","flertando","provocativo","neutro"],
+      description: "Classificação do clima em 1 palavra.",
+    },
+    energia_dela_nivel: { type: "string", enum: ["baixa","media","alta"] },
+    interesse_nivel: { type: "string", enum: ["baixo","medio","alto"] },
     nivel_interesse: { type: "number", minimum: 0, maximum: 100 },
     energia_dela: { type: "number", minimum: 0, maximum: 100 },
     risco_morrer: { type: "number", minimum: 0, maximum: 100, description: "Risco da conversa morrer agora." },
-    proxima_mensagem: { type: "string", description: "A próxima mensagem ideal pra enviar agora. Natural, curta, no tom do modo escolhido." },
+    risco_morrer_nivel: { type: "string", enum: ["baixo","medio","alto"] },
+    chance_continuar: { type: "number", minimum: 0, maximum: 100, description: "Chance de continuar o papo se enviar a melhor resposta." },
+    potencial_conexao: { type: "number", minimum: 0, maximum: 100, description: "Potencial de conexão real entre os dois." },
+    gancho_ultima_msg: { type: "string", description: "A última mensagem dela, citada literalmente entre aspas se possível. Se não houver, '—'." },
+    gancho_entregou: {
+      type: "array", minItems: 2, maxItems: 6,
+      items: { type: "string" },
+      description: "O que ela entregou na última mensagem (ex: 'Emoção', 'Futebol', 'Torcida', 'Experiência pessoal').",
+    },
+    gancho_direcao: { type: "string", description: "Melhor direção pra continuar a partir do gancho. 1 linha." },
+    proxima_mensagem: { type: "string", description: "🎯 A MELHOR resposta. Maior chance de manter a conversa fluindo. Natural, curta, no tom do modo escolhido." },
     porque_funciona: { type: "string", description: "1-2 linhas explicando por que essa mensagem combina agora." },
+    respostas_alternativas: {
+      type: "object",
+      description: "Uma resposta pronta pra cada modo, além da principal.",
+      properties: {
+        natural: { type: "string" },
+        engracada: { type: "string" },
+        flertando: { type: "string" },
+        inteligente: { type: "string" },
+        madrugada: { type: "string" },
+      },
+      required: ["natural","engracada","flertando","inteligente","madrugada"],
+      additionalProperties: false,
+    },
     escalar_interesse: { type: "string", description: "1 linha sobre como aumentar conexão sem parecer emocionado." },
     assunto_ideal: { type: "string", description: "Melhor tema pra continuar a conversa agora." },
     evitar: {
-      type: "array", minItems: 2, maxItems: 5,
+      type: "array", minItems: 3, maxItems: 6,
       items: { type: "string" },
       description: "Mensagens/atitudes que quebram o clima agora.",
     },
@@ -79,23 +110,43 @@ const SCHEMA = {
       required: ["kkk","sim","nao","talvez","sei_la","emoji"],
       additionalProperties: false,
     },
-    direcao: { type: "string", description: "1 linha sobre a melhor direção pra seguir nas próximas mensagens." },
+    direcao: { type: "string", description: "🎯 DIREÇÃO FINAL: 1 frase sobre o melhor caminho pra continuar sem parecer robô e sem parecer carente." },
   },
   required: [
-    "clima","nivel_interesse","energia_dela","risco_morrer",
-    "proxima_mensagem","porque_funciona","escalar_interesse","assunto_ideal",
-    "evitar","continuacao_curta","direcao",
+    "assunto_principal","clima","clima_tag","energia_dela_nivel","interesse_nivel",
+    "nivel_interesse","energia_dela","risco_morrer","risco_morrer_nivel",
+    "chance_continuar","potencial_conexao",
+    "gancho_ultima_msg","gancho_entregou","gancho_direcao",
+    "proxima_mensagem","porque_funciona","respostas_alternativas",
+    "escalar_interesse","assunto_ideal","evitar","continuacao_curta","direcao",
   ],
   additionalProperties: false,
 } as const;
 
 export interface FlowResult {
+  assunto_principal: string;
   clima: string;
+  clima_tag: "leve"|"divertido"|"serio"|"flertando"|"provocativo"|"neutro";
+  energia_dela_nivel: "baixa"|"media"|"alta";
+  interesse_nivel: "baixo"|"medio"|"alto";
   nivel_interesse: number;
   energia_dela: number;
   risco_morrer: number;
+  risco_morrer_nivel: "baixo"|"medio"|"alto";
+  chance_continuar: number;
+  potencial_conexao: number;
+  gancho_ultima_msg: string;
+  gancho_entregou: string[];
+  gancho_direcao: string;
   proxima_mensagem: string;
   porque_funciona: string;
+  respostas_alternativas: {
+    natural: string;
+    engracada: string;
+    flertando: string;
+    inteligente: string;
+    madrugada: string;
+  };
   escalar_interesse: string;
   assunto_ideal: string;
   evitar: string[];
