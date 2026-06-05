@@ -78,7 +78,16 @@ COMO ESCREVER:
 - "kkk" / "kk" natural (não em todas)
 - gírias: "mds", "mó", "tipo", "véi", "po", "tu", "tá", "né", "ué"
 - comenta UMA coisa específica do story
-- desapego > impacto.` + IA_HONESTA;
+- desapego > impacto.
+
+🎯 DETECTOR DE TIPO DE STORY (CRÍTICO — ANTES de gerar respostas):
+Classifique o story em UM tipo (use exatamente um destes rótulos):
+"📸 Selfie / Espelho", "🥤 Bebida / Comida", "🎂 Aniversário", "🎵 Música", "🐶 Pet", "🚗 Carro", "🏋️ Academia", "✈️ Viagem", "🧉 Chimarrão", "😂 Meme", "🌅 Paisagem", "🎮 Game", "🧩 Outro".
+
+A partir do tipo:
+- tipo_assuntos_usar: 3-5 ganchos REAIS pra puxar conversa (ex: "música tocando", "lugar do drink", "treino de hoje"). Específicos do que aparece, não genéricos.
+- tipo_assuntos_evitar: 3-5 caminhos que viram cringe nesse tipo (ex: em selfie → elogio de corpo; em pet → "que fofo demais").
+- intencao_incerta (boolean): true se NÃO der pra cravar a intenção dela ao postar. Quando true, em "intencao" escreva LITERALMENTE: "Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story." Nada de chute.` + IA_HONESTA;
 
 
 const TIPOS = [
