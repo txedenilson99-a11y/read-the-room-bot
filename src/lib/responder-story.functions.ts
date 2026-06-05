@@ -225,6 +225,9 @@ export interface ResponderStoryResult {
   nivel_confianca: number;
   identificado: string[];
   nao_confirmado: string[];
+  detalhes_encontrados: string[];
+  melhor_assunto: string;
+  melhor_assunto_porque: string;
   respostas: RespostaScored[];
   melhor_indice: number;
   melhor_motivo: string;
