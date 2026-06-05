@@ -254,6 +254,14 @@ export interface FlowResult {
   perfil_funciona_com: string[];
   resumo_ia: string;
   direcao: string;
+  leitor_interesse: {
+    gostou_conversa: boolean;
+    educacao: boolean;
+    resposta_automatica: boolean;
+    sem_interesse: boolean;
+    confianca: number;
+    nota: string;
+  };
 }
 
 export const continuarConversa = createServerFn({ method: "POST" })
