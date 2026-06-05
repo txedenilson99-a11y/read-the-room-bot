@@ -375,13 +375,44 @@ function FlowPage() {
 
           {/* 💬 ALTERNATIVAS */}
           <div className="card-premium p-5 md:p-6">
-            <Chip>💬 Respostas alternativas</Chip>
-            <div className="mt-4 space-y-2">
-              <CopyableMsg label="😎 Natural" text={result.respostas_alternativas.natural} />
-              <CopyableMsg label="😂 Engraçada" text={result.respostas_alternativas.engracada} />
-              <CopyableMsg label="🔥 Flertando" text={result.respostas_alternativas.flertando} />
-              <CopyableMsg label="🧠 Inteligente" text={result.respostas_alternativas.inteligente} />
-              <CopyableMsg label="😏 Provocando" text={result.respostas_alternativas.provocando} />
+            <div className="flex items-center justify-between mb-4">
+              <Chip>💬 Outras opções</Chip>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">🔥 chance de resposta</span>
+            </div>
+            <div className="space-y-2">
+              {([
+                { label: "😎 Natural", text: result.respostas_alternativas.natural, pct: result.chance_resposta_por_modo.natural },
+                { label: "😂 Engraçada", text: result.respostas_alternativas.engracada, pct: result.chance_resposta_por_modo.engracada },
+                { label: "😏 Provocando", text: result.respostas_alternativas.provocando, pct: result.chance_resposta_por_modo.provocando },
+                { label: "🔥 Flertando", text: result.respostas_alternativas.flertando, pct: result.chance_resposta_por_modo.flertando },
+                { label: "🧠 Inteligente", text: result.respostas_alternativas.inteligente, pct: result.chance_resposta_por_modo.inteligente },
+              ]).map((o) => (
+                <div key={o.label} className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{o.label}</div>
+                    <span className="text-[11px] font-medium tabular-nums text-accent">{o.pct}%</span>
+                  </div>
+                  <CopyableMsg text={o.text} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 🎮 PRÓXIMO PASSO */}
+          <div className="card-premium p-5 md:p-6">
+            <Chip tone="violet">🎮 Próximo passo</Chip>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              {([
+                { k: "Se ela rir", v: result.proximo_passo.se_rir, emoji: "😂" },
+                { k: "Se ela concordar", v: result.proximo_passo.se_concordar, emoji: "✅" },
+                { k: "Se ela mudar de assunto", v: result.proximo_passo.se_mudar_assunto, emoji: "🔀" },
+                { k: "Se ela sumir", v: result.proximo_passo.se_sumir, emoji: "🌫️" },
+              ]).map((s) => (
+                <div key={s.k} className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">{s.emoji} {s.k}</div>
+                  <p className="text-foreground/90">→ {s.v}</p>
+                </div>
+              ))}
             </div>
           </div>
 
