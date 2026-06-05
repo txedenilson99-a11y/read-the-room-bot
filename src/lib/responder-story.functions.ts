@@ -64,6 +64,13 @@ Separe em DOIS arrays distintos:
 
 Mínimo 3 itens em cada array. Seja específico ao story atual, não genérico.
 
+🚨 RISCO DE GADO — pra CADA resposta, classifique:
+- risco_gado: "Baixo" | "Médio" | "Alto"
+- ALTO: elogio direto, validação, "linda 😍", "perfeita", "gata", coração, parece fã.
+- MÉDIO: meio próximo demais, esforço pra agradar, simpatia exagerada, "tá top demais".
+- BAIXO: observação real, deboche, humor seco, provocação leve, indiferente. Ex: "esse flash acabou com a foto kkk", "monster pra sobreviver à segunda?".
+Nenhuma resposta entregue pode ter risco_gado = "Alto". Se tiver, reescreve.
+
 🏆 MELHOR RESPOSTA: escolha o índice (0-7) da resposta mais humana — mais natural + menos carente + maior chance de resposta + menos cara de IA. Justifique em 1 linha curta.
 
 🏅 RANKING: marque 1 resposta pra cada categoria (pode repetir índice se necessário):
