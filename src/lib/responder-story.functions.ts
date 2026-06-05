@@ -78,7 +78,16 @@ COMO ESCREVER:
 - "kkk" / "kk" natural (não em todas)
 - gírias: "mds", "mó", "tipo", "véi", "po", "tu", "tá", "né", "ué"
 - comenta UMA coisa específica do story
-- desapego > impacto.` + IA_HONESTA;
+- desapego > impacto.
+
+🎯 DETECTOR DE TIPO DE STORY (CRÍTICO — ANTES de gerar respostas):
+Classifique o story em UM tipo (use exatamente um destes rótulos):
+"📸 Selfie / Espelho", "🥤 Bebida / Comida", "🎂 Aniversário", "🎵 Música", "🐶 Pet", "🚗 Carro", "🏋️ Academia", "✈️ Viagem", "🧉 Chimarrão", "😂 Meme", "🌅 Paisagem", "🎮 Game", "🧩 Outro".
+
+A partir do tipo:
+- tipo_assuntos_usar: 3-5 ganchos REAIS pra puxar conversa (ex: "música tocando", "lugar do drink", "treino de hoje"). Específicos do que aparece, não genéricos.
+- tipo_assuntos_evitar: 3-5 caminhos que viram cringe nesse tipo (ex: em selfie → elogio de corpo; em pet → "que fofo demais").
+- intencao_incerta (boolean): true se NÃO der pra cravar a intenção dela ao postar. Quando true, em "intencao" escreva LITERALMENTE: "Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story." Nada de chute.` + IA_HONESTA;
 
 
 const TIPOS = [
@@ -96,8 +105,37 @@ const SCHEMA = {
   type: "object",
   properties: {
     leitura: { type: "string", description: "1-2 linhas lendo o story de verdade, tom de amigo." },
+    tipo_story: {
+      type: "string",
+      enum: [
+        "📸 Selfie / Espelho",
+        "🥤 Bebida / Comida",
+        "🎂 Aniversário",
+        "🎵 Música",
+        "🐶 Pet",
+        "🚗 Carro",
+        "🏋️ Academia",
+        "✈️ Viagem",
+        "🧉 Chimarrão",
+        "😂 Meme",
+        "🌅 Paisagem",
+        "🎮 Game",
+        "🧩 Outro",
+      ],
+    },
+    tipo_assuntos_usar: {
+      type: "array",
+      minItems: 3,
+      items: { type: "string", description: "Gancho de conversa específico desse story. Curto." },
+    },
+    tipo_assuntos_evitar: {
+      type: "array",
+      minItems: 3,
+      items: { type: "string", description: "O que vira cringe nesse tipo de story. Curto." },
+    },
+    intencao_incerta: { type: "boolean" },
     vibe: { type: "string", description: "Vibe em 1-3 palavras." },
-    intencao: { type: "string", description: "O que ela quer ao postar isso. 1 linha curta." },
+    intencao: { type: "string", description: "O que ela quer ao postar isso. 1 linha curta. Se incerta, frase fixa." },
     evitar: { type: "string", description: "O que NÃO mandar nesse story." },
     duracao_estimada: { type: "string", enum: ["Curta", "Média", "Longa"] },
     potencial_conversa: { type: "number", description: "0-100" },
@@ -144,7 +182,7 @@ const SCHEMA = {
       additionalProperties: false,
     },
   },
-  required: ["leitura", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: ["leitura", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
   additionalProperties: false,
 } as const;
 
@@ -159,6 +197,10 @@ export interface RespostaScored {
 
 export interface ResponderStoryResult {
   leitura: string;
+  tipo_story: string;
+  tipo_assuntos_usar: string[];
+  tipo_assuntos_evitar: string[];
+  intencao_incerta: boolean;
   vibe: string;
   intencao: string;
   evitar: string;
