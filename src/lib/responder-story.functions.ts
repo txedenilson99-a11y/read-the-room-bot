@@ -217,6 +217,7 @@ export interface RespostaScored {
   originalidade: number;
   carencia: number;
   chance_resposta: number;
+  risco_gado: "Baixo" | "Médio" | "Alto";
 }
 
 export interface ResponderStoryResult {
