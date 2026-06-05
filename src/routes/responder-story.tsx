@@ -258,6 +258,28 @@ function ResponderStoryPage() {
             </div>
           </div>
 
+          {/* 🧠 Detalhe que Chamou Atenção */}
+          <div className="p-5 rounded-3xl ring-1 ring-violet/25 bg-gradient-to-br from-violet/8 to-accent/5">
+            <div className="text-[11px] uppercase tracking-[0.2em] text-violet mb-3">🧠 Detalhe que Chamou Atenção</div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Detalhes encontrados</div>
+                <ul className="grid gap-1.5">
+                  {result.detalhes_encontrados.map((item, i) => (
+                    <li key={i} className="text-sm text-foreground flex gap-2">
+                      <span className="text-violet shrink-0">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-emerald-400 mb-2">Melhor assunto</div>
+                <p className="text-sm text-foreground font-medium leading-snug">{result.melhor_assunto}</p>
+                <p className="text-xs text-muted-foreground mt-1.5 italic">{result.melhor_assunto_porque}</p>
+              </div>
+            </div>
+          </div>
 
           {/* Detector de Tipo de Story */}
           <div className="p-5 rounded-3xl ring-1 ring-accent/30 bg-gradient-to-br from-accent/10 to-violet/5">

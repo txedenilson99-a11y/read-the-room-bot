@@ -80,6 +80,14 @@ COMO ESCREVER:
 - comenta UMA coisa específica do story
 - desapego > impacto.
 
+🧠 DETALHE QUE CHAMOU ATENÇÃO (CRÍTICO — antes de gerar respostas):
+Liste 3 a 5 detalhes REAIS e VISÍVEIS da foto. Nada de interpretação, só o que dá pra ver.
+- detalhes_encontrados: array de 3-5 itens curtos (2-5 palavras cada), ex: "Flash estourado", "Vestido preto", "Almofada tropical", "Música 'Celebridade'", "Quarto iluminado".
+- melhor_assunto: a frase mais natural pra puxar conversa baseada NESSES detalhes. MÁX 12 palavras. Ex: "esse flash acabou com a foto kkk"
+- melhor_assunto_porque: 1 linha curta explicando por que esse gancho funciona. Ex: "Foca num detalhe real e não na aparência."
+
+Regra: o melhor assunto NÃO pode ser elogio de beleza. Tem que ser observação, deboche ou curiosidade sobre um elemento real da imagem.
+
 🎯 DETECTOR DE TIPO DE STORY (CRÍTICO — ANTES de gerar respostas):
 Classifique o story em UM tipo (use exatamente um destes rótulos):
 "📸 Selfie / Espelho", "🥤 Bebida / Comida", "🎂 Aniversário", "🎵 Música", "🐶 Pet", "🚗 Carro", "🏋️ Academia", "✈️ Viagem", "🧉 Chimarrão", "😂 Meme", "🌅 Paisagem", "🎮 Game", "🧩 Outro".
@@ -136,6 +144,14 @@ const SCHEMA = {
     intencao_incerta: { type: "boolean" },
     vibe: { type: "string", description: "Vibe em 1-3 palavras." },
     intencao: { type: "string", description: "O que ela quer ao postar isso. 1 linha curta. Se incerta, frase fixa." },
+    detalhes_encontrados: {
+      type: "array",
+      minItems: 3,
+      maxItems: 5,
+      items: { type: "string", description: "Detalhe real visível no story. 2-5 palavras." },
+    },
+    melhor_assunto: { type: "string", description: "MÁX 12 palavras. Gancho natural baseado num detalhe real da foto." },
+    melhor_assunto_porque: { type: "string", description: "Por que esse assunto funciona. 1 linha curta." },
     evitar: { type: "string", description: "O que NÃO mandar nesse story." },
     duracao_estimada: { type: "string", enum: ["Curta", "Média", "Longa"] },
     potencial_conversa: { type: "number", description: "0-100" },
@@ -182,7 +198,7 @@ const SCHEMA = {
       additionalProperties: false,
     },
   },
-  required: ["leitura", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: ["leitura", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "detalhes_encontrados", "melhor_assunto", "melhor_assunto_porque", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
   additionalProperties: false,
 } as const;
 
@@ -209,6 +225,9 @@ export interface ResponderStoryResult {
   nivel_confianca: number;
   identificado: string[];
   nao_confirmado: string[];
+  detalhes_encontrados: string[];
+  melhor_assunto: string;
+  melhor_assunto_porque: string;
   respostas: RespostaScored[];
   melhor_indice: number;
   melhor_motivo: string;
