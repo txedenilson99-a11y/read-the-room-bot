@@ -156,12 +156,17 @@ export interface FlowResult {
   gancho_direcao: string;
   proxima_mensagem: string;
   porque_funciona: string;
+  score_chance_resposta: number;
+  score_naturalidade: number;
+  score_carencia: number;
+  investimento: number;
+  investimento_nivel: "baixo"|"medio"|"alto";
   respostas_alternativas: {
     natural: string;
     engracada: string;
     flertando: string;
     inteligente: string;
-    madrugada: string;
+    provocando: string;
   };
   escalar_interesse: string;
   assunto_ideal: string;
@@ -170,6 +175,10 @@ export interface FlowResult {
     kkk: string; sim: string; nao: string;
     talvez: string; sei_la: string; emoji: string;
   };
+  chance_encontro: number;
+  perfil_tipo: string;
+  perfil_funciona_com: string[];
+  resumo_ia: string;
   direcao: string;
 }
 
