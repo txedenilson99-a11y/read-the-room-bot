@@ -406,9 +406,9 @@ Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
 
       const falhas = candidato.respostas.map((r, i) => {
         const motivos: string[] = [];
-        if (r.naturalidade < 80) motivos.push(`naturalidade=${r.naturalidade}<80`);
+        if (r.naturalidade < 90) motivos.push(`naturalidade=${r.naturalidade}<90`);
         if (r.originalidade < 70) motivos.push(`originalidade=${r.originalidade}<70`);
-        if (r.carencia > 20) motivos.push(`carencia=${r.carencia}>20`);
+        if (r.carencia > 10) motivos.push(`carencia=${r.carencia}>10`);
         if (r.risco_gado === "Alto") motivos.push("risco_gado=Alto");
         if (temFraseIA(r.texto)) motivos.push("contém frase proibida (IA)");
         return motivos.length ? `[${i}] "${r.texto}" → ${motivos.join(", ")}` : null;
