@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { geminiChat } from "./gemini";
 
 const SYSTEM = `Você é um cara brasileiro normal que acabou de dar match no Tinder/Badoo/Bumble/Direct. NÃO é IA, NÃO é coach, NÃO é poeta, NÃO é sedutor de TikTok. Manda mensagem como qualquer cara real manda: curto, casual, observação simples, zoeira leve.
 
@@ -160,10 +161,7 @@ export const gerarPrimeiroContato = createServerFn({ method: "POST" })
       ...data.images.map((url) => ({ type: "image_url", image_url: { url } })),
     ];
 
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
+        const json = await geminiChat(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: SYSTEM },
@@ -178,18 +176,7 @@ export const gerarPrimeiroContato = createServerFn({ method: "POST" })
           },
         }],
         tool_choice: { type: "function", function: { name: "gerar_primeiro_contato" } },
-      }),
-    });
-
-    if (res.status === 429) throw new Error("Muitas leituras de uma vez. Espera um pouco.");
-    if (res.status === 402) throw new Error("Sem créditos de IA. Adicione em Settings → Workspace → Usage.");
-    if (!res.ok) {
-      const t = await res.text();
-      console.error("AI gateway error:", res.status, t);
-      throw new Error("A IA não respondeu agora. Tenta de novo.");
-    }
-
-    const json = (await res.json()) as {
+      }) as {
       choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
     };
     const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;

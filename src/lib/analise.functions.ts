@@ -1,6 +1,7 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 import { TOOLS, type ToolSlug } from "./tools";
+import { geminiChat } from "./gemini";
 
 const SYSTEM_BASE = `Você fala como AMIGO brasileiro experiente, socialmente esperto, jovem e direto. Não é IA, não é coach, não é psicólogo, não é relatório.
 
@@ -59,34 +60,13 @@ export const analisar = createServerFn({ method: "POST" })
 
     const systemPrompt = `${SYSTEM_BASE}\n\nCONTEXTO DA FERRAMENTA (${tool.title}): ${tool.systemHint}`;
 
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+        const json = await geminiChat(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: data.content },
         ],
-      }),
-    });
-
-    if (res.status === 429) {
-      throw new Error("Muitas leituras de uma vez. Espera um pouco.");
-    }
-    if (res.status === 402) {
-      throw new Error("Sem créditos de IA. Adicione créditos em Settings → Workspace → Usage.");
-    }
-    if (!res.ok) {
-      const text = await res.text();
-      console.error("AI gateway error:", res.status, text);
-      throw new Error("A IA não respondeu agora. Tenta de novo.");
-    }
-
-    const json = (await res.json()) as {
+      }) as {
       choices?: Array<{ message?: { content?: string } }>;
     };
     const content = json.choices?.[0]?.message?.content?.trim() ?? "";
