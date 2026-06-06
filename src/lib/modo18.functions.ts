@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const ESTILOS = ["provocador", "atrevido", "madrugada", "duplo_sentido", "quimica"] as const;
 export type Modo18Estilo = (typeof ESTILOS)[number];
@@ -123,7 +123,7 @@ Lê o print/contexto e devolve 4 mensagens prontas, no estilo escolhido, confian
       ...data.images.map((url) => ({ type: "image_url" as const, image_url: { url } })),
     ];
 
-        const json = await geminiChat(apiKey, {
+        const json = await geminiRequest(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: SYSTEM },

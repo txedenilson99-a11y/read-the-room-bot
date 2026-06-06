@@ -1,7 +1,7 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 import { TOOLS, type ToolSlug } from "./tools";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const SYSTEM_BASE = `Você fala como AMIGO brasileiro experiente, socialmente esperto, jovem e direto. Não é IA, não é coach, não é psicólogo, não é relatório.
 
@@ -60,7 +60,7 @@ export const analisar = createServerFn({ method: "POST" })
 
     const systemPrompt = `${SYSTEM_BASE}\n\nCONTEXTO DA FERRAMENTA (${tool.title}): ${tool.systemHint}`;
 
-        const json = await geminiChat(apiKey, {
+        const json = await geminiRequest(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: systemPrompt },

@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é um leitor social brasileiro maduro, calmo e realista. Ajuda a pessoa a entender o contexto de uma foto, story, print ou situação SEM atacar, julgar ou humilhar ninguém.
 
@@ -146,7 +146,7 @@ export const lerComportamento = createServerFn({ method: "POST" })
       ...data.images.map((url) => ({ type: "image_url" as const, image_url: { url } })),
     ];
 
-        const json = await geminiChat(apiKey, {
+        const json = await geminiRequest(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: SYSTEM },

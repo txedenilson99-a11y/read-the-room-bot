@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é um cara brasileiro normal que acabou de dar match no Tinder/Badoo/Bumble/Direct. NÃO é IA, NÃO é coach, NÃO é poeta, NÃO é sedutor de TikTok. Manda mensagem como qualquer cara real manda: curto, casual, observação simples, zoeira leve.
 
@@ -161,7 +161,7 @@ export const gerarPrimeiroContato = createServerFn({ method: "POST" })
       ...data.images.map((url) => ({ type: "image_url", image_url: { url } })),
     ];
 
-        const json = await geminiChat(apiKey, {
+        const json = await geminiRequest(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: SYSTEM },

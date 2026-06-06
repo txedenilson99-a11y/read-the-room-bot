@@ -1,11 +1,21 @@
-// Shared Gemini chat-completions caller with retry + model fallback.
-// Uses Google's OpenAI-compatible endpoint so the request/response shape
-// matches what the existing functions already build.
+// Production-grade Gemini wrapper.
+// Single entry point: geminiRequest()
+// - Primary model: gemini-flash-latest
+// - Retries on 503 (and other transient 5xx/429): 3 attempts
+// - Exponential backoff: 1s, 2s, 4s
+// - Falls back to gemini-2.5-flash-lite after primary exhausts retries
+// - Never throws raw network errors to the frontend; surfaces a friendly
+//   Error message that TanStack server-fn relays to the UI toast.
+// - Logs the complete Gemini error payload server-side.
 
-const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+const GEMINI_URL =
+  "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
-// Order of attempts: primary, then progressively cheaper/lighter aliases.
-const FALLBACK_MODELS = ["gemini-flash-latest", "gemini-2.5-flash-lite"] as const;
+const PRIMARY_MODEL = "gemini-flash-latest";
+const FALLBACK_MODEL = "gemini-2.5-flash-lite";
+
+// Exponential backoff schedule for 503 retries: 1s, 2s, 4s.
+const BACKOFF_MS = [1000, 2000, 4000];
 
 type Body = Record<string, unknown> & { model?: string };
 
@@ -13,63 +23,111 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+async function callOnce(apiKey: string, payload: Body) {
+  const res = await fetch(GEMINI_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const text = await res.text();
+  return { status: res.status, ok: res.ok, text };
+}
+
 /**
- * Calls Gemini's OpenAI-compatible chat-completions endpoint.
- * Retries on 503/429/5xx with model fallback so transient capacity
- * issues on one model don't kill the request.
- *
- * Returns the parsed JSON response on success.
- * Throws a user-facing Error on:
- *  - 429 (final): "Muitas leituras de uma vez. Espera um pouco."
- *  - 402: "Sem créditos de IA. ..."
- *  - other failures: "A IA não respondeu agora. Tenta de novo."
+ * Single canonical Gemini caller.
+ * - 3 attempts per model with exponential backoff (1s, 2s, 4s) on 503/429/5xx.
+ * - Falls back to a lighter model if the primary keeps failing.
+ * - Throws a short, user-friendly Error if everything fails (the frontend
+ *   catches it via TanStack serverFn error envelope and shows a toast —
+ *   it does NOT crash).
  */
-export async function geminiChat(apiKey: string, body: Body): Promise<any> {
-  const requestedModel = typeof body.model === "string" ? body.model : FALLBACK_MODELS[0];
-  // Try requested model first, then any fallbacks not already tried.
-  const attempts = [requestedModel, ...FALLBACK_MODELS.filter((m) => m !== requestedModel)];
+export async function geminiRequest(apiKey: string, body: Body): Promise<any> {
+  const requested = typeof body.model === "string" ? body.model : PRIMARY_MODEL;
+  const models = [requested];
+  if (requested !== FALLBACK_MODEL) models.push(FALLBACK_MODEL);
 
   let lastStatus = 0;
-  let lastText = "";
+  let lastBody = "";
 
-  for (let i = 0; i < attempts.length; i++) {
-    const model = attempts[i];
+  for (const model of models) {
     const payload = { ...body, model };
 
-    // Up to 2 tries per model (handles transient 503s on the same model).
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const res = await fetch(GEMINI_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+    for (let attempt = 0; attempt < BACKOFF_MS.length; attempt++) {
+      let status = 0;
+      let okBody = "";
+      try {
+        const r = await callOnce(apiKey, payload);
+        status = r.status;
+        okBody = r.text;
 
-      if (res.ok) {
-        return await res.json();
+        if (r.ok) {
+          try {
+            return JSON.parse(r.text);
+          } catch (parseErr) {
+            console.error(
+              `[gemini] failed to parse success body (model=${model}):`,
+              parseErr,
+              r.text.slice(0, 1000),
+            );
+            throw new Error("Resposta inválida da IA. Tenta de novo.");
+          }
+        }
+
+        lastStatus = r.status;
+        lastBody = r.text;
+
+        // Log the COMPLETE Gemini error payload (no truncation).
+        console.error(
+          `[gemini] error model=${model} attempt=${attempt + 1}/${BACKOFF_MS.length} status=${r.status} body=${r.text}`,
+        );
+
+        // Non-retryable: payment required, auth, bad request.
+        if (r.status === 402) {
+          throw new Error("Sem créditos de IA. Adicione créditos.");
+        }
+        if (r.status === 401 || r.status === 403) {
+          throw new Error("Chave da IA inválida. Verifica a configuração.");
+        }
+        if (r.status === 400) {
+          // bad request — move to next model, no point retrying same payload.
+          break;
+        }
+
+        const retryable = r.status === 503 || r.status === 429 || r.status >= 500;
+        if (!retryable) break;
+      } catch (netErr) {
+        // Network/transport-level error — treat as retryable.
+        console.error(
+          `[gemini] network error model=${model} attempt=${attempt + 1}:`,
+          netErr,
+        );
+        lastStatus = status || 0;
+        lastBody = okBody || String(netErr);
       }
 
-      lastStatus = res.status;
-      lastText = await res.text().catch(() => "");
-      console.error(`Gemini error (model=${model}, attempt=${attempt + 1}):`, res.status, lastText.slice(0, 500));
-
-      if (res.status === 402) {
-        throw new Error("Sem créditos de IA. Adicione créditos.");
+      // Backoff before next retry on the same model (skip after final attempt).
+      if (attempt < BACKOFF_MS.length - 1) {
+        await sleep(BACKOFF_MS[attempt]);
       }
-
-      // Retryable: 429 (rate limit), 5xx (capacity/transient)
-      const retryable = res.status === 429 || res.status >= 500;
-      if (!retryable) break; // 4xx other than 429 → don't retry, try next model
-
-      // small backoff before retrying same model
-      if (attempt === 0) await sleep(800);
     }
   }
 
+  // All retries exhausted across all models.
+  console.error(
+    `[gemini] all retries exhausted. lastStatus=${lastStatus} lastBody=${lastBody}`,
+  );
+
   if (lastStatus === 429) {
-    throw new Error("Muitas leituras de uma vez. Espera um pouco.");
+    throw new Error("Muitas leituras de uma vez. Espera um pouco e tenta de novo.");
+  }
+  if (lastStatus === 503) {
+    throw new Error("IA tá sobrecarregada agora. Tenta de novo em alguns segundos.");
   }
   throw new Error("A IA não respondeu agora. Tenta de novo.");
 }
+
+// Back-compat alias — existing callers can keep importing geminiChat.
+export const geminiChat = geminiRequest;
