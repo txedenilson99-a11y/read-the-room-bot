@@ -273,6 +273,118 @@ function FlowPage() {
             </div>
           </div>
 
+          {/* 📥 LEITURA DA RESPOSTA v5.20 */}
+          {result.leitura_resposta && (() => {
+            const lr = result.leitura_resposta;
+            const riscoColor = (v: string) => v === "Alto" ? "var(--destructive)" : v === "Médio" ? "var(--violet)" : "var(--accent)";
+            const chanceColor = (c: string) => c === "Alta" ? "var(--accent)" : c === "Baixa" ? "var(--destructive)" : "var(--violet)";
+            return (
+              <div className="card-premium p-5 md:p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="size-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)", boxShadow: "0 0 10px var(--accent)" }} />
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-accent">📥 Leitura da resposta · v5.20</span>
+                </div>
+
+                <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 mb-4">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">Última mensagem dela</div>
+                  <div className="space-y-1">
+                    {lr.ultimas_mensagens.map((m, i) => (
+                      <p key={i} className="text-sm text-foreground/90 italic">"{m}"</p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-3 mb-4">
+                  <div className="rounded-xl bg-card/50 ring-1 ring-accent/20 p-3">
+                    <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">Sinal detectado</div>
+                    <ul className="space-y-1 text-sm text-foreground/90">
+                      {lr.sinais_detectados.map((s, i) => (
+                        <li key={i} className="flex gap-2"><span className="text-accent">✓</span><span>{s}</span></li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-xl bg-card/50 ring-1 ring-destructive/20 p-3">
+                    <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">Não foi detectado</div>
+                    <ul className="space-y-1 text-sm text-foreground/85">
+                      {lr.nao_detectado.map((s, i) => (
+                        <li key={i} className="flex gap-2"><span className="text-destructive">✗</span><span>{s}</span></li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                  {[
+                    { k: "Clima", v: lr.clima_label },
+                    { k: "Energia dela", v: lr.energia_label },
+                    { k: "Investimento", v: lr.investimento_label },
+                    { k: "Interesse", v: lr.interesse_label },
+                  ].map((it) => (
+                    <div key={it.k} className="rounded-xl bg-card/50 ring-1 ring-border p-3 text-center">
+                      <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{it.k}</div>
+                      <div className="text-sm font-medium text-foreground">{it.v}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl p-4 mb-4"
+                  style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--accent) 10%, transparent), color-mix(in oklab, var(--violet) 8%, transparent))" }}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="text-[10px] uppercase tracking-[0.22em] text-accent">⚖️ Veredito</div>
+                    <span className="text-[11px] tabular-nums text-muted-foreground">Confiança <span className="text-accent font-semibold">{lr.confianca_leitura}%</span></span>
+                  </div>
+                  <p className="text-sm text-foreground/95 leading-relaxed whitespace-pre-line">{lr.veredito}</p>
+                </div>
+
+                <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 mb-4">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1.5">🚀 Melhor direção</div>
+                  <p className="text-sm text-foreground/90">{lr.melhor_direcao}</p>
+                </div>
+
+                <div className="mb-4">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2">💬 Mensagens recomendadas</div>
+                  <div className="space-y-2">
+                    {lr.mensagens_recomendadas.map((m, i) => (
+                      <div key={i} className="rounded-xl bg-card/50 ring-1 ring-border p-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">#{i + 1}</span>
+                          <span className="text-[10px] font-semibold tracking-wider px-2 py-0.5 rounded-full ring-1"
+                            style={{ color: chanceColor(m.chance), borderColor: chanceColor(m.chance) }}>
+                            {m.chance}
+                          </span>
+                        </div>
+                        <CopyableMsg text={m.texto} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-card/50 ring-1 ring-destructive/20 p-3 mb-4">
+                  <div className="text-[10px] uppercase tracking-[0.22em] mb-2" style={{ color: "var(--destructive)" }}>⚠️ O que evitar</div>
+                  <ul className="space-y-1 text-sm text-foreground/85">
+                    {lr.o_que_evitar.map((s, i) => <li key={i} className="flex gap-2"><span className="text-destructive">✗</span><span>{s}</span></li>)}
+                  </ul>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 text-center">
+                    <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground mb-1">Risco de vácuo</div>
+                    <div className="text-sm font-semibold" style={{ color: riscoColor(lr.risco_vacuo) }}>{lr.risco_vacuo}</div>
+                  </div>
+                  <div className="rounded-xl bg-card/50 ring-1 ring-border p-3 text-center">
+                    <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground mb-1">Matar o assunto</div>
+                    <div className="text-sm font-semibold" style={{ color: riscoColor(lr.risco_matar_assunto) }}>{lr.risco_matar_assunto}</div>
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-card/50 ring-1 ring-accent/20 p-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-accent mb-1.5">→ Próximo passo</div>
+                  <p className="text-sm text-foreground/90">{lr.proximo_passo}</p>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* 🧠 O QUE ELA QUIS DIZER */}
           <div className="card-premium p-5 md:p-6">
             <div className="flex items-center justify-between mb-3">
