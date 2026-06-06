@@ -356,6 +356,23 @@ export interface FlowResult {
     veredito_ia: string;
     proximo_passo_status: string[];
   };
+  leitura_resposta: {
+    ultimas_mensagens: string[];
+    sinais_detectados: string[];
+    nao_detectado: string[];
+    clima_label: string;
+    energia_label: string;
+    investimento_label: string;
+    interesse_label: string;
+    veredito: string;
+    confianca_leitura: number;
+    melhor_direcao: string;
+    mensagens_recomendadas: { texto: string; chance: "Alta"|"Média/Alta"|"Média"|"Baixa" }[];
+    o_que_evitar: string[];
+    risco_vacuo: "Baixo"|"Médio"|"Alto";
+    risco_matar_assunto: "Baixo"|"Médio"|"Alto";
+    proximo_passo: string;
+  };
 }
 
 export const continuarConversa = createServerFn({ method: "POST" })
