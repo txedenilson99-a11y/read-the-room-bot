@@ -79,6 +79,20 @@ DIVERSIDADE OBRIGATÓRIA entre as 8 respostas:
 - Algumas podem ser SÓ uma frase de 3-5 palavras. Outras uma pergunta. Outras uma provocação.
 - Se mais de 2 respostas ficarem parecidas em tom/estrutura — REFAZ tudo.
 
+📐 DISTRIBUIÇÃO OBRIGATÓRIA das 8 respostas (mix exato, não negociável):
+- 2 respostas APENAS OBSERVAÇÃO (frase seca, sem piada, sem pergunta — só constata algo visto).
+- 2 respostas HUMOR LEVE (brincadeira fina, sem forçar piada).
+- 1 resposta PROVOCAÇÃO LEVE (cutucada de leve, sem grosseria).
+- 1 resposta CURIOSIDADE (pergunta real sobre algo da imagem).
+- 1 resposta EXTREMAMENTE CURTA (2 a 5 palavras, no máximo).
+- 1 resposta IMPREVISÍVEL (sai do esperado, comentário lateral, ângulo torto).
+
+REGRAS DE NATURALIDADE EXTRA:
+- Se DUAS respostas parecerem escritas pela mesma pessoa — REFAZ.
+- Não use "kkk" em todas. Máximo 3 das 8.
+- NÃO transforme todo detalhe em piada. Observação sem humor também é resposta.
+- Algumas respostas devem parecer comentários PENSADOS SEM PLANEJAR — solto, meio cru, como se a pessoa tivesse digitado rápido sem revisar.
+
 📊 POTENCIAL DE CONVERSA: avalie o story como gerador de conversa:
 - duracao_estimada: "Curta" | "Média" | "Longa"
 - potencial_conversa (0-100): quanto esse story dá pra puxar papo de verdade
