@@ -202,8 +202,8 @@ export const analisarFoto = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
     const isMensagem = data.mode === "mensagem";
 
@@ -215,7 +215,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
     const schema = isMensagem ? MENSAGEM_SCHEMA : STORY_SCHEMA;
 
     const body = {
-      model: "google/gemini-2.5-flash",
+      model: "gemini-2.5-flash",
       messages: [
         { role: "system", content: SYSTEM_BASE },
         {
@@ -241,7 +241,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
       tool_choice: { type: "function", function: { name: toolName } },
     };
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,

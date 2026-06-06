@@ -162,8 +162,8 @@ export const raioXPerfil = createServerFn({ method: "POST" })
     return { bio, contexto, images };
   })
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
     const partes = [
       "Faz o Raio-X v5.20 desse perfil. Detecta o tipo, lista só fatos observáveis, assuntos reais, 10 abridores naturais, melhor abridor, o que evitar, chance de resposta com motivos, confiança da leitura (4 medidores), o que a IA não sabe e o resumo final.",
@@ -177,11 +177,11 @@ export const raioXPerfil = createServerFn({ method: "POST" })
     ];
     for (const url of data.images) userContent.push({ type: "image_url", image_url: { url } });
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gemini-2.5-flash",
         messages: [
           { role: "system", content: SYSTEM },
           { role: "user", content: userContent },

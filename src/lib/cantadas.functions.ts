@@ -93,8 +93,8 @@ export const gerarCantadas = createServerFn({ method: "POST" })
     return { contexto, imageDataUrl: input.imageDataUrl };
   })
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
     const userText = `Monta a sequência em 4 etapas (Setup → Resposta provável → Punchline → Continuação) em 3 abordagens (Natural, Engraçada, Flertando) pra esse contexto: ${data.contexto || "(sem texto, ler o print)"}`;
 
@@ -104,7 +104,7 @@ export const gerarCantadas = createServerFn({ method: "POST" })
     }
 
     const body = {
-      model: "google/gemini-2.5-flash",
+      model: "gemini-2.5-flash",
       messages: [
         { role: "system", content: SYSTEM },
         { role: "user", content: userContent },
@@ -122,7 +122,7 @@ export const gerarCantadas = createServerFn({ method: "POST" })
       tool_choice: { type: "function", function: { name: "gerar_cantadas" } },
     };
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify(body),
