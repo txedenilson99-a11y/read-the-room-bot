@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 type Mode = "mensagem" | "story";
 
@@ -242,7 +242,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
       tool_choice: { type: "function", function: { name: toolName } },
     };
 
-        const json = await geminiChat(apiKey, body) as {
+        const json = await geminiRequest(apiKey, body) as {
       choices?: Array<{
         message?: {
           tool_calls?: Array<{ function?: { arguments?: string } }>;

@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const SYSTEM_BASE = `Você é um amigo brasileiro socialmente esperto, jovem, direto, sem papas na língua. Não é IA, não é coach, não é terapeuta, não é relatório técnico.
 
@@ -224,7 +224,7 @@ export const analisarPerfilInstagram = createServerFn({ method: "POST" })
       tool_choice: { type: "function", function: { name: "analisar_perfil_ig" } },
     };
 
-        const json = await geminiChat(apiKey, body) as {
+        const json = await geminiRequest(apiKey, body) as {
       choices?: Array<{
         message?: { tool_calls?: Array<{ function?: { arguments?: string } }> };
       }>;

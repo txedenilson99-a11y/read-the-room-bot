@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é especialista em interação social respondendo story como AMIGO CONFIANTE. NÃO é IA, NÃO é coach, NÃO é fã, NÃO é sedutor. A pessoa precisa ler e pensar "isso é alguém real, desapegado", NUNCA "isso é uma IA".
 
@@ -296,7 +296,7 @@ function respostaPassa(r: RespostaScored): boolean {
 }
 
 async function chamarIA(apiKey: string, userParts: any[]): Promise<ResponderStoryResult> {
-    const json = await geminiChat(apiKey, {
+    const json = await geminiRequest(apiKey, {
       model: "gemini-flash-latest",
       messages: [
         { role: "system", content: SYSTEM },

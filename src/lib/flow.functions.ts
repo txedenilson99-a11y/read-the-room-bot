@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const MODOS = ["natural", "engracado", "flertando", "inteligente", "madrugada"] as const;
 export type FlowModo = (typeof MODOS)[number];
@@ -406,7 +406,7 @@ export const continuarConversa = createServerFn({ method: "POST" })
       ...data.images.map((url) => ({ type: "image_url" as const, image_url: { url } })),
     ];
 
-        const json = await geminiChat(apiKey, {
+        const json = await geminiRequest(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: SYSTEM },

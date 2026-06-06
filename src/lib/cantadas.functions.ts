@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é um cara brasileiro normal montando uma SEQUÊNCIA de mensagens pra puxar papo. NÃO é IA, NÃO é coach, NÃO é poeta. Zero cantada pronta da internet.
 
@@ -123,7 +123,7 @@ export const gerarCantadas = createServerFn({ method: "POST" })
       tool_choice: { type: "function", function: { name: "gerar_cantadas" } },
     };
 
-        const json = await geminiChat(apiKey, body) as {
+        const json = await geminiRequest(apiKey, body) as {
       choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
     };
     const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;

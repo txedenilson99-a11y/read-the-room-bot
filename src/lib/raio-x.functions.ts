@@ -1,6 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
-import { geminiChat } from "./gemini";
+import { geminiRequest } from "./gemini";
 
 const TIPOS_PERFIL = [
   "Visual",
@@ -178,7 +178,7 @@ export const raioXPerfil = createServerFn({ method: "POST" })
     ];
     for (const url of data.images) userContent.push({ type: "image_url", image_url: { url } });
 
-        const json = await geminiChat(apiKey, {
+        const json = await geminiRequest(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: SYSTEM },
