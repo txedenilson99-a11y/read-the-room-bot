@@ -205,7 +205,7 @@ export const analisarPerfilInstagram = createServerFn({ method: "POST" })
     }
 
     const body = {
-      model: "gemini-2.5-flash",
+      model: "gemini-flash-latest",
       messages: [
         { role: "system", content: SYSTEM_BASE },
         { role: "user", content: userContent },
