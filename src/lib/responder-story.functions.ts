@@ -313,9 +313,9 @@ function temFraseIA(texto: string): boolean {
 }
 
 function respostaPassa(r: RespostaScored): boolean {
-  if (r.naturalidade < 80) return false;
+  if (r.naturalidade < 90) return false;
   if (r.originalidade < 70) return false;
-  if (r.carencia > 20) return false;
+  if (r.carencia > 10) return false;
   if (r.risco_gado === "Alto") return false;
   if (temFraseIA(r.texto)) return false;
   return true;
