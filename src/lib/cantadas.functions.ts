@@ -104,7 +104,7 @@ export const gerarCantadas = createServerFn({ method: "POST" })
     }
 
     const body = {
-      model: "gemini-2.5-flash",
+      model: "gemini-flash-latest",
       messages: [
         { role: "system", content: SYSTEM },
         { role: "user", content: userContent },

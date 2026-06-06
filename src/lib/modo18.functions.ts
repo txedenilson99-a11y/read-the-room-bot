@@ -126,7 +126,7 @@ Lê o print/contexto e devolve 4 mensagens prontas, no estilo escolhido, confian
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gemini-2.5-flash",
+        model: "gemini-flash-latest",
         messages: [
           { role: "system", content: SYSTEM },
           { role: "user", content: parts },
