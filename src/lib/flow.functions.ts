@@ -216,6 +216,52 @@ const SCHEMA = {
       required: ["gostou_conversa","educacao","resposta_automatica","sem_interesse","confianca","nota"],
       additionalProperties: false,
     },
+    leitura_resposta: {
+      type: "object",
+      description: "📥 LEITURA DA RESPOSTA v5.20: análise direta da última resposta dela com mensagens recomendadas.",
+      properties: {
+        ultimas_mensagens: {
+          type: "array", minItems: 1, maxItems: 4, items: { type: "string" },
+          description: "Última(s) mensagem(ns) dela citadas literalmente (1 a 4). Sem aspas, só o texto.",
+        },
+        sinais_detectados: {
+          type: "array", minItems: 1, maxItems: 6, items: { type: "string" },
+          description: "Sinais positivos detectados (ex: 'Entrou na brincadeira', 'Respondeu de forma positiva').",
+        },
+        nao_detectado: {
+          type: "array", minItems: 1, maxItems: 6, items: { type: "string" },
+          description: "O que NÃO foi detectado (ex: 'Pergunta', 'Curiosidade', 'Novo assunto').",
+        },
+        clima_label: { type: "string", description: "Clima em 1 palavra (ex: 'Leve', 'Tenso', 'Frio')." },
+        energia_label: { type: "string", description: "Energia dela em 1 palavra (ex: 'Baixa', 'Média', 'Alta')." },
+        investimento_label: { type: "string", description: "Investimento em 1 palavra." },
+        interesse_label: { type: "string", description: "Interesse em 1 palavra (ex: 'Indefinido', 'Médio')." },
+        veredito: { type: "string", description: "Veredito em 2-4 linhas, honesto e calmo, sem inventar interesse." },
+        confianca_leitura: { type: "number", minimum: 0, maximum: 100 },
+        melhor_direcao: { type: "string", description: "1-2 linhas sobre a melhor direção pra continuar." },
+        mensagens_recomendadas: {
+          type: "array", minItems: 3, maxItems: 6,
+          items: {
+            type: "object",
+            properties: {
+              texto: { type: "string", description: "Mensagem pronta, natural, no tom do app." },
+              chance: { type: "string", enum: ["Alta","Média/Alta","Média","Baixa"] },
+            },
+            required: ["texto","chance"],
+            additionalProperties: false,
+          },
+        },
+        o_que_evitar: {
+          type: "array", minItems: 3, maxItems: 6, items: { type: "string" },
+          description: "O que evitar (ex: 'Elogios aleatórios', 'Insistir na mesma piada').",
+        },
+        risco_vacuo: { type: "string", enum: ["Baixo","Médio","Alto"] },
+        risco_matar_assunto: { type: "string", enum: ["Baixo","Médio","Alto"] },
+        proximo_passo: { type: "string", description: "Próximo passo prático, 1-2 linhas." },
+      },
+      required: ["ultimas_mensagens","sinais_detectados","nao_detectado","clima_label","energia_label","investimento_label","interesse_label","veredito","confianca_leitura","melhor_direcao","mensagens_recomendadas","o_que_evitar","risco_vacuo","risco_matar_assunto","proximo_passo"],
+      additionalProperties: false,
+    },
   },
   required: [
     "assunto_principal","clima","clima_tag","energia_dela_nivel","interesse_nivel",
@@ -228,7 +274,7 @@ const SCHEMA = {
     "investimento","investimento_nivel",
     "respostas_alternativas","escalar_interesse","assunto_ideal","evitar","continuacao_curta",
     "chance_encontro","perfil_tipo","perfil_funciona_com","resumo_ia","direcao",
-    "leitor_interesse","status_conversa",
+    "leitor_interesse","status_conversa","leitura_resposta",
   ],
   additionalProperties: false,
 } as const;
@@ -309,6 +355,23 @@ export interface FlowResult {
     risco_real: string;
     veredito_ia: string;
     proximo_passo_status: string[];
+  };
+  leitura_resposta: {
+    ultimas_mensagens: string[];
+    sinais_detectados: string[];
+    nao_detectado: string[];
+    clima_label: string;
+    energia_label: string;
+    investimento_label: string;
+    interesse_label: string;
+    veredito: string;
+    confianca_leitura: number;
+    melhor_direcao: string;
+    mensagens_recomendadas: { texto: string; chance: "Alta"|"Média/Alta"|"Média"|"Baixa" }[];
+    o_que_evitar: string[];
+    risco_vacuo: "Baixo"|"Médio"|"Alto";
+    risco_matar_assunto: "Baixo"|"Médio"|"Alto";
+    proximo_passo: string;
   };
 }
 
