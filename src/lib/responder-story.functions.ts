@@ -93,6 +93,20 @@ REGRAS DE NATURALIDADE EXTRA:
 - NÃO transforme todo detalhe em piada. Observação sem humor também é resposta.
 - Algumas respostas devem parecer comentários PENSADOS SEM PLANEJAR — solto, meio cru, como se a pessoa tivesse digitado rápido sem revisar.
 
+🤖 PASSADA FINAL ANTI-ROBÔ (obrigatória antes de devolver):
+Reveja CADA uma das 8 respostas e ELIMINE qualquer uma que tenha:
+- frase pronta (qualquer coisa que soe "molde", clichê de internet, frase de pacote)
+- elogio genérico (qualquer adjetivo aplicável a qualquer outra pessoa/foto)
+- trocadilho previsível (o primeiro trocadilho óbvio que vem à cabeça)
+- pergunta forçada (pergunta que existe só pra "puxar conversa", sem curiosidade real)
+- humor repetitivo (piada que se repete entre as 8 ou que já é manjada na internet)
+
+Se eliminar, REESCREVA priorizando:
+- observação RARA (algo que 90% das pessoas não notaria)
+- comentário ESPONTÂNEO (parece que escapou, não que foi pensado)
+- detalhe ESPECÍFICO (ancorado em algo único daquela imagem)
+- reação HUMANA REAL (o que uma pessoa real digitaria sem filtro nos 2 segundos depois de ver o story)
+
 📊 POTENCIAL DE CONVERSA: avalie o story como gerador de conversa:
 - duracao_estimada: "Curta" | "Média" | "Longa"
 - potencial_conversa (0-100): quanto esse story dá pra puxar papo de verdade
