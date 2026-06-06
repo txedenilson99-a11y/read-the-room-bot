@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { geminiChat } from "./gemini";
 
 const SYSTEM = `Você é um cara brasileiro normal montando uma SEQUÊNCIA de mensagens pra puxar papo. NÃO é IA, NÃO é coach, NÃO é poeta. Zero cantada pronta da internet.
 
@@ -122,21 +123,7 @@ export const gerarCantadas = createServerFn({ method: "POST" })
       tool_choice: { type: "function", function: { name: "gerar_cantadas" } },
     };
 
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    if (res.status === 429) throw new Error("Muitas leituras de uma vez. Espera um pouco.");
-    if (res.status === 402) throw new Error("Sem créditos de IA.");
-    if (!res.ok) {
-      const text = await res.text();
-      console.error("AI gateway error:", res.status, text);
-      throw new Error("A IA não respondeu agora. Tenta de novo.");
-    }
-
-    const json = (await res.json()) as {
+        const json = await geminiChat(apiKey, body) as {
       choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
     };
     const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;

@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { geminiChat } from "./gemini";
 
 type Mode = "mensagem" | "story";
 
@@ -241,24 +242,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
       tool_choice: { type: "function", function: { name: toolName } },
     };
 
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (res.status === 429) throw new Error("Muitas leituras de uma vez. Espera um pouco.");
-    if (res.status === 402) throw new Error("Sem créditos de IA. Adicione em Settings → Workspace → Usage.");
-    if (!res.ok) {
-      const text = await res.text();
-      console.error("AI gateway error:", res.status, text);
-      throw new Error("A IA não respondeu agora. Tenta de novo.");
-    }
-
-    const json = (await res.json()) as {
+        const json = await geminiChat(apiKey, body) as {
       choices?: Array<{
         message?: {
           tool_calls?: Array<{ function?: { arguments?: string } }>;

@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { geminiChat } from "./gemini";
 
 const TIPOS_PERFIL = [
   "Visual",
@@ -177,10 +178,7 @@ export const raioXPerfil = createServerFn({ method: "POST" })
     ];
     for (const url of data.images) userContent.push({ type: "image_url", image_url: { url } });
 
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
+        const json = await geminiChat(apiKey, {
         model: "gemini-flash-latest",
         messages: [
           { role: "system", content: SYSTEM },
@@ -191,17 +189,7 @@ export const raioXPerfil = createServerFn({ method: "POST" })
           function: { name: "raio_x_perfil", description: "Raio-X v5.20 do perfil.", parameters: SCHEMA },
         }],
         tool_choice: { type: "function", function: { name: "raio_x_perfil" } },
-      }),
-    });
-
-    if (res.status === 429) throw new Error("Muitas leituras de uma vez. Espera um pouco.");
-    if (res.status === 402) throw new Error("Sem créditos de IA.");
-    if (!res.ok) {
-      console.error("AI gateway error:", res.status, await res.text());
-      throw new Error("A IA não respondeu. Tenta de novo.");
-    }
-
-    const json = (await res.json()) as {
+      }) as {
       choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
     };
     const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
