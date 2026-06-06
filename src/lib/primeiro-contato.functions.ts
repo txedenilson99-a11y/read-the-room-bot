@@ -149,8 +149,8 @@ export const gerarPrimeiroContato = createServerFn({ method: "POST" })
     return { bio, contexto, images };
   })
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
     const parts: any[] = [
       {
@@ -160,11 +160,11 @@ export const gerarPrimeiroContato = createServerFn({ method: "POST" })
       ...data.images.map((url) => ({ type: "image_url", image_url: { url } })),
     ];
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gemini-2.5-flash",
         messages: [
           { role: "system", content: SYSTEM },
           { role: "user", content: parts },

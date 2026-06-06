@@ -181,8 +181,8 @@ export const analisarPerfilInstagram = createServerFn({ method: "POST" })
     return { handle, bio, contexto, imagens };
   })
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("LOVABLE_API_KEY não configurada.");
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
     const partes: string[] = [
       "Analisa esse perfil de Instagram de forma honesta, sem suavizar.",
@@ -205,7 +205,7 @@ export const analisarPerfilInstagram = createServerFn({ method: "POST" })
     }
 
     const body = {
-      model: "google/gemini-2.5-flash",
+      model: "gemini-2.5-flash",
       messages: [
         { role: "system", content: SYSTEM_BASE },
         { role: "user", content: userContent },
@@ -223,7 +223,7 @@ export const analisarPerfilInstagram = createServerFn({ method: "POST" })
       tool_choice: { type: "function", function: { name: "analisar_perfil_ig" } },
     };
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
