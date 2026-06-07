@@ -145,6 +145,20 @@ Se eliminar, REESCREVA priorizando:
 - detalhe ESPECÍFICO (ancorado em algo único daquela imagem)
 - reação HUMANA REAL (o que uma pessoa real digitaria sem filtro nos 2 segundos depois de ver o story)
 
+🎯 FILTRO DOS 20% (CRÍTICO):
+Se a resposta parecer algo que MAIS DE 20% DAS PESSOAS enviariam ao ver esse story, DESCARTE e gere outra. Busque observações RARAS — coisas que só alguém realmente atento perceberia.
+
+🔭 ORDEM DE PRIORIDADE DE OBSERVAÇÃO (obrigatória):
+ANTES de comentar a pessoa, priorize comentar:
+1. OBJETOS na cena (o que tá na mesa, na mão, no fundo)
+2. AMBIENTE (cenário, decoração, luz, lugar)
+3. ERROS (flash estourado, reflexo, algo desalinhado, photobomb)
+4. CONTRASTES (algo que destoa do resto da foto)
+5. COINCIDÊNCIAS (detalhes que se encaixam de um jeito curioso)
+6. PEQUENOS DETALHES (algo no canto, etiqueta, sombra, texto pequeno)
+
+Só DEPOIS, se sobrar espaço, comente a pessoa — e mesmo assim, nunca a aparência.
+
 📊 POTENCIAL DE CONVERSA: avalie o story como gerador de conversa:
 - duracao_estimada: "Curta" | "Média" | "Longa"
 - potencial_conversa (0-100): quanto esse story dá pra puxar papo de verdade
