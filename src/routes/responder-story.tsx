@@ -1,68 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  responderStory,
-  regenerarRespostas,
-  type ResponderStoryResult,
-  type RespostasObj,
-  type NivelQualitativo,
-} from "@/lib/responder-story.functions";
+import { useRef, useState } from "react";
+import { responderStory, type ResponderStoryResult } from "@/lib/responder-story.functions";
 
 export const Route = createFileRoute("/responder-story")({
   head: () => ({
     meta: [
       { title: "Responder Story — ScanSocial" },
-      { name: "description", content: "1 print, 1 análise, 8 respostas. Modo Economia." },
+      { name: "description", content: "Cola o link, manda o print ou o vídeo. 8 respostas sem parecer carente." },
     ],
   }),
   component: ResponderStoryPage,
 });
 
-// ===========================================================================
-// CACHE LOCAL — 30 dias. 1 imagem = 1 entrada. Histórico nunca dispara IA.
-// ===========================================================================
-const CACHE_KEY = "responder-story:cache:v720";
-const CACHE_MS = 30 * 24 * 60 * 60 * 1000;
-
-type CacheEntry = { hash: string; ts: number; result: ResponderStoryResult; thumb?: string };
-
-function hashStr(s: string): string {
-  let h = 5381;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
-  return `h${(h >>> 0).toString(36)}_${s.length.toString(36)}`;
-}
-
-function loadCache(): CacheEntry[] {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return [];
-    const arr = JSON.parse(raw) as CacheEntry[];
-    const now = Date.now();
-    return arr.filter((e) => now - e.ts < CACHE_MS);
-  } catch {
-    return [];
-  }
-}
-
-function saveCache(arr: CacheEntry[]) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify(arr.slice(0, 30)));
-  } catch {
-    /* quota — silencioso */
-  }
-}
-
-function upsertCache(entry: CacheEntry) {
-  const arr = loadCache().filter((e) => e.hash !== entry.hash);
-  arr.unshift(entry);
-  saveCache(arr);
-}
-
-// ===========================================================================
-// FILE → DATA URL
-// ===========================================================================
 async function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const r = new FileReader();
@@ -72,229 +23,87 @@ async function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
-// Thumb pequeno pra histórico (não estoura quota)
-async function makeThumb(dataUrl: string): Promise<string> {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      const max = 160;
-      const scale = Math.min(1, max / Math.max(img.width, img.height));
-      const w = Math.round(img.width * scale);
-      const h = Math.round(img.height * scale);
-      const c = document.createElement("canvas");
-      c.width = w;
-      c.height = h;
-      const ctx = c.getContext("2d");
-      if (!ctx) return resolve("");
-      ctx.drawImage(img, 0, 0, w, h);
-      resolve(c.toDataURL("image/jpeg", 0.6));
-    };
-    img.onerror = () => resolve("");
-    img.src = dataUrl;
-  });
-}
+const SLIDERS = [
+  { key: "humor", label: "Humor" },
+  { key: "misterio", label: "Mistério" },
+  { key: "provocacao", label: "Provocação" },
+  { key: "dominancia", label: "Dominância" },
+  { key: "naturalidade", label: "Naturalidade" },
+] as const;
 
-// ===========================================================================
-// SLIDERS — puro front. Reorganiza ordem das categorias por afinidade.
-// Nunca dispara IA.
-// ===========================================================================
-type Sliders = {
-  humor: number;
-  misterio: number;
-  provocacao: number;
-  dominancia: number;
-  naturalidade: number;
-};
+type SliderKey = typeof SLIDERS[number]["key"];
 
-const CATEGORIAS: Array<keyof RespostasObj> = [
-  "natural",
-  "debochada",
-  "ironica",
-  "flow",
-  "anti_gado",
-  "misteriosa",
-  "lider",
-  "ousada",
-];
-
-const LABEL: Record<keyof RespostasObj, string> = {
-  natural: "Natural",
-  debochada: "Debochada",
-  ironica: "Irônica",
-  flow: "Flow",
-  anti_gado: "Anti-Gado",
-  misteriosa: "Misteriosa",
-  lider: "Líder",
-  ousada: "Ousada",
-};
-
-// peso de cada slider em cada categoria (0-1)
-const PESOS: Record<keyof RespostasObj, Partial<Record<keyof Sliders, number>>> = {
-  natural: { naturalidade: 1 },
-  debochada: { humor: 0.9, provocacao: 0.4 },
-  ironica: { humor: 0.6, provocacao: 0.5, misterio: 0.2 },
-  flow: { naturalidade: 0.7, humor: 0.3 },
-  anti_gado: { dominancia: 0.8, provocacao: 0.3 },
-  misteriosa: { misterio: 1 },
-  lider: { dominancia: 1 },
-  ousada: { provocacao: 1, dominancia: 0.3 },
-};
-
-function scoreCategoria(cat: keyof RespostasObj, s: Sliders): number {
-  const p = PESOS[cat];
-  let sum = 0;
-  for (const k in p) sum += (p[k as keyof Sliders] ?? 0) * (s[k as keyof Sliders] / 100);
-  return sum;
-}
-
-// ===========================================================================
-// VISUAL — escala qualitativa
-// ===========================================================================
-const NIVEL_COR: Record<NivelQualitativo, string> = {
-  "Muito Baixo": "bg-red-400/15 text-red-300 ring-red-400/30",
-  Baixo: "bg-amber-400/15 text-amber-300 ring-amber-400/30",
-  "Médio": "bg-yellow-400/15 text-yellow-300 ring-yellow-400/30",
-  Alto: "bg-emerald-400/15 text-emerald-300 ring-emerald-400/30",
-  "Muito Alto": "bg-emerald-400/20 text-emerald-200 ring-emerald-400/40",
-};
-
-const NIVEL_RISCO_COR: Record<NivelQualitativo, string> = {
-  "Muito Baixo": "bg-emerald-400/20 text-emerald-200 ring-emerald-400/40",
-  Baixo: "bg-emerald-400/15 text-emerald-300 ring-emerald-400/30",
-  "Médio": "bg-yellow-400/15 text-yellow-300 ring-yellow-400/30",
-  Alto: "bg-amber-400/15 text-amber-300 ring-amber-400/30",
-  "Muito Alto": "bg-red-400/15 text-red-300 ring-red-400/30",
-};
-
-function NivelChip({ nivel, invert = false }: { nivel: NivelQualitativo; invert?: boolean }) {
-  const cor = invert ? NIVEL_RISCO_COR[nivel] : NIVEL_COR[nivel];
-  return <span className={`text-[10px] px-2 py-0.5 rounded-full ring-1 ${cor}`}>{nivel}</span>;
-}
-
-// ===========================================================================
-// PAGE
-// ===========================================================================
 function ResponderStoryPage() {
-  const fnAnalise = useServerFn(responderStory);
-  const fnRegen = useServerFn(regenerarRespostas);
+  const fn = useServerFn(responderStory);
   const fileRef = useRef<HTMLInputElement>(null);
-
   const [preview, setPreview] = useState<string | null>(null);
-  const [hash, setHash] = useState<string | null>(null);
-  const [result, setResult] = useState<ResponderStoryResult | null>(null);
-  const [copied, setCopied] = useState<string | null>(null);
-  const [historico, setHistorico] = useState<CacheEntry[]>([]);
-  const [sliders, setSliders] = useState<Sliders>({
-    humor: 50,
-    misterio: 50,
+  const [fileKind, setFileKind] = useState<"image" | "video" | null>(null);
+  const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined);
+  const [link, setLink] = useState("");
+  const [legenda, setLegenda] = useState("");
+  const [copied, setCopied] = useState<number | null>(null);
+  const [sliders, setSliders] = useState<Record<SliderKey, number>>({
+    humor: 60,
+    misterio: 40,
     provocacao: 50,
-    dominancia: 50,
-    naturalidade: 50,
+    dominancia: 55,
+    naturalidade: 80,
   });
 
-  useEffect(() => {
-    setHistorico(loadCache());
-  }, []);
-
-  // -------- 1) Analisar (1 chamada Vision) --------
-  const analise = useMutation({
-    mutationFn: async (imageDataUrl: string) => {
-      const h = hashStr(imageDataUrl);
-      // cache hit → ZERO chamadas Gemini
-      const hit = loadCache().find((e) => e.hash === h);
-      if (hit) return { result: hit.result, hash: h, cached: true };
-      const r = await fnAnalise({ data: { imageDataUrl } });
-      const thumb = await makeThumb(imageDataUrl);
-      upsertCache({ hash: h, ts: Date.now(), result: r.result, thumb });
-      return { result: r.result, hash: h, cached: false };
-    },
-    onSuccess: (d) => {
-      setResult(d.result);
-      setHash(d.hash);
-      setHistorico(loadCache());
-    },
+  const mutation = useMutation({
+    mutationFn: () => fn({ data: { imageDataUrl, link, legenda, sliders } }),
   });
 
-  // -------- 2) Regenerar respostas (text-only, sem Vision) --------
-  const regen = useMutation({
-    mutationFn: async () => {
-      if (!result) throw new Error("Analise um story primeiro.");
-      return fnRegen({
-        data: {
-          detalhe_raro: result.detalhe_raro,
-          melhor_assunto: result.melhor_assunto,
-          leitura_observavel: result.leitura_observavel,
-          tipo_detectado: result.tipo_detectado,
-          respostas_anteriores: result.respostas,
-        },
-      });
-    },
-    onSuccess: (d) => {
-      if (!result || !hash) return;
-      const novo = { ...result, respostas: d.respostas };
-      setResult(novo);
-      // atualiza cache mantendo a mesma hash da imagem
-      const arr = loadCache();
-      const i = arr.findIndex((e) => e.hash === hash);
-      if (i >= 0) {
-        arr[i] = { ...arr[i], result: novo, ts: Date.now() };
-        saveCache(arr);
-        setHistorico(arr);
-      }
-    },
-  });
+  const result = mutation.data?.result as ResponderStoryResult | undefined;
 
   const handleFile = async (file: File) => {
-    if (!file.type.startsWith("image/")) return alert("Modo Economia: só foto.");
-    if (file.size > 12_000_000) return alert("Arquivo muito grande.");
+    if (file.size > 12_000_000) {
+      alert("Arquivo muito grande. Tenta um menor.");
+      return;
+    }
     const url = await fileToDataUrl(file);
     setPreview(url);
-    setResult(null);
-    setHash(null);
-    analise.mutate(url);
+    if (file.type.startsWith("video/")) {
+      setFileKind("video");
+      // gemini não consome vídeo aqui — só usamos a vibe via legenda/link
+      setImageDataUrl(undefined);
+    } else {
+      setFileKind("image");
+      setImageDataUrl(url);
+    }
+    mutation.reset();
   };
 
-  const abrirDoHistorico = (e: CacheEntry) => {
-    setPreview(e.thumb ?? null);
-    setHash(e.hash);
-    setResult(e.result);
-    analise.reset();
-  };
-
-  const copy = async (text: string, key: string) => {
+  const copy = async (text: string, i: number) => {
     await navigator.clipboard.writeText(text);
-    setCopied(key);
+    setCopied(i);
     setTimeout(() => setCopied(null), 1500);
   };
 
-  // categorias reordenadas pelos sliders (puro local)
-  const ordemCategorias = useMemo(() => {
-    return [...CATEGORIAS].sort((a, b) => scoreCategoria(b, sliders) - scoreCategoria(a, sliders));
-  }, [sliders]);
+  const canSubmit = (!!imageDataUrl || link.trim().length > 0 || legenda.trim().length > 0) && !mutation.isPending;
 
   return (
     <main className="max-w-3xl mx-auto px-6 pt-16 pb-40">
-      <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">
-        ← Central
-      </Link>
+      <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">← Central</Link>
 
       <header className="mt-8 mb-10 animate-fade-up">
         <div className="text-[11px] font-medium uppercase tracking-[0.25em] text-violet mb-3">
-          Responder Story · v7.20 Modo Economia
+          Responder Story
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[26ch]">
-          1 print. 1 análise. 8 respostas.
+          Responde o story sem parecer carente.
         </h1>
         <p className="text-sm text-muted-foreground mt-3 max-w-[52ch]">
-          Uma chamada Gemini por imagem. Histórico salvo 30 dias. Regenerar não reanalisa a foto.
+          Cola o link, joga o print ou o vídeo. Eu leio a vibe e te dou 8 respostas — humano, leve, desapegado.
         </p>
       </header>
 
+      {/* Upload + link */}
       <section className="grid gap-3">
         <input
           ref={fileRef}
           type="file"
-          accept="image/*"
+          accept="image/*,video/*"
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -309,45 +118,123 @@ function ResponderStoryPage() {
         >
           {preview ? (
             <div className="flex items-center gap-4">
-              <img src={preview} alt="" className="w-24 h-24 object-cover rounded-2xl ring-1 ring-border" />
+              {fileKind === "video" ? (
+                <video src={preview} className="w-24 h-24 object-cover rounded-2xl ring-1 ring-border" muted playsInline />
+              ) : (
+                <img src={preview} alt="" className="w-24 h-24 object-cover rounded-2xl ring-1 ring-border" />
+              )}
               <div>
-                <div className="text-sm font-medium text-foreground">Print carregado</div>
+                <div className="text-sm font-medium text-foreground">
+                  {fileKind === "video" ? "Vídeo carregado" : "Print carregado"}
+                </div>
                 <div className="text-xs text-muted-foreground">Toca pra trocar</div>
               </div>
             </div>
           ) : (
             <div>
-              <div className="text-sm font-medium text-foreground">📎 Anexar print do story</div>
-              <div className="text-xs text-muted-foreground mt-1">JPG ou PNG até 12MB</div>
+              <div className="text-sm font-medium text-foreground">📎 Anexar print ou vídeo do story</div>
+              <div className="text-xs text-muted-foreground mt-1">JPG, PNG ou MP4 até 12MB</div>
             </div>
           )}
         </button>
+
+        <input
+          type="url"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
+          placeholder="ou cola o link do story aqui"
+          className="w-full rounded-2xl bg-card/50 ring-1 ring-border focus:ring-accent/40 px-4 py-3 text-sm outline-none transition"
+        />
+
+        <textarea
+          value={legenda}
+          onChange={(e) => setLegenda(e.target.value)}
+          rows={2}
+          placeholder="contexto opcional: legenda do story, música tocando, o que tá rolando…"
+          className="w-full rounded-2xl bg-card/50 ring-1 ring-border focus:ring-accent/40 px-4 py-3 text-sm outline-none transition resize-none"
+        />
       </section>
 
-      {analise.isPending && (
-        <div className="mt-6 p-4 rounded-2xl ring-1 ring-violet/30 bg-violet/5 text-sm text-violet animate-pulse">
-          IA lendo o story…
+      {/* Sliders */}
+      <section className="mt-6 p-5 rounded-3xl ring-1 ring-border bg-card/30">
+        <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          Ajuste IA
         </div>
-      )}
+        <div className="grid gap-4">
+          {SLIDERS.map((s) => (
+            <label key={s.key} className="block">
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className="text-foreground">{s.label}</span>
+                <span className="text-muted-foreground tabular-nums">{sliders[s.key]}</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={sliders[s.key]}
+                onChange={(e) => setSliders((p) => ({ ...p, [s.key]: Number(e.target.value) }))}
+                className="w-full accent-violet"
+              />
+            </label>
+          ))}
+        </div>
+      </section>
 
-      {analise.isError && (
+      {/* CTA */}
+      <button
+        type="button"
+        disabled={!canSubmit}
+        onClick={() => mutation.mutate()}
+        className="mt-6 w-full py-4 rounded-2xl font-medium text-base bg-gradient-to-r from-violet to-accent text-background disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition shadow-[0_0_40px_-10px_var(--violet)]"
+      >
+        {mutation.isPending ? "IA lendo o story…" : "RESPONDER STORY"}
+      </button>
+
+      {mutation.isError && (
         <div className="mt-4 p-4 rounded-2xl ring-1 ring-destructive/40 bg-destructive/5 text-sm text-destructive">
-          {(analise.error as Error)?.message ?? "Deu ruim. Tenta de novo."}
+          {(mutation.error as Error)?.message ?? "Deu ruim. Tenta de novo."}
         </div>
       )}
 
-      {analise.data?.cached && (
-        <div className="mt-4 text-[11px] text-emerald-400 uppercase tracking-wider">✓ Lido do cache · 0 chamadas Gemini</div>
-      )}
+      {/* Result */}
+      {result && (() => {
+        const ranking = result.ranking;
+        const tagsPorIdx = new Map<number, string[]>();
+        const add = (i: number, tag: string) => {
+          const arr = tagsPorIdx.get(i) ?? [];
+          arr.push(tag);
+          tagsPorIdx.set(i, arr);
+        };
+        add(result.melhor_indice, "🏆 Melhor");
+        add(ranking.engracada, "😂 Engraçada");
+        add(ranking.ousada, "😏 Ousada");
+        add(ranking.misteriosa, "👀 Misteriosa");
+        add(ranking.segura, "🛡️ Segura");
 
-      {/* ============== RESULT ============== */}
-      {result && (
+        const corBar = (v: number, invert = false) => {
+          const ok = invert ? v <= 20 : v >= 70;
+          const mid = invert ? v <= 40 : v >= 50;
+          return ok ? "bg-emerald-400" : mid ? "bg-amber-400" : "bg-red-400";
+        };
+
+        return (
         <section className="mt-10 grid gap-5 animate-fade-up">
-          {/* O que foi identificado / não confirmado */}
+          {/* Nível de Confiança + Identificação */}
           <div className="p-5 rounded-3xl ring-1 ring-emerald-400/25 bg-emerald-400/5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-emerald-400">Nível de Confiança</div>
+              <span className="text-foreground tabular-nums text-sm font-medium">{result.nivel_confianca}%</span>
+            </div>
+            <div className="h-2 rounded-full bg-card overflow-hidden mb-5">
+              <div
+                className={`h-full ${corBar(result.nivel_confianca)} transition-all`}
+                style={{ width: `${result.nivel_confianca}%` }}
+              />
+            </div>
+
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-emerald-400 mb-2">✓ Identificado</div>
+                <div className="text-[10px] uppercase tracking-wider text-emerald-400 mb-2">✓ O que foi identificado</div>
                 <ul className="grid gap-1.5">
                   {result.identificado.map((item, i) => (
                     <li key={i} className="text-sm text-foreground flex gap-2">
@@ -358,7 +245,7 @@ function ResponderStoryPage() {
                 </ul>
               </div>
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-red-400 mb-2">✗ Não pode ser confirmado</div>
+                <div className="text-[10px] uppercase tracking-wider text-red-400 mb-2">✗ O que não pode ser confirmado</div>
                 <ul className="grid gap-1.5">
                   {result.nao_confirmado.map((item, i) => (
                     <li key={i} className="text-sm text-muted-foreground flex gap-2">
@@ -371,50 +258,44 @@ function ResponderStoryPage() {
             </div>
           </div>
 
-          {/* Detalhe raro + Melhor assunto */}
+          {/* 🧠 Detalhe que Chamou Atenção */}
           <div className="p-5 rounded-3xl ring-1 ring-violet/25 bg-gradient-to-br from-violet/8 to-accent/5">
+            <div className="text-[11px] uppercase tracking-[0.2em] text-violet mb-3">🧠 Detalhe que Chamou Atenção</div>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-violet mb-2">🔍 Detalhe Raro</div>
-                <p className="text-sm text-foreground leading-snug">{result.detalhe_raro}</p>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Detalhes encontrados</div>
+                <ul className="grid gap-1.5">
+                  {result.detalhes_encontrados.map((item, i) => (
+                    <li key={i} className="text-sm text-foreground flex gap-2">
+                      <span className="text-violet shrink-0">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-emerald-400 mb-2">🎯 Melhor Assunto</div>
+                <div className="text-[10px] uppercase tracking-wider text-emerald-400 mb-2">Melhor assunto</div>
                 <p className="text-sm text-foreground font-medium leading-snug">{result.melhor_assunto}</p>
+                <p className="text-xs text-muted-foreground mt-1.5 italic">{result.melhor_assunto_porque}</p>
               </div>
             </div>
           </div>
 
-          {/* Leitura observável + Possíveis leituras */}
-          <div className="p-5 rounded-3xl ring-1 ring-violet/25 bg-violet/5 grid gap-3">
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-violet mb-1.5">Leitura Observável</div>
-              <p className="text-sm text-foreground">{result.leitura_observavel}</p>
-            </div>
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Possíveis Leituras</div>
-              <p className="text-sm text-muted-foreground italic">{result.possiveis_leituras}</p>
-            </div>
-          </div>
-
-          {/* Tipo + Detector qualitativo */}
+          {/* Detector de Tipo de Story */}
           <div className="p-5 rounded-3xl ring-1 ring-accent/30 bg-gradient-to-br from-accent/10 to-violet/5">
             <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-              <div>
-                <div className="text-[10px] uppercase tracking-wider text-accent mb-1">Tipo Detectado</div>
-                <div className="text-xl font-medium text-foreground">{result.tipo_detectado}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-[10px] uppercase tracking-wider text-accent mb-1">Detector de Assunto</div>
-                <NivelChip nivel={result.detector_assunto} />
-              </div>
+              <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Tipo Detectado</div>
+              <span className="text-[10px] tabular-nums text-muted-foreground">
+                confiança {result.nivel_confianca}%
+              </span>
             </div>
+            <div className="text-xl font-medium text-foreground mb-4">{result.tipo_story}</div>
 
-            <div className="grid gap-4 md:grid-cols-2 mt-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-emerald-400 mb-2">Assuntos que dá pra usar</div>
                 <ul className="grid gap-1.5">
-                  {result.assuntos_usar.map((item, i) => (
+                  {result.tipo_assuntos_usar.map((item, i) => (
                     <li key={i} className="text-sm text-foreground flex gap-2">
                       <span className="text-emerald-400 shrink-0">→</span>
                       <span>{item}</span>
@@ -425,7 +306,7 @@ function ResponderStoryPage() {
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-red-400 mb-2">O que evitar</div>
                 <ul className="grid gap-1.5">
-                  {result.assuntos_evitar.map((item, i) => (
+                  {result.tipo_assuntos_evitar.map((item, i) => (
                     <li key={i} className="text-sm text-muted-foreground flex gap-2">
                       <span className="text-red-400 shrink-0">✗</span>
                       <span>{item}</span>
@@ -434,137 +315,150 @@ function ResponderStoryPage() {
                 </ul>
               </div>
             </div>
-          </div>
 
-          {/* Métricas qualitativas */}
-          <div className="p-5 rounded-3xl ring-1 ring-border bg-card/40">
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-3">Métricas</div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {(
-                [
-                  { k: "naturalidade", label: "Naturalidade", invert: false },
-                  { k: "originalidade", label: "Originalidade", invert: false },
-                  { k: "chance_resposta", label: "Chance de Resposta", invert: false },
-                  { k: "risco_social", label: "Risco Social", invert: true },
-                ] as const
-              ).map((m) => (
-                <div key={m.k} className="grid gap-1.5">
-                  <div className="text-[10px] text-muted-foreground">{m.label}</div>
-                  <NivelChip nivel={result.metricas[m.k]} invert={m.invert} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Melhor resposta */}
-          <div className="p-5 rounded-3xl ring-2 ring-violet bg-gradient-to-br from-violet/15 to-accent/5 shadow-[0_0_40px_-10px_var(--violet)]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] uppercase tracking-[0.2em] text-violet font-medium">🏆 Melhor Resposta</span>
-              <button
-                onClick={() => copy(result.melhor_resposta, "best")}
-                className="text-[11px] px-3 py-1 rounded-full bg-violet text-background hover:brightness-110 transition"
-              >
-                {copied === "best" ? "copiado ✓" : "copiar"}
-              </button>
-            </div>
-            <p className="text-[17px] text-foreground leading-snug font-medium">{result.melhor_resposta}</p>
-            <p className="text-xs text-muted-foreground mt-3 italic">{result.porque_funciona}</p>
-          </div>
-
-          {/* Sliders locais */}
-          <div className="p-5 rounded-3xl ring-1 ring-border bg-card/30">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Reordenar (local)</div>
-              <span className="text-[10px] text-emerald-400">✓ sem IA</span>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              {(
-                [
-                  ["humor", "Humor"],
-                  ["misterio", "Mistério"],
-                  ["provocacao", "Provocação"],
-                  ["dominancia", "Dominância"],
-                  ["naturalidade", "Naturalidade"],
-                ] as Array<[keyof Sliders, string]>
-              ).map(([k, label]) => (
-                <label key={k} className="grid gap-1">
-                  <div className="flex justify-between text-[10px] text-muted-foreground">
-                    <span>{label}</span>
-                    <span className="tabular-nums text-foreground">{sliders[k]}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={sliders[k]}
-                    onChange={(e) => setSliders((s) => ({ ...s, [k]: Number(e.target.value) }))}
-                    className="w-full accent-violet"
-                  />
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* 8 respostas */}
-          <div className="grid gap-3">
-            <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Respostas · ordem por sliders</div>
-            {ordemCategorias.map((cat) => (
-              <div key={cat} className="group p-4 rounded-2xl ring-1 ring-border bg-card/40 hover:ring-accent/30 transition">
-                <div className="flex items-center justify-between mb-2 gap-2">
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-accent">{LABEL[cat]}</span>
-                  <button
-                    onClick={() => copy(result.respostas[cat], cat)}
-                    className="text-[11px] px-2.5 py-1 rounded-full ring-1 ring-border hover:ring-accent/40 hover:text-accent transition"
-                  >
-                    {copied === cat ? "copiado ✓" : "copiar"}
-                  </button>
-                </div>
-                <p className="text-[15px] text-foreground leading-snug">{result.respostas[cat]}</p>
+            {result.intencao_incerta && (
+              <div className="mt-4 p-3 rounded-2xl bg-amber-400/10 ring-1 ring-amber-400/30 text-xs text-amber-200">
+                ⚠️ Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story.
               </div>
-            ))}
+            )}
           </div>
 
-          {/* Regenerar — text-only */}
+          <div className="p-5 rounded-3xl ring-1 ring-violet/25 bg-violet/5">
+            <div className="text-[11px] uppercase tracking-[0.2em] text-violet mb-2">Leitura</div>
+            <p className="text-sm text-foreground">{result.leitura}</p>
+            <div className="grid grid-cols-2 gap-3 mt-4 text-xs">
+              <div>
+                <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Vibe</div>
+                <div className="text-foreground mt-0.5">{result.vibe}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Intenção</div>
+                <div className="text-foreground mt-0.5">{result.intencao}</div>
+              </div>
+            </div>
+            <div className="mt-4 text-xs">
+              <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Evitar</div>
+              <div className="text-foreground mt-0.5">{result.evitar}</div>
+            </div>
+          </div>
+
+          {/* Detector de assunto */}
+          <div className="p-5 rounded-3xl ring-1 ring-accent/25 bg-accent/5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Detector de Assunto</div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full ring-1 ring-accent/40 text-accent">
+                {result.duracao_estimada}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-muted-foreground">Potencial de Conversa</span>
+              <span className="text-foreground tabular-nums">{result.potencial_conversa}/100</span>
+            </div>
+            <div className="h-2 rounded-full bg-card overflow-hidden">
+              <div
+                className={`h-full ${corBar(result.potencial_conversa)} transition-all`}
+                style={{ width: `${result.potencial_conversa}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Melhor resposta destaque */}
+          {result.respostas[result.melhor_indice] && (
+            <div className="p-5 rounded-3xl ring-2 ring-violet bg-gradient-to-br from-violet/15 to-accent/5 shadow-[0_0_40px_-10px_var(--violet)]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] uppercase tracking-[0.2em] text-violet font-medium">🏆 Melhor Resposta</span>
+                <button
+                  onClick={() => copy(result.respostas[result.melhor_indice].texto, -1)}
+                  className="text-[11px] px-3 py-1 rounded-full bg-violet text-background hover:brightness-110 transition"
+                >
+                  {copied === -1 ? "copiado ✓" : "copiar"}
+                </button>
+              </div>
+              <p className="text-[17px] text-foreground leading-snug font-medium">
+                {result.respostas[result.melhor_indice].texto}
+              </p>
+              <p className="text-xs text-muted-foreground mt-3 italic">
+                {result.melhor_motivo}
+              </p>
+            </div>
+          )}
+
+          {/* Todas as respostas com scores */}
+          <div className="grid gap-3">
+            <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Todas as respostas</div>
+            {result.respostas.map((r, i) => {
+              const tags = tagsPorIdx.get(i) ?? [];
+              return (
+                <div
+                  key={i}
+                  className="group p-4 rounded-2xl ring-1 ring-border bg-card/40 hover:ring-accent/30 transition"
+                >
+                  <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-accent">{r.tipo}</span>
+                      {(() => {
+                        const cor =
+                          r.risco_gado === "Baixo"
+                            ? "bg-emerald-400/15 text-emerald-300 ring-emerald-400/30"
+                            : r.risco_gado === "Médio"
+                            ? "bg-amber-400/15 text-amber-300 ring-amber-400/30"
+                            : "bg-red-400/15 text-red-300 ring-red-400/30";
+                        return (
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ring-1 ${cor}`}>
+                            🚨 Gado: {r.risco_gado}
+                          </span>
+                        );
+                      })()}
+                      {tags.map((t) => (
+                        <span key={t} className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet/15 text-violet">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => copy(r.texto, i)}
+                      className="text-[11px] px-2.5 py-1 rounded-full ring-1 ring-border hover:ring-accent/40 hover:text-accent transition"
+                    >
+                      {copied === i ? "copiado ✓" : "copiar"}
+                    </button>
+                  </div>
+                  <p className="text-[15px] text-foreground leading-snug mb-3">{r.texto}</p>
+
+                  {/* Score de humanidade */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                    {[
+                      { label: "Naturalidade", v: r.naturalidade, invert: false },
+                      { label: "Originalidade", v: r.originalidade, invert: false },
+                      { label: "Carência", v: r.carencia, invert: true },
+                      { label: "Chance Resposta", v: r.chance_resposta, invert: false },
+                    ].map((m) => (
+                      <div key={m.label}>
+                        <div className="flex justify-between text-[10px] mb-0.5">
+                          <span className="text-muted-foreground">{m.label}</span>
+                          <span className="text-foreground tabular-nums">{m.v}</span>
+                        </div>
+                        <div className="h-1 rounded-full bg-card overflow-hidden">
+                          <div className={`h-full ${corBar(m.v, m.invert)}`} style={{ width: `${m.v}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
           <button
             type="button"
-            onClick={() => regen.mutate()}
-            disabled={regen.isPending}
+            onClick={() => mutation.mutate()}
+            disabled={mutation.isPending}
             className="w-full py-3 rounded-2xl text-sm ring-1 ring-violet/30 text-violet hover:bg-violet/5 transition disabled:opacity-50"
           >
-            {regen.isPending ? "Gerando outra leva…" : "↻ Regenerar respostas (sem reanalisar foto)"}
+            {mutation.isPending ? "Gerando outra leva…" : "↻ Regenerar respostas"}
           </button>
-          {regen.isError && (
-            <div className="text-xs text-destructive">{(regen.error as Error)?.message}</div>
-          )}
         </section>
-      )}
-
-      {/* ============== HISTÓRICO ============== */}
-      {historico.length > 0 && (
-        <section className="mt-12 grid gap-3">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-            Histórico · 30 dias · 0 chamadas Gemini
-          </div>
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
-            {historico.map((e) => (
-              <button
-                key={e.hash}
-                onClick={() => abrirDoHistorico(e)}
-                className="aspect-square rounded-xl ring-1 ring-border hover:ring-violet/40 overflow-hidden bg-card/40 transition"
-                title={new Date(e.ts).toLocaleString()}
-              >
-                {e.thumb ? (
-                  <img src={e.thumb} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full grid place-items-center text-[10px] text-muted-foreground">
-                    {e.result.tipo_detectado}
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
+        );
+      })()}
     </main>
   );
 }
