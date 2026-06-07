@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "avatars: leitura pública direta" ON storage.objects;
