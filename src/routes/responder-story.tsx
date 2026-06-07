@@ -23,54 +23,31 @@ async function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
-const SLIDERS = [
-  { key: "humor", label: "Humor" },
-  { key: "misterio", label: "Mistério" },
-  { key: "provocacao", label: "Provocação" },
-  { key: "dominancia", label: "Dominância" },
-  { key: "naturalidade", label: "Naturalidade" },
-] as const;
-
-type SliderKey = typeof SLIDERS[number]["key"];
-
 function ResponderStoryPage() {
   const fn = useServerFn(responderStory);
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [fileKind, setFileKind] = useState<"image" | "video" | null>(null);
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined);
-  const [link, setLink] = useState("");
-  const [legenda, setLegenda] = useState("");
   const [copied, setCopied] = useState<number | null>(null);
-  const [sliders, setSliders] = useState<Record<SliderKey, number>>({
-    humor: 60,
-    misterio: 40,
-    provocacao: 50,
-    dominancia: 55,
-    naturalidade: 80,
-  });
 
   const mutation = useMutation({
-    mutationFn: () => fn({ data: { imageDataUrl, link, legenda, sliders } }),
+    mutationFn: () => fn({ data: { imageDataUrl } }),
   });
 
   const result = mutation.data?.result as ResponderStoryResult | undefined;
 
   const handleFile = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      alert("Modo Economia: só foto.");
+      return;
+    }
     if (file.size > 12_000_000) {
       alert("Arquivo muito grande. Tenta um menor.");
       return;
     }
     const url = await fileToDataUrl(file);
     setPreview(url);
-    if (file.type.startsWith("video/")) {
-      setFileKind("video");
-      // gemini não consome vídeo aqui — só usamos a vibe via legenda/link
-      setImageDataUrl(undefined);
-    } else {
-      setFileKind("image");
-      setImageDataUrl(url);
-    }
+    setImageDataUrl(url);
     mutation.reset();
   };
 
@@ -80,7 +57,7 @@ function ResponderStoryPage() {
     setTimeout(() => setCopied(null), 1500);
   };
 
-  const canSubmit = (!!imageDataUrl || link.trim().length > 0 || legenda.trim().length > 0) && !mutation.isPending;
+  const canSubmit = !!imageDataUrl && !mutation.isPending;
 
   return (
     <main className="max-w-3xl mx-auto px-6 pt-16 pb-40">
@@ -88,22 +65,21 @@ function ResponderStoryPage() {
 
       <header className="mt-8 mb-10 animate-fade-up">
         <div className="text-[11px] font-medium uppercase tracking-[0.25em] text-violet mb-3">
-          Responder Story
+          Responder Story · Modo Economia
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-balance leading-tight max-w-[26ch]">
-          Responde o story sem parecer carente.
+          1 foto. 1 leitura. 8 respostas.
         </h1>
         <p className="text-sm text-muted-foreground mt-3 max-w-[52ch]">
-          Cola o link, joga o print ou o vídeo. Eu leio a vibe e te dou 8 respostas — humano, leve, desapegado.
+          Manda o print. Uma chamada só, tudo decifrado numa tela.
         </p>
       </header>
 
-      {/* Upload + link */}
       <section className="grid gap-3">
         <input
           ref={fileRef}
           type="file"
-          accept="image/*,video/*"
+          accept="image/*"
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -118,76 +94,28 @@ function ResponderStoryPage() {
         >
           {preview ? (
             <div className="flex items-center gap-4">
-              {fileKind === "video" ? (
-                <video src={preview} className="w-24 h-24 object-cover rounded-2xl ring-1 ring-border" muted playsInline />
-              ) : (
-                <img src={preview} alt="" className="w-24 h-24 object-cover rounded-2xl ring-1 ring-border" />
-              )}
+              <img src={preview} alt="" className="w-24 h-24 object-cover rounded-2xl ring-1 ring-border" />
               <div>
-                <div className="text-sm font-medium text-foreground">
-                  {fileKind === "video" ? "Vídeo carregado" : "Print carregado"}
-                </div>
+                <div className="text-sm font-medium text-foreground">Print carregado</div>
                 <div className="text-xs text-muted-foreground">Toca pra trocar</div>
               </div>
             </div>
           ) : (
             <div>
-              <div className="text-sm font-medium text-foreground">📎 Anexar print ou vídeo do story</div>
-              <div className="text-xs text-muted-foreground mt-1">JPG, PNG ou MP4 até 12MB</div>
+              <div className="text-sm font-medium text-foreground">📎 Anexar print do story</div>
+              <div className="text-xs text-muted-foreground mt-1">JPG ou PNG até 12MB</div>
             </div>
           )}
         </button>
-
-        <input
-          type="url"
-          value={link}
-          onChange={(e) => setLink(e.target.value)}
-          placeholder="ou cola o link do story aqui"
-          className="w-full rounded-2xl bg-card/50 ring-1 ring-border focus:ring-accent/40 px-4 py-3 text-sm outline-none transition"
-        />
-
-        <textarea
-          value={legenda}
-          onChange={(e) => setLegenda(e.target.value)}
-          rows={2}
-          placeholder="contexto opcional: legenda do story, música tocando, o que tá rolando…"
-          className="w-full rounded-2xl bg-card/50 ring-1 ring-border focus:ring-accent/40 px-4 py-3 text-sm outline-none transition resize-none"
-        />
       </section>
 
-      {/* Sliders */}
-      <section className="mt-6 p-5 rounded-3xl ring-1 ring-border bg-card/30">
-        <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
-          Ajuste IA
-        </div>
-        <div className="grid gap-4">
-          {SLIDERS.map((s) => (
-            <label key={s.key} className="block">
-              <div className="flex items-center justify-between text-xs mb-1.5">
-                <span className="text-foreground">{s.label}</span>
-                <span className="text-muted-foreground tabular-nums">{sliders[s.key]}</span>
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={sliders[s.key]}
-                onChange={(e) => setSliders((p) => ({ ...p, [s.key]: Number(e.target.value) }))}
-                className="w-full accent-violet"
-              />
-            </label>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
       <button
         type="button"
         disabled={!canSubmit}
         onClick={() => mutation.mutate()}
         className="mt-6 w-full py-4 rounded-2xl font-medium text-base bg-gradient-to-r from-violet to-accent text-background disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition shadow-[0_0_40px_-10px_var(--violet)]"
       >
-        {mutation.isPending ? "IA lendo o story…" : "RESPONDER STORY"}
+        {mutation.isPending ? "IA lendo o story…" : "DECIFRAR STORY"}
       </button>
 
       {mutation.isError && (
