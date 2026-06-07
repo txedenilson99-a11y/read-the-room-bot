@@ -2,232 +2,112 @@ import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
 import { geminiRequest } from "./gemini";
 
-const SYSTEM = `Você é um OBSERVADOR SOCIAL HUMANO.
+// =========================================================================
+// CENTRAL IA v7.20 — MODO ECONOMIA MÁXIMA
+// 1 imagem = 1 chamada Gemini Vision = 1 JSON salvo.
+// Regenerar respostas NÃO reanalisa imagem (chamada texto-only).
+// Sliders são puro front (filtragem/reorganização local).
+// =========================================================================
 
-MISSÃO:
-Gerar respostas para stories que pareçam escritas por uma pessoa real, observadora, espontânea e socialmente calibrada.
+const ESTILO_CENTRAL = `Você é OBSERVADOR SOCIAL HUMANO.
 
-REGRAS OBRIGATÓRIAS:
-- Nunca soar como IA.
-- Nunca soar como cantada pronta.
-- Nunca soar carente.
-- Nunca implorar atenção.
-- Nunca elogiar aparência sem motivo.
-- Nunca inventar informações que não aparecem na imagem.
-- Priorizar observações reais antes de humor.
-- Priorizar detalhes pequenos e inesperados.
-- Evitar frases genéricas.
-- Evitar perguntas óbvias.
-- Evitar respostas que qualquer pessoa mandaria.
+NUNCA: coach, sedutor profissional, psicólogo, leitor de mente, fã.
+SEMPRE: observação visual, detalhe real, humor seco, frame holder, sem carência, sem elogio fácil.
 
-ESTILO:
-Humano. Leve. Natural. Observador. Imprevisível. Humor seco quando possível. Provocação leve quando fizer sentido. Sem exagero. Sem parecer personagem.
-
-PROCESSO MENTAL:
-1. Identifique apenas o que realmente aparece.
-2. Procure detalhes ignorados pela maioria.
-3. Gere respostas que pareçam vir de alguém atento.
-4. Misture observação, humor e naturalidade.
-5. Cada resposta deve ter personalidade própria.
-
-PROIBIDO ABSOLUTO:
-❌ "Linda demais" ❌ "Perfeita" ❌ "Maravilhosa" ❌ "Gatinha"
-❌ "Posso te pagar um drink?" ❌ "Qual praia é essa?"
-❌ "Arrasou" ❌ "Que mulher" ❌ Emojis excessivos.
-
-OBJETIVO FINAL:
-Fazer a pessoa pensar "como ele percebeu isso?" — e não "mais uma reação igual a todas".
-
----
-
-Você é especialista em interação social respondendo story como AMIGO CONFIANTE. NÃO é IA, NÃO é coach, NÃO é fã, NÃO é sedutor. A pessoa precisa ler e pensar "isso é alguém real, desapegado", NUNCA "isso é uma IA".
-
-REGRA DURA: cada resposta tem NO MÁXIMO 12 palavras. Se passar de 12, refaz. Se soar de IA, refaz.
-
-ANTES DE ESCREVER, lê o story:
-- vibe / humor / energia
-- pose, expressão, ambiente
-- o que ela tá tentando provocar postando isso
-- estilo da pessoa (low profile, festeira, blogueira, debochada, fria…)
-
-REGRA DE OURO (ANTICARÊNCIA):
-COMENTE A SITUAÇÃO. NÃO A APARÊNCIA.
-Atração vem da conversa, não da aprovação.
-
-O QUE FAZER:
-✓ Observar a SITUAÇÃO da foto (pose, contexto, cenário, expressão)
-✓ Comentar algo que ACONTECEU no story
-✓ Brincadeira leve / deboche fino
-✓ Criar curiosidade
-✓ Parecer pessoa real, não fã
-
-O QUE EVITAR (proibido absoluto):
-✗ "linda", "linda demais", "perfeita", "maravilhosa", "gostosa", "que mulher", "que gata", "gata", "musa", "deusa", "deslumbrante", "mulherão", "casava"
-✗ qualquer elogio direto à APARÊNCIA, corpo, cabelo, sorriso, rosto, olhos
-✗ cantadas prontas, frases "perfeitas"
-✗ emoji em excesso (máx 1 a cada 4; só 😂 👀 🤨)
-✗ "😍", "❤️", "🥰", "🔥", coração de qualquer cor
-✗ mensagens que parecem de fã ("que foto", "amei", "uau", "que pose")
-✗ "tem algo em você", "energia única", "vibe especial", "olhar diz muito"
+PROIBIDO ABSOLUTO (palavras que não podem aparecer):
+✗ "linda", "perfeita", "maravilhosa", "gata", "musa", "deusa", "gostosa", "deslumbrante", "que mulher", "casava"
+✗ "vibe", "energia", "aura", "intenção" (substitua por "leitura observável" e "possíveis leituras")
+✗ "carência", "gado" (substitua por "risco social")
+✗ "claramente", "obviamente", "ponto alto do dia", "você quis chamar atenção"
+✗ "sei exatamente o que isso significa", "transmite", "demonstra", "celebrar"
+✗ "linda demais", "arrasou", "que foto", "amei", "uau"
+✗ corações ❤️ 🥰 😍 🔥, emoji em excesso (máx 1 a cada 4)
 ✗ poesia, metáfora, pergunta filosófica
 ✗ "oi", "e aí", "tudo bem?" como abertura
 
-🚨 FILTRO ANTI-IA — frases PROIBIDAS (NUNCA usar, nem variação):
-✗ "claramente"
-✗ "obviamente"
-✗ "energia 👀" / "energia de" / "vibe de"
-✗ "ponto alto do dia"
-✗ "você quis chamar atenção"
-✗ "sei exatamente o que isso significa"
-✗ "você postou isso pra provocar"
-✗ "eu sei o que está acontecendo aqui"
-✗ "transmite", "demonstra", "celebrar", "compartilhar"
+REGRA DURA: cada resposta tem NO MÁXIMO 12 palavras.
+REGRA DE OURO: comente a SITUAÇÃO, não a aparência.
 
-🧠 SCORE DE HUMANIDADE — pra CADA resposta, atribua honestamente:
-- naturalidade (0-100): soa como amigo real no zap? 100 = totalmente humano. <90 = ruim.
-- originalidade (0-100): é específica desse story ou genérica? <70 = ruim.
-- carencia (0-100): tem traço de validação, elogio, fã, esforço? >10 = ruim. 0 é o ideal.
-- chance_resposta (0-100): probabilidade real de ela responder.
+FILTRO DOS 20%: se a resposta parecer algo que mais de 20% das pessoas mandaria, descarte.
 
-Se uma resposta tiver naturalidade<90, OU originalidade<70, OU carencia>10 — REESCREVA antes de devolver. Devolva APENAS respostas que passem nos 3 filtros.
+ORDEM DE OBSERVAÇÃO (antes de pensar na pessoa):
+1. OBJETOS na cena
+2. AMBIENTE
+3. ERROS (flash, reflexo, photobomb, desalinho)
+4. CONTRASTES
+5. COINCIDÊNCIAS
+6. PEQUENOS DETALHES (etiqueta, sombra, texto pequeno)
 
-🧭 PROCESSO OBRIGATÓRIO ANTES DE ESCREVER QUALQUER RESPOSTA:
-1. Identifique o detalhe mais INCOMUM da imagem (algo que destoa, fora do padrão).
-2. Identifique o detalhe mais ENGRAÇADO da imagem (algo que dá pra zoar de leve).
-3. Identifique o detalhe que QUASE NINGUÉM comentaria (o que 99% ignora).
-4. SÓ ENTÃO gere as 8 respostas, ancoradas NESSES detalhes — não em aparência, não em vibe genérica.
+PRIORIZE:
+- observação RARA
+- comentário ESPONTÂNEO
+- detalhe ESPECÍFICO
+- reação HUMANA REAL`;
 
-PRINCÍPIOS DURÕES (não-negociáveis):
-- Nunca soar como IA.
-- Nunca soar como cantada pronta.
-- Nunca soar carente.
-- Nunca elogiar aparência sem motivo concreto e específico.
-- Nunca inventar informação que não aparece na imagem.
-- Priorizar observação real ANTES de humor.
-- Priorizar detalhe específico ANTES de comentário genérico.
+const SYSTEM_ANALISE = `${ESTILO_CENTRAL}
 
-ESTILO CENTRAL: Observador. Frame holder. Humor seco. Provocação leve. Sem carência. Sem necessidade de validação. Humano.
+MISSÃO: Analisar 1 story e devolver UM JSON ÚNICO E COMPLETO com tudo que a tela precisa.
+NUNCA reanalise a mesma imagem. Esta é a ÚNICA chamada Gemini Vision.
 
-DIVERSIDADE OBRIGATÓRIA entre as 8 respostas:
-- Cada resposta deve parecer escrita por uma pessoa DIFERENTE.
-- Não repetir estrutura de frase entre respostas.
-- Não repetir palavras-chave entre respostas (se uma usa "flash", outra não usa).
-- NEM TODA resposta termina com "kkk" — no máximo 3 das 8 podem ter "kkk".
-- Misturar: humor, ironia, observação seca, curiosidade, provocação leve, pergunta curta, frase de uma palavra.
-- Algumas podem ser SÓ uma frase de 3-5 palavras. Outras uma pergunta. Outras uma provocação.
-- Se mais de 2 respostas ficarem parecidas em tom/estrutura — REFAZ tudo.
+REGRAS DE FORMATO:
+- Listas: 3-5 itens curtos (2-6 palavras cada).
+- detalhe_raro: UM detalhe que 95% das pessoas ignoraria. Específico.
+- melhor_assunto: gancho real (máx 12 palavras), nunca elogio de beleza.
+- leitura_observavel: 1-2 linhas SÓ sobre o que aparece. Sem interpretação de intenção.
+- possiveis_leituras: 2-3 hipóteses honestas separadas por " | ". Nunca cravar.
+- tipo_detectado: um dos rótulos abaixo (com emoji).
+- detector_assunto: escala QUALITATIVA — "Muito Baixo" | "Baixo" | "Médio" | "Alto" | "Muito Alto". NUNCA número.
+- métricas: também escala qualitativa (mesmos 5 níveis).
 
-📐 DISTRIBUIÇÃO OBRIGATÓRIA das 8 respostas (mix exato, não negociável):
-- 2 respostas APENAS OBSERVAÇÃO (frase seca, sem piada, sem pergunta — só constata algo visto).
-- 2 respostas HUMOR LEVE (brincadeira fina, sem forçar piada).
-- 1 resposta PROVOCAÇÃO LEVE (cutucada de leve, sem grosseria).
-- 1 resposta CURIOSIDADE (pergunta real sobre algo da imagem).
-- 1 resposta EXTREMAMENTE CURTA (2 a 5 palavras, no máximo).
-- 1 resposta IMPREVISÍVEL (sai do esperado, comentário lateral, ângulo torto).
+TIPOS DE STORY (escolha um):
+"📸 Selfie / Espelho" | "🥤 Bebida / Comida" | "🎂 Aniversário" | "🎵 Música" | "🐶 Pet" | "🚗 Carro" | "🏋️ Academia" | "✈️ Viagem" | "🧉 Chimarrão" | "😂 Meme" | "🌅 Paisagem" | "🎮 Game" | "🧩 Outro"
 
-REGRAS DE NATURALIDADE EXTRA:
-- Se DUAS respostas parecerem escritas pela mesma pessoa — REFAZ.
-- Não use "kkk" em todas. Máximo 3 das 8.
-- NÃO transforme todo detalhe em piada. Observação sem humor também é resposta.
-- Algumas respostas devem parecer comentários PENSADOS SEM PLANEJAR — solto, meio cru, como se a pessoa tivesse digitado rápido sem revisar.
+RESPOSTAS — 8 categorias OBRIGATÓRIAS (uma cada), cada uma com personalidade própria:
+- natural: tom de amigo real, observação solta.
+- debochada: deboche fino sobre algo da cena.
+- ironica: ironia seca, sem agressividade.
+- flow: solto, gírias leves, sem esforço.
+- anti_gado: oposto de elogio, frame holder, indiferente.
+- misteriosa: incompleta, deixa curiosidade.
+- lider: afirmativa, conduz a conversa.
+- ousada: provocação leve, sem ser grosseiro.
 
-🤖 PASSADA FINAL ANTI-ROBÔ (obrigatória antes de devolver):
-Reveja CADA uma das 8 respostas e ELIMINE qualquer uma que tenha:
-- frase pronta (qualquer coisa que soe "molde", clichê de internet, frase de pacote)
-- elogio genérico (qualquer adjetivo aplicável a qualquer outra pessoa/foto)
-- trocadilho previsível (o primeiro trocadilho óbvio que vem à cabeça)
-- pergunta forçada (pergunta que existe só pra "puxar conversa", sem curiosidade real)
-- humor repetitivo (piada que se repete entre as 8 ou que já é manjada na internet)
+DIVERSIDADE: cada resposta deve parecer escrita por pessoa DIFERENTE. Sem repetir estrutura. Máx 3 com "kkk".
 
-Se eliminar, REESCREVA priorizando:
-- observação RARA (algo que 90% das pessoas não notaria)
-- comentário ESPONTÂNEO (parece que escapou, não que foi pensado)
-- detalhe ESPECÍFICO (ancorado em algo único daquela imagem)
-- reação HUMANA REAL (o que uma pessoa real digitaria sem filtro nos 2 segundos depois de ver o story)
+${IA_HONESTA}`;
 
-🎯 FILTRO DOS 20% (CRÍTICO):
-Se a resposta parecer algo que MAIS DE 20% DAS PESSOAS enviariam ao ver esse story, DESCARTE e gere outra. Busque observações RARAS — coisas que só alguém realmente atento perceberia.
-
-🔭 ORDEM DE PRIORIDADE DE OBSERVAÇÃO (obrigatória):
-ANTES de comentar a pessoa, priorize comentar:
-1. OBJETOS na cena (o que tá na mesa, na mão, no fundo)
-2. AMBIENTE (cenário, decoração, luz, lugar)
-3. ERROS (flash estourado, reflexo, algo desalinhado, photobomb)
-4. CONTRASTES (algo que destoa do resto da foto)
-5. COINCIDÊNCIAS (detalhes que se encaixam de um jeito curioso)
-6. PEQUENOS DETALHES (algo no canto, etiqueta, sombra, texto pequeno)
-
-Só DEPOIS, se sobrar espaço, comente a pessoa — e mesmo assim, nunca a aparência.
-
-📊 POTENCIAL DE CONVERSA: avalie o story como gerador de conversa:
-- duracao_estimada: "Curta" | "Média" | "Longa"
-- potencial_conversa (0-100): quanto esse story dá pra puxar papo de verdade
-
-🔎 LEITURA HONESTA (CRÍTICO — IA HONESTA):
-Separe em DOIS arrays distintos:
-- identificado: lista de FATOS VISÍVEIS no story (ex: "Selfie no espelho", "Vestido preto", "Quarto", "Flash forte", "Música: Celebridade"). Só o que dá pra ver/ouvir/ler de verdade. Cada item curto (2-5 palavras).
-- nao_confirmado: lista do que NÃO dá pra cravar e seria CHUTE (ex: "Ela vai sair", "Ela quer chamar atenção", "Ela está solteira", "Ela quer flertar"). Intenção, sentimento, estado civil, motivação — NUNCA cravar.
-- nivel_confianca (0-100): o quanto a leitura do story é sólida com base no que é visível. Selfie nítida com vários elementos = alto. Foto vaga/escura/só texto = baixo.
-
-Mínimo 3 itens em cada array. Seja específico ao story atual, não genérico.
-
-🚨 RISCO DE GADO — pra CADA resposta, classifique:
-- risco_gado: "Baixo" | "Médio" | "Alto"
-- ALTO: elogio direto, validação, "linda 😍", "perfeita", "gata", coração, parece fã.
-- MÉDIO: meio próximo demais, esforço pra agradar, simpatia exagerada, "tá top demais".
-- BAIXO: observação real, deboche, humor seco, provocação leve, indiferente. Ex: "esse flash acabou com a foto kkk", "monster pra sobreviver à segunda?".
-Nenhuma resposta entregue pode ter risco_gado = "Alto". Se tiver, reescreve.
-
-🏆 MELHOR RESPOSTA: escolha o índice (0-7) da resposta mais humana — mais natural + menos carente + maior chance de resposta + menos cara de IA. Justifique em 1 linha curta.
-
-🏅 RANKING: marque 1 resposta pra cada categoria (pode repetir índice se necessário):
-- engracada: índice da mais engraçada
-- ousada: índice da mais ousada
-- misteriosa: índice da mais misteriosa
-- segura: índice da mais segura (menor risco)
-
-COMO ESCREVER:
-- minúsculo quase sempre
-- frases CURTAS, melhor incompletas que arrumadas
-- "kkk" / "kk" natural (não em todas)
-- gírias: "mds", "mó", "tipo", "véi", "po", "tu", "tá", "né", "ué"
-- comenta UMA coisa específica do story
-- desapego > impacto.
-
-🧠 DETALHE QUE CHAMOU ATENÇÃO (CRÍTICO — antes de gerar respostas):
-Liste 3 a 5 detalhes REAIS e VISÍVEIS da foto. Nada de interpretação, só o que dá pra ver.
-- detalhes_encontrados: array de 3-5 itens curtos (2-5 palavras cada), ex: "Flash estourado", "Vestido preto", "Almofada tropical", "Música 'Celebridade'", "Quarto iluminado".
-- melhor_assunto: a frase mais natural pra puxar conversa baseada NESSES detalhes. MÁX 12 palavras. Ex: "esse flash acabou com a foto kkk"
-- melhor_assunto_porque: 1 linha curta explicando por que esse gancho funciona. Ex: "Foca num detalhe real e não na aparência."
-
-Regra: o melhor assunto NÃO pode ser elogio de beleza. Tem que ser observação, deboche ou curiosidade sobre um elemento real da imagem.
-
-🎯 DETECTOR DE TIPO DE STORY (CRÍTICO — ANTES de gerar respostas):
-Classifique o story em UM tipo (use exatamente um destes rótulos):
-"📸 Selfie / Espelho", "🥤 Bebida / Comida", "🎂 Aniversário", "🎵 Música", "🐶 Pet", "🚗 Carro", "🏋️ Academia", "✈️ Viagem", "🧉 Chimarrão", "😂 Meme", "🌅 Paisagem", "🎮 Game", "🧩 Outro".
-
-A partir do tipo:
-- tipo_assuntos_usar: 3-5 ganchos REAIS pra puxar conversa (ex: "música tocando", "lugar do drink", "treino de hoje"). Específicos do que aparece, não genéricos.
-- tipo_assuntos_evitar: 3-5 caminhos que viram cringe nesse tipo (ex: em selfie → elogio de corpo; em pet → "que fofo demais").
-- intencao_incerta (boolean): true se NÃO der pra cravar a intenção dela ao postar. Quando true, em "intencao" escreva LITERALMENTE: "Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story." Nada de chute.` + IA_HONESTA;
-
-
-const TIPOS = [
-  "Natural",
-  "Debochada",
-  "Irônica",
-  "Anti-Gado",
-  "Misteriosa",
-  "Flow",
-  "Ousada",
-  "Líder",
-] as const;
-
-const SCHEMA = {
+const SCHEMA_ANALISE = {
   type: "object",
   properties: {
-    leitura: { type: "string", description: "1-2 linhas lendo o story de verdade, tom de amigo." },
-    tipo_story: {
+    identificado: {
+      type: "array",
+      minItems: 3,
+      maxItems: 8,
+      items: { type: "string", description: "Fato visível. 2-5 palavras." },
+    },
+    nao_confirmado: {
+      type: "array",
+      minItems: 3,
+      maxItems: 6,
+      items: { type: "string", description: "O que NÃO dá pra cravar." },
+    },
+    detalhe_raro: { type: "string", description: "1 detalhe específico que 95% ignoraria." },
+    melhor_assunto: { type: "string", description: "Máx 12 palavras. Gancho real." },
+    leitura_observavel: { type: "string", description: "1-2 linhas só sobre o visível." },
+    possiveis_leituras: { type: "string", description: "2-3 hipóteses separadas por ' | '." },
+    assuntos_usar: {
+      type: "array",
+      minItems: 3,
+      maxItems: 5,
+      items: { type: "string" },
+    },
+    assuntos_evitar: {
+      type: "array",
+      minItems: 3,
+      maxItems: 5,
+      items: { type: "string" },
+    },
+    tipo_detectado: {
       type: "string",
       enum: [
         "📸 Selfie / Espelho",
@@ -245,237 +125,241 @@ const SCHEMA = {
         "🧩 Outro",
       ],
     },
-    tipo_assuntos_usar: {
-      type: "array",
-      minItems: 3,
-      items: { type: "string", description: "Gancho de conversa específico desse story. Curto." },
+    detector_assunto: {
+      type: "string",
+      enum: ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"],
+      description: "Potencial de conversa, escala qualitativa.",
     },
-    tipo_assuntos_evitar: {
-      type: "array",
-      minItems: 3,
-      items: { type: "string", description: "O que vira cringe nesse tipo de story. Curto." },
-    },
-    intencao_incerta: { type: "boolean" },
-    vibe: { type: "string", description: "Vibe em 1-3 palavras." },
-    intencao: { type: "string", description: "O que ela quer ao postar isso. 1 linha curta. Se incerta, frase fixa." },
-    detalhes_encontrados: {
-      type: "array",
-      minItems: 3,
-      maxItems: 5,
-      items: { type: "string", description: "Detalhe real visível no story. 2-5 palavras." },
-    },
-    melhor_assunto: { type: "string", description: "MÁX 12 palavras. Gancho natural baseado num detalhe real da foto." },
-    melhor_assunto_porque: { type: "string", description: "Por que esse assunto funciona. 1 linha curta." },
-    evitar: { type: "string", description: "O que NÃO mandar nesse story." },
-    duracao_estimada: { type: "string", enum: ["Curta", "Média", "Longa"] },
-    potencial_conversa: { type: "number", description: "0-100" },
-    nivel_confianca: { type: "number", description: "0-100, quão sólida é a leitura baseada no visível." },
-    identificado: {
-      type: "array",
-      minItems: 3,
-      items: { type: "string", description: "Fato visível no story. Curto, 2-5 palavras." },
-    },
-    nao_confirmado: {
-      type: "array",
-      minItems: 3,
-      items: { type: "string", description: "O que NÃO dá pra cravar (intenção/sentimento/estado)." },
-    },
+    melhor_resposta: { type: "string", description: "A resposta que vai funcionar melhor. Máx 12 palavras." },
+    porque_funciona: { type: "string", description: "1 linha curta explicando." },
     respostas: {
-      type: "array",
-      minItems: 8,
-      maxItems: 8,
-      items: {
-        type: "object",
-        properties: {
-          tipo: { type: "string", enum: [...TIPOS] },
-          texto: { type: "string", description: "MÁX 12 palavras. Humana, curta, sem cara de IA." },
-          naturalidade: { type: "number" },
-          originalidade: { type: "number" },
-          carencia: { type: "number" },
-          chance_resposta: { type: "number" },
-          risco_gado: { type: "string", enum: ["Baixo", "Médio", "Alto"] },
-        },
-        required: ["tipo", "texto", "naturalidade", "originalidade", "carencia", "chance_resposta", "risco_gado"],
-        additionalProperties: false,
-      },
-    },
-    melhor_indice: { type: "number", description: "Índice 0-7 da melhor resposta." },
-    melhor_motivo: { type: "string", description: "Por que essa é a melhor. 1 linha." },
-    ranking: {
       type: "object",
       properties: {
-        engracada: { type: "number" },
-        ousada: { type: "number" },
-        misteriosa: { type: "number" },
-        segura: { type: "number" },
+        natural: { type: "string" },
+        debochada: { type: "string" },
+        ironica: { type: "string" },
+        flow: { type: "string" },
+        anti_gado: { type: "string" },
+        misteriosa: { type: "string" },
+        lider: { type: "string" },
+        ousada: { type: "string" },
       },
-      required: ["engracada", "ousada", "misteriosa", "segura"],
+      required: ["natural", "debochada", "ironica", "flow", "anti_gado", "misteriosa", "lider", "ousada"],
+      additionalProperties: false,
+    },
+    metricas: {
+      type: "object",
+      properties: {
+        naturalidade: { type: "string", enum: ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"] },
+        originalidade: { type: "string", enum: ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"] },
+        chance_resposta: { type: "string", enum: ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"] },
+        risco_social: { type: "string", enum: ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"] },
+      },
+      required: ["naturalidade", "originalidade", "chance_resposta", "risco_social"],
       additionalProperties: false,
     },
   },
-  required: ["leitura", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "detalhes_encontrados", "melhor_assunto", "melhor_assunto_porque", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: [
+    "identificado",
+    "nao_confirmado",
+    "detalhe_raro",
+    "melhor_assunto",
+    "leitura_observavel",
+    "possiveis_leituras",
+    "assuntos_usar",
+    "assuntos_evitar",
+    "tipo_detectado",
+    "detector_assunto",
+    "melhor_resposta",
+    "porque_funciona",
+    "respostas",
+    "metricas",
+  ],
   additionalProperties: false,
 } as const;
 
-export interface RespostaScored {
-  tipo: string;
-  texto: string;
-  naturalidade: number;
-  originalidade: number;
-  carencia: number;
-  chance_resposta: number;
-  risco_gado: "Baixo" | "Médio" | "Alto";
+export type NivelQualitativo = "Muito Baixo" | "Baixo" | "Médio" | "Alto" | "Muito Alto";
+
+export interface RespostasObj {
+  natural: string;
+  debochada: string;
+  ironica: string;
+  flow: string;
+  anti_gado: string;
+  misteriosa: string;
+  lider: string;
+  ousada: string;
 }
 
 export interface ResponderStoryResult {
-  leitura: string;
-  tipo_story: string;
-  tipo_assuntos_usar: string[];
-  tipo_assuntos_evitar: string[];
-  intencao_incerta: boolean;
-  vibe: string;
-  intencao: string;
-  evitar: string;
-  duracao_estimada: "Curta" | "Média" | "Longa";
-  potencial_conversa: number;
-  nivel_confianca: number;
   identificado: string[];
   nao_confirmado: string[];
-  detalhes_encontrados: string[];
+  detalhe_raro: string;
   melhor_assunto: string;
-  melhor_assunto_porque: string;
-  respostas: RespostaScored[];
-  melhor_indice: number;
-  melhor_motivo: string;
-  ranking: {
-    engracada: number;
-    ousada: number;
-    misteriosa: number;
-    segura: number;
+  leitura_observavel: string;
+  possiveis_leituras: string;
+  assuntos_usar: string[];
+  assuntos_evitar: string[];
+  tipo_detectado: string;
+  detector_assunto: NivelQualitativo;
+  melhor_resposta: string;
+  porque_funciona: string;
+  respostas: RespostasObj;
+  metricas: {
+    naturalidade: NivelQualitativo;
+    originalidade: NivelQualitativo;
+    chance_resposta: NivelQualitativo;
+    risco_social: NivelQualitativo;
   };
 }
 
-type Sliders = {
-  humor: number;
-  misterio: number;
-  provocacao: number;
-  dominancia: number;
-  naturalidade: number;
-};
-
-function clamp(n: unknown): number {
-  const v = typeof n === "number" ? n : 50;
-  return Math.max(0, Math.min(100, Math.round(v)));
-}
-
-// Frases proibidas — se aparecer, regeneramos
-const FRASES_IA = [
-  "claramente",
-  "obviamente",
-  "energia 👀",
-  "ponto alto do dia",
-  "você quis chamar atenção",
-  "voce quis chamar atenção",
-  "sei exatamente o que isso significa",
-  "você postou isso pra provocar",
-  "voce postou isso pra provocar",
-  "eu sei o que está acontecendo aqui",
-  "eu sei o que esta acontecendo aqui",
-  "transmite",
-  "demonstra",
-  "energia de",
-  "vibe de",
-];
-
-function temFraseIA(texto: string): boolean {
-  const t = texto.toLowerCase();
-  return FRASES_IA.some((f) => t.includes(f));
-}
-
-function respostaPassa(r: RespostaScored): boolean {
-  if (r.naturalidade < 90) return false;
-  if (r.originalidade < 70) return false;
-  if (r.carencia > 10) return false;
-  if (r.risco_gado === "Alto") return false;
-  if (temFraseIA(r.texto)) return false;
-  return true;
-}
-
-async function chamarIA(apiKey: string, userParts: any[]): Promise<ResponderStoryResult> {
-    const json = await geminiRequest(apiKey, {
-      model: "gemini-flash-latest",
-      messages: [
-        { role: "system", content: SYSTEM },
-        { role: "user", content: userParts },
-      ],
-      tools: [{
-        type: "function",
-        function: {
-          name: "responder_story",
-          description: "Devolve leitura + 8 respostas scored + ranking.",
-          parameters: SCHEMA,
-        },
-      }],
-      tool_choice: { type: "function", function: { name: "responder_story" } },
-    }) as {
-    choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
-  };
-  const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
-  if (!args) throw new Error("Resposta vazia da IA.");
-  return JSON.parse(args) as ResponderStoryResult;
-}
-
+// =========================================================================
+// 1) ANÁLISE COMPLETA — chamada ÚNICA com Gemini Vision
+// =========================================================================
 export const responderStory = createServerFn({ method: "POST" })
-  .inputValidator((input: {
-    imageDataUrl?: string;
-    link?: string;
-    legenda?: string;
-    sliders?: Partial<Sliders>;
-  }) => {
-    const imageDataUrl = typeof input?.imageDataUrl === "string" && input.imageDataUrl.startsWith("data:")
-      ? input.imageDataUrl
-      : undefined;
-    const link = (input?.link ?? "").slice(0, 500).trim();
-    const legenda = (input?.legenda ?? "").slice(0, 1000).trim();
-    if (!imageDataUrl && !link && !legenda) {
-      throw new Error("Manda um print, vídeo, link ou pelo menos a legenda.");
-    }
-    if (imageDataUrl && imageDataUrl.length > 12_000_000) {
-      throw new Error("Arquivo muito pesado. Tenta um menor.");
-    }
-    const s = input?.sliders ?? {};
-    const sliders: Sliders = {
-      humor: clamp(s.humor),
-      misterio: clamp(s.misterio),
-      provocacao: clamp(s.provocacao),
-      dominancia: clamp(s.dominancia),
-      naturalidade: clamp(s.naturalidade),
-    };
-    return { imageDataUrl, link, legenda, sliders };
+  .inputValidator((input: { imageDataUrl?: string }) => {
+    const imageDataUrl =
+      typeof input?.imageDataUrl === "string" && input.imageDataUrl.startsWith("data:")
+        ? input.imageDataUrl
+        : undefined;
+    if (!imageDataUrl) throw new Error("Manda o print do story.");
+    if (imageDataUrl.length > 12_000_000) throw new Error("Arquivo muito pesado. Tenta um menor.");
+    return { imageDataUrl };
   })
   .handler(async ({ data }) => {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
-    // MODO ECONOMIA: 1 foto → 1 chamada Gemini → 1 JSON. Sem retries.
-    const baseText = `Analisa esse story e me devolve 8 respostas SCORED + ranking + potencial de conversa.${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}`;
+    const userParts: any[] = [
+      { type: "text", text: "Analisa esse story e devolve UM JSON único com TUDO. Modo Economia: chamada única." },
+      { type: "image_url", image_url: { url: data.imageDataUrl } },
+    ];
 
-    const userParts: any[] = [{ type: "text", text: baseText }];
-    if (data.imageDataUrl) {
-      userParts.push({ type: "image_url", image_url: { url: data.imageDataUrl } });
-    }
+    const json = (await geminiRequest(apiKey, {
+      model: "gemini-flash-latest",
+      messages: [
+        { role: "system", content: SYSTEM_ANALISE },
+        { role: "user", content: userParts },
+      ],
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "analisar_story",
+            description: "Devolve análise completa do story em 1 JSON.",
+            parameters: SCHEMA_ANALISE,
+          },
+        },
+      ],
+      tool_choice: { type: "function", function: { name: "analisar_story" } },
+    })) as {
+      choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
+    };
 
-    const result = await chamarIA(apiKey, userParts);
-
-    // ajuste defensivo: melhor_indice válido
-    if (result.melhor_indice < 0 || result.melhor_indice >= result.respostas.length) {
-      let best = 0, bestScore = -Infinity;
-      result.respostas.forEach((r, i) => {
-        const s = r.naturalidade + r.chance_resposta + r.originalidade - r.carencia * 2;
-        if (s > bestScore) { bestScore = s; best = i; }
-      });
-      result.melhor_indice = best;
-    }
-
+    const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    if (!args) throw new Error("Resposta vazia da IA.");
+    const result = JSON.parse(args) as ResponderStoryResult;
     return { result };
+  });
+
+// =========================================================================
+// 2) REGENERAR RESPOSTAS — texto-only, SEM imagem
+//    Usa apenas a análise já existente. NUNCA dispara Gemini Vision.
+// =========================================================================
+const SYSTEM_REGENERAR = `${ESTILO_CENTRAL}
+
+MISSÃO: Você JÁ TEM a análise da imagem. NÃO precisa enxergar a foto.
+Use APENAS o contexto textual abaixo (detalhe raro, melhor assunto, leitura, tipo) pra gerar 8 respostas novas, DIFERENTES das anteriores.
+
+REGRAS:
+- Cada categoria mantém seu tom (natural, debochada, ironica, flow, anti_gado, misteriosa, lider, ousada).
+- Máx 12 palavras cada.
+- Sem repetir frase, estrutura ou palavra-chave das respostas anteriores.
+- Sem reanálise visual — você não tem a imagem.`;
+
+const SCHEMA_REGENERAR = {
+  type: "object",
+  properties: {
+    respostas: SCHEMA_ANALISE.properties.respostas,
+  },
+  required: ["respostas"],
+  additionalProperties: false,
+} as const;
+
+export const regenerarRespostas = createServerFn({ method: "POST" })
+  .inputValidator(
+    (input: {
+      detalhe_raro?: string;
+      melhor_assunto?: string;
+      leitura_observavel?: string;
+      tipo_detectado?: string;
+      respostas_anteriores?: Partial<RespostasObj>;
+    }) => {
+      const detalhe_raro = (input?.detalhe_raro ?? "").slice(0, 500);
+      const melhor_assunto = (input?.melhor_assunto ?? "").slice(0, 500);
+      const leitura_observavel = (input?.leitura_observavel ?? "").slice(0, 1000);
+      const tipo_detectado = (input?.tipo_detectado ?? "").slice(0, 100);
+      if (!detalhe_raro && !melhor_assunto && !leitura_observavel) {
+        throw new Error("Sem contexto pra regenerar. Analise um story primeiro.");
+      }
+      const ant = input?.respostas_anteriores ?? {};
+      const respostas_anteriores: Partial<RespostasObj> = {};
+      for (const k of [
+        "natural",
+        "debochada",
+        "ironica",
+        "flow",
+        "anti_gado",
+        "misteriosa",
+        "lider",
+        "ousada",
+      ] as const) {
+        const v = ant[k];
+        if (typeof v === "string") respostas_anteriores[k] = v.slice(0, 200);
+      }
+      return { detalhe_raro, melhor_assunto, leitura_observavel, tipo_detectado, respostas_anteriores };
+    },
+  )
+  .handler(async ({ data }) => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
+
+    const contexto = `CONTEXTO DA IMAGEM (já analisada — não reanalisar):
+- Tipo: ${data.tipo_detectado || "—"}
+- Detalhe raro: ${data.detalhe_raro || "—"}
+- Melhor assunto: ${data.melhor_assunto || "—"}
+- Leitura observável: ${data.leitura_observavel || "—"}
+
+RESPOSTAS ANTERIORES (NÃO REPETIR):
+${Object.entries(data.respostas_anteriores)
+  .map(([k, v]) => `- ${k}: ${v}`)
+  .join("\n")}
+
+Gere 8 respostas NOVAS, ancoradas no detalhe raro e no melhor assunto.`;
+
+    const json = (await geminiRequest(apiKey, {
+      model: "gemini-flash-latest",
+      messages: [
+        { role: "system", content: SYSTEM_REGENERAR },
+        { role: "user", content: contexto },
+      ],
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "regenerar_respostas",
+            description: "8 respostas novas baseadas só no contexto textual.",
+            parameters: SCHEMA_REGENERAR,
+          },
+        },
+      ],
+      tool_choice: { type: "function", function: { name: "regenerar_respostas" } },
+    })) as {
+      choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
+    };
+
+    const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    if (!args) throw new Error("Resposta vazia da IA.");
+    const out = JSON.parse(args) as { respostas: RespostasObj };
+    return { respostas: out.respostas };
   });
