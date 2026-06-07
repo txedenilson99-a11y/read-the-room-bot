@@ -457,64 +457,18 @@ export const responderStory = createServerFn({ method: "POST" })
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
-    const { sliders } = data;
-    const slidersText = `Ajuste do usuário (0-100):
-- Humor: ${sliders.humor}
-- Mistério: ${sliders.misterio}
-- Provocação: ${sliders.provocacao}
-- Dominância: ${sliders.dominancia}
-- Naturalidade: ${sliders.naturalidade}
+    // MODO ECONOMIA: 1 foto → 1 chamada Gemini → 1 JSON. Sem retries.
+    const baseText = `Analisa esse story e me devolve 8 respostas SCORED + ranking + potencial de conversa.${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}`;
 
-Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
-
-    const baseText = `Analisa esse story e me devolve 8 respostas SCORED + ranking + potencial de conversa.${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${slidersText}`;
-
-    let result: ResponderStoryResult | null = null;
-    let tentativas = 0;
-    let avisoExtra = "";
-
-    while (tentativas < 3) {
-      const userParts: any[] = [
-        { type: "text", text: baseText + (avisoExtra ? `\n\n⚠️ TENTATIVA ANTERIOR FALHOU:\n${avisoExtra}\n\nReescreva TUDO mais humano, mais específico, ZERO cara de IA.` : "") },
-      ];
-      if (data.imageDataUrl) {
-        userParts.push({ type: "image_url", image_url: { url: data.imageDataUrl } });
-      }
-
-      const candidato = await chamarIA(apiKey, userParts);
-      tentativas++;
-
-      const falhas = candidato.respostas.map((r, i) => {
-        const motivos: string[] = [];
-        if (r.naturalidade < 90) motivos.push(`naturalidade=${r.naturalidade}<90`);
-        if (r.originalidade < 70) motivos.push(`originalidade=${r.originalidade}<70`);
-        if (r.carencia > 10) motivos.push(`carencia=${r.carencia}>10`);
-        if (r.risco_gado === "Alto") motivos.push("risco_gado=Alto");
-        if (temFraseIA(r.texto)) motivos.push("contém frase proibida (IA)");
-        return motivos.length ? `[${i}] "${r.texto}" → ${motivos.join(", ")}` : null;
-      }).filter(Boolean);
-
-      const todasPassam = candidato.respostas.every(respostaPassa);
-
-      if (todasPassam) {
-        result = candidato;
-        break;
-      }
-
-      // se for última tentativa, aceita o melhor que conseguir
-      if (tentativas >= 3) {
-        result = candidato;
-        break;
-      }
-
-      avisoExtra = falhas.join("\n");
+    const userParts: any[] = [{ type: "text", text: baseText }];
+    if (data.imageDataUrl) {
+      userParts.push({ type: "image_url", image_url: { url: data.imageDataUrl } });
     }
 
-    if (!result) throw new Error("A IA não conseguiu gerar respostas humanas.");
+    const result = await chamarIA(apiKey, userParts);
 
     // ajuste defensivo: melhor_indice válido
     if (result.melhor_indice < 0 || result.melhor_indice >= result.respostas.length) {
-      // escolhe pela maior soma natural+chance - carencia
       let best = 0, bestScore = -Infinity;
       result.respostas.forEach((r, i) => {
         const s = r.naturalidade + r.chance_resposta + r.originalidade - r.carencia * 2;
