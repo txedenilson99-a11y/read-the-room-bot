@@ -3,14 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { raioXPerfil, type RaioXResult } from "@/lib/raio-x.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/raio-x")({
-  head: () => ({
-    meta: [
-      { title: "Raio-X de Perfil v5.20 — ScanSocial" },
-      { name: "description", content: "Detecta tipo de perfil, fatos reais e gera abridores naturais." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/raio-x",
+      title: "Raio-X de Perfil — Análise IA de Instagram e apps | ScanSocial",
+      description:
+        "Manda as fotos e a bio. A IA do ScanSocial detecta o tipo de perfil, acha fatos reais e gera abridores naturais que passam despercebidos.",
+    }),
   component: RaioXPage,
 });
 

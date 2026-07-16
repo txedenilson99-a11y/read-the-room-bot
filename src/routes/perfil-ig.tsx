@@ -7,18 +7,16 @@ import {
   type PerfilIGResult,
   type Veredito,
 } from "@/lib/perfil-instagram.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/perfil-ig")({
-  head: () => ({
-    meta: [
-      { title: "Análise de Perfil Instagram — ScanSocial" },
-      {
-        name: "description",
-        content:
-          "A IA analisa um perfil do Instagram e diz se é forte, atraente, carente ou fake. Sem maquiar.",
-      },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/perfil-ig",
+      title: "Análise de Perfil Instagram por IA | ScanSocial",
+      description:
+        "Manda prints do perfil e a IA analisa se ele é forte, atraente, carente ou fake. Diagnóstico honesto, sem maquiar.",
+    }),
   component: PerfilIGPage,
 });
 

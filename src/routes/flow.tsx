@@ -3,14 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { continuarConversa, type FlowResult, type FlowModo } from "@/lib/flow.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/flow")({
-  head: () => ({
-    meta: [
-      { title: "Flow — ScanSocial" },
-      { name: "description", content: "Mantenha o assunto fluindo. A IA cria a próxima mensagem ideal pra continuar a conversa sem parecer forçado." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/flow",
+      title: "Flow — Continuar a Conversa com IA | ScanSocial",
+      description:
+        "Mantenha o assunto fluindo. A IA cria a próxima mensagem ideal para continuar a conversa sem parecer forçado ou repetitivo.",
+    }),
   component: FlowPage,
 });
 

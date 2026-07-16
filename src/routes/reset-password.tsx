@@ -2,14 +2,16 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({
-    meta: [
-      { title: "Nova senha — ScanSocial" },
-      { name: "description", content: "Defina uma nova senha." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/reset-password",
+      title: "Nova senha — ScanSocial",
+      description:
+        "Defina uma nova senha para sua conta do ScanSocial e volte a acessar as leituras de IA.",
+    }),
   component: ResetPage,
 });
 

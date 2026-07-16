@@ -1,14 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { TOOLS, type ToolSlug } from "@/lib/tools";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/historico")({
-  head: () => ({
-    meta: [
-      { title: "Histórico — ScanSocial" },
-      { name: "description", content: "Suas leituras anteriores." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/historico",
+      title: "Histórico de leituras — ScanSocial",
+      description:
+        "Todas as suas leituras anteriores no ScanSocial em um só lugar: stories, prints, perfis e conversas analisadas pela IA.",
+    }),
   component: HistoricoPage,
 });
 

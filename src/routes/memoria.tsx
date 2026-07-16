@@ -1,14 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/memoria")({
-  head: () => ({
-    meta: [
-      { title: "Perfis & Memória — ScanSocial" },
-      { name: "description", content: "A IA aprende a vibe de cada pessoa." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/memoria",
+      title: "Perfis & Memória — IA que lembra cada pessoa | ScanSocial",
+      description:
+        "A IA do ScanSocial memoriza a vibe, o humor e o histórico de cada pessoa para adaptar cada resposta e leitura ao contexto real.",
+    }),
   component: MemoriaPage,
 });
 

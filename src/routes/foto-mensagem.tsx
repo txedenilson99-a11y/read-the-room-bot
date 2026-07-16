@@ -3,15 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { analisarFoto, type MensagemResult } from "@/lib/foto.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/foto-mensagem")({
-  head: () => ({
-    meta: [
-      { title: "Print → Resposta — ScanSocial" },
-      { name: "description", content: "Manda o print. A IA entende o contexto e cria respostas naturais." },
-    ],
-  }),
-
+  head: () =>
+    seoHead({
+      path: "/foto-mensagem",
+      title: "Print → Resposta — Mensagens de IA a partir de prints | ScanSocial",
+      description:
+        "Manda o print da conversa. A IA entende o contexto, o clima e cria respostas naturais que fazem sentido para aquela troca.",
+    }),
   component: FotoMensagemPage,
 });
 

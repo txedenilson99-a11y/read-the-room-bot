@@ -3,14 +3,16 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, useProfile } from "@/lib/use-auth";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/perfil")({
-  head: () => ({
-    meta: [
-      { title: "Perfil — ScanSocial" },
-      { name: "description", content: "Sua conta e estilo detectado pela IA." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/perfil",
+      title: "Seu perfil — ScanSocial",
+      description:
+        "Configure sua conta do ScanSocial e veja o estilo social que a IA identificou a partir das suas leituras.",
+    }),
   component: PerfilPage,
 });
 

@@ -3,14 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { analisarFoto, type StoryResult } from "@/lib/foto.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/foto-story")({
-  head: () => ({
-    meta: [
-      { title: "Foto Story — ScanSocial" },
-      { name: "description", content: "Mande o print do story, a IA decifra e te entrega a melhor resposta." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/foto-story",
+      title: "Foto do Story — Leitura por IA | ScanSocial",
+      description:
+        "Manda o print do story: a IA decifra a intenção, o clima e te entrega a melhor resposta para reagir sem parecer óbvio.",
+    }),
   component: FotoStoryPage,
 });
 

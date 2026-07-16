@@ -3,14 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { gerarModo18, type Modo18Result, type Modo18Estilo } from "@/lib/modo18.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/modo-18")({
-  head: () => ({
-    meta: [
-      { title: "Modo 18+ — ScanSocial" },
-      { name: "description", content: "Flerte intenso, provocação e química. Mensagens mais ousadas e confiantes, sem cair em cantada pronta." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/modo-18",
+      title: "Modo 18+ — Flerte avançado com IA | ScanSocial",
+      description:
+        "Flerte intenso, provocação e química. Mensagens mais ousadas e confiantes geradas por IA, sem cair em cantada pronta ou carência.",
+    }),
   component: Modo18Page,
 });
 

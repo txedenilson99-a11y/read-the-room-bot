@@ -3,14 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { responderStory, type ResponderStoryResult } from "@/lib/responder-story.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/responder-story")({
-  head: () => ({
-    meta: [
-      { title: "Responder Story — ScanSocial" },
-      { name: "description", content: "Cola o link, manda o print ou o vídeo. 8 respostas sem parecer carente." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/responder-story",
+      title: "Responder Story — 8 respostas geradas por IA | ScanSocial",
+      description:
+        "Cola o link, manda o print ou o vídeo do story. A IA devolve 8 respostas naturais, sem cara de cantada pronta e sem parecer carente.",
+    }),
   component: ResponderStoryPage,
 });
 
