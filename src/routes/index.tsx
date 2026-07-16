@@ -3,16 +3,54 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth, useProfile } from "@/lib/use-auth";
 import { TOOLS } from "@/lib/tools";
 import { WelcomeV520 } from "@/components/WelcomeV520";
+import { seoHead, SITE_URL } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "ScanSocial — IA Social" },
-      { name: "description", content: "IA social pra ler stories, prints, perfis e conversas." },
-    ],
-  }),
+  head: () => {
+    const base = seoHead({
+      path: "/",
+      title: "ScanSocial — IA Social para ler stories, prints e conversas",
+      description:
+        "IA social pra ler stories, prints, perfis e conversas. Detecta intenção, ego e joguinho por trás do que a pessoa não disse.",
+    });
+    return {
+      ...base,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Organization",
+                name: "ScanSocial",
+                url: SITE_URL,
+              },
+              {
+                "@type": "WebSite",
+                name: "ScanSocial",
+                url: SITE_URL,
+                description:
+                  "IA social pra ler stories, prints, perfis e conversas.",
+              },
+              {
+                "@type": "SoftwareApplication",
+                name: "ScanSocial",
+                applicationCategory: "SocialNetworkingApplication",
+                operatingSystem: "Web",
+                description:
+                  "Ferramenta de IA que analisa stories, prints, perfis e conversas de redes sociais para revelar intenção e subtexto.",
+                offers: { "@type": "Offer", price: "0", priceCurrency: "BRL" },
+              },
+            ],
+          }),
+        },
+      ],
+    };
+  },
   component: Home,
 });
+
 
 const VIBES = [
   "Pronta pra ler sinais.",
@@ -139,9 +177,12 @@ function Home() {
             modo observador
           </span>
         </div>
-        <h1 className="text-3xl md:text-5xl font-medium tracking-tight text-foreground leading-[1.05]">
-          {greeting()}{firstName ? `, ${firstName}` : ""}.
+        <h1 className="sr-only">
+          ScanSocial — IA Social para ler stories, prints, perfis e conversas
         </h1>
+        <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-foreground leading-[1.05]">
+          {greeting()}{firstName ? `, ${firstName}` : ""}.
+        </h2>
         <p className="mt-3 text-base md:text-lg text-muted-foreground min-h-[1.6em]">
           <Typing text={VIBES[vibe]} />
         </p>
