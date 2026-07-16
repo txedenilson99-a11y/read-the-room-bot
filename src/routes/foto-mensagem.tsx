@@ -3,15 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { analisarFoto, type MensagemResult } from "@/lib/foto.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/foto-mensagem")({
-  head: () => ({
-    meta: [
-      { title: "Print → Resposta — ScanSocial" },
-      { name: "description", content: "Manda o print. A IA entende o contexto e cria respostas naturais." },
-    ],
-  }),
-
+  head: () =>
+    seoHead({
+      path: "/foto-mensagem",
+      title: "Print → Resposta — Mensagens de IA a partir de prints | ScanSocial",
+      description:
+        "Manda o print da conversa. A IA entende o contexto, o clima e cria respostas naturais que fazem sentido para aquela troca.",
+    }),
   component: FotoMensagemPage,
 });
 
@@ -88,7 +89,7 @@ function FotoMensagemPage() {
       ) : (
         <div className="space-y-5 animate-fade-up">
           <div className="relative rounded-3xl overflow-hidden ring-1 ring-border bg-card/60">
-            <img src={preview} alt="preview" className="w-full max-h-[60vh] object-contain" />
+            <img src={preview} alt="Print da conversa para análise" className="w-full max-h-[60vh] object-contain" />
             <button
               onClick={() => { setPreview(null); mutation.reset(); }}
               className="absolute top-3 right-3 bg-background/80 backdrop-blur px-3 py-1 rounded-full text-xs ring-1 ring-border"

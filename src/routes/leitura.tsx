@@ -3,18 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { lerComportamento, type LeituraResult } from "@/lib/leitura.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/leitura")({
-  head: () => ({
-    meta: [
-      { title: "Leitura Comportamental IA — ScanSocial" },
-      {
-        name: "description",
-        content:
-          "A IA lê o contexto de fotos, stories e prints de forma madura e respeitosa. Mostra vibe, intenção possível e se vale responder.",
-      },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/leitura",
+      title: "Leitura Comportamental IA — Fotos, stories e prints | ScanSocial",
+      description:
+        "A IA lê o contexto de fotos, stories e prints de forma madura e respeitosa. Mostra a vibe, a intenção provável e se vale responder.",
+    }),
   component: LeituraPage,
 });
 

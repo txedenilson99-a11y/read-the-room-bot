@@ -3,14 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { gerarPrimeiroContato, type PrimeiroContatoResult } from "@/lib/primeiro-contato.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/primeiro-contato")({
-  head: () => ({
-    meta: [
-      { title: "Primeiro Contato — ScanSocial" },
-      { name: "description", content: "Match no Tinder, Badoo ou direct? A IA lê o perfil e te dá 10 abridores prontos." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/primeiro-contato",
+      title: "Primeiro Contato — Abridores de IA para Tinder e direct | ScanSocial",
+      description:
+        "Match no Tinder, Badoo ou direct do Instagram? A IA lê o perfil e entrega 10 abridores prontos, naturais e sem cara de copy-paste.",
+    }),
   component: PrimeiroContatoPage,
 });
 
@@ -98,6 +100,8 @@ function PrimeiroContatoPage() {
               <div key={i} className="relative aspect-square rounded-2xl overflow-hidden ring-1 ring-border bg-card/60">
                 <img src={url} alt={`foto ${i + 1}`} className="w-full h-full object-cover" />
                 <button
+                  type="button"
+                  aria-label="Remover foto"
                   onClick={() => setImages((p) => p.filter((_, idx) => idx !== i))}
                   className="absolute top-1.5 right-1.5 bg-background/80 backdrop-blur px-2 py-0.5 rounded-full text-[10px] ring-1 ring-border"
                 >

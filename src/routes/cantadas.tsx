@@ -3,14 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { gerarCantadas, type CantadasResult, type CantadaSequencia } from "@/lib/cantadas.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/cantadas")({
-  head: () => ({
-    meta: [
-      { title: "Cantadas em Etapas — ScanSocial" },
-      { name: "description", content: "A IA monta a conversa inteira: setup, resposta dela, punchline e continuação." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/cantadas",
+      title: "Cantadas em Etapas — Conversas guiadas por IA | ScanSocial",
+      description:
+        "A IA do ScanSocial monta a conversa inteira em etapas: setup, resposta dela, punchline e continuação — sem parecer cantada pronta.",
+    }),
   component: CantadasPage,
 });
 

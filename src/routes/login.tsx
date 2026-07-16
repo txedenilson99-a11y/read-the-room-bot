@@ -4,14 +4,16 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({
-    meta: [
-      { title: "Entrar — ScanSocial" },
-      { name: "description", content: "Entre na sua conta." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/login",
+      title: "Entrar — ScanSocial",
+      description:
+        "Entre na sua conta do ScanSocial e acesse as leituras de IA para stories, prints e conversas.",
+    }),
   component: LoginPage,
 });
 

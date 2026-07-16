@@ -4,14 +4,16 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/cadastro")({
-  head: () => ({
-    meta: [
-      { title: "Criar conta — ScanSocial" },
-      { name: "description", content: "Crie sua conta no ScanSocial." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/cadastro",
+      title: "Criar conta — ScanSocial",
+      description:
+        "Crie sua conta gratuita no ScanSocial e comece a ler stories, prints e conversas com IA em segundos.",
+    }),
   component: CadastroPage,
 });
 

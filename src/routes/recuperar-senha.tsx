@@ -3,14 +3,16 @@ import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/recuperar-senha")({
-  head: () => ({
-    meta: [
-      { title: "Recuperar senha — ScanSocial" },
-      { name: "description", content: "Recupere o acesso à sua conta." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/recuperar-senha",
+      title: "Recuperar senha — ScanSocial",
+      description:
+        "Perdeu o acesso? Recupere sua conta do ScanSocial por e-mail e volte a ler stories, prints e conversas com IA.",
+    }),
   component: RecuperarPage,
 });
 

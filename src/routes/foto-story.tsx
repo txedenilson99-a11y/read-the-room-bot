@@ -3,14 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { analisarFoto, type StoryResult } from "@/lib/foto.functions";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/foto-story")({
-  head: () => ({
-    meta: [
-      { title: "Foto Story — ScanSocial" },
-      { name: "description", content: "Mande o print do story, a IA decifra e te entrega a melhor resposta." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/foto-story",
+      title: "Foto do Story — Leitura por IA | ScanSocial",
+      description:
+        "Manda o print do story: a IA decifra a intenção, o clima e te entrega a melhor resposta para reagir sem parecer óbvio.",
+    }),
   component: FotoStoryPage,
 });
 
@@ -93,7 +95,7 @@ function FotoStoryPage() {
       ) : (
         <div className="space-y-5 animate-fade-up">
           <div className="relative rounded-3xl overflow-hidden ring-1 ring-border bg-card/60">
-            <img src={preview} alt="preview" className="w-full max-h-[60vh] object-contain" />
+            <img src={preview} alt="Print do story para análise" className="w-full max-h-[60vh] object-contain" />
             {mutation.isPending && (
               <>
                 <div className="scan-line pointer-events-none" />
