@@ -167,6 +167,8 @@ function PerfilIGPage() {
                   <div key={i} className="relative aspect-square rounded-xl overflow-hidden ring-1 ring-border">
                     <img src={src} alt="" className="w-full h-full object-cover" />
                     <button
+                      type="button"
+                      aria-label="Remover print"
                       onClick={() => remove(i)}
                       className="absolute top-1 right-1 bg-background/80 backdrop-blur rounded-full w-6 h-6 text-xs"
                     >

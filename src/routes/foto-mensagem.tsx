@@ -89,7 +89,7 @@ function FotoMensagemPage() {
       ) : (
         <div className="space-y-5 animate-fade-up">
           <div className="relative rounded-3xl overflow-hidden ring-1 ring-border bg-card/60">
-            <img src={preview} alt="preview" className="w-full max-h-[60vh] object-contain" />
+            <img src={preview} alt="Print da conversa para análise" className="w-full max-h-[60vh] object-contain" />
             <button
               onClick={() => { setPreview(null); mutation.reset(); }}
               className="absolute top-3 right-3 bg-background/80 backdrop-blur px-3 py-1 rounded-full text-xs ring-1 ring-border"

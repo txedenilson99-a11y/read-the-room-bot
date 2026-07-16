@@ -95,7 +95,7 @@ function FotoStoryPage() {
       ) : (
         <div className="space-y-5 animate-fade-up">
           <div className="relative rounded-3xl overflow-hidden ring-1 ring-border bg-card/60">
-            <img src={preview} alt="preview" className="w-full max-h-[60vh] object-contain" />
+            <img src={preview} alt="Print do story para análise" className="w-full max-h-[60vh] object-contain" />
             {mutation.isPending && (
               <>
                 <div className="scan-line pointer-events-none" />

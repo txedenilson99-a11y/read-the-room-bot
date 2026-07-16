@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { TOOLS, type ToolSlug } from "@/lib/tools";
 import { analisar } from "@/lib/analise.functions";
+import { seoHead, SITE_URL } from "@/lib/seo";
 
 export const Route = createFileRoute("/scan/$tool")({
   beforeLoad: ({ params }) => {
@@ -11,10 +12,28 @@ export const Route = createFileRoute("/scan/$tool")({
   },
   head: ({ params }) => {
     const t = TOOLS[params.tool as ToolSlug];
+    const path = `/scan/${params.tool}`;
+    const base = seoHead({
+      path,
+      title: `${t?.title ?? "Scan"} — ${t?.short ?? "Leitura por IA"} | ScanSocial`,
+      description: t?.short ?? "Leitura social por IA no ScanSocial.",
+    });
     return {
-      meta: [
-        { title: `${t?.title ?? "Scan"} — ScanSocial` },
-        { name: "description", content: t?.short ?? "" },
+      ...base,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: t?.title ?? "Scan",
+            description: t?.short ?? "",
+            applicationCategory: "SocialNetworkingApplication",
+            operatingSystem: "Web",
+            url: `${SITE_URL}${path}`,
+            offers: { "@type": "Offer", price: "0", priceCurrency: "BRL" },
+          }),
+        },
       ],
     };
   },
