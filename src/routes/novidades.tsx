@@ -1,14 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/novidades")({
-  head: () => ({
-    meta: [
-      { title: "Novidades v5.20 — ScanSocial" },
-      { name: "description", content: "O que mudou na versão 5.20: IA Honesta, leitura de contexto melhorada e mais." },
-      { property: "og:title", content: "ScanSocial v5.20 — IA Honesta" },
-      { property: "og:description", content: "Observe. Entenda. Responda. A maior atualização até agora." },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      path: "/novidades",
+      title: "Novidades v5.20 — ScanSocial",
+      description:
+        "O que mudou na versão 5.20 do ScanSocial: IA mais honesta, leitura de contexto melhorada, novo motor e mais precisão em stories e conversas.",
+    }),
   component: NovidadesPage,
 });
 
