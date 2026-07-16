@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://read-the-room-bot.lovable.app/sitemap.xml
