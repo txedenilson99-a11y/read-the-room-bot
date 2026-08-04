@@ -20,6 +20,7 @@ import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as NovidadesRouteImport } from './routes/novidades'
 import { Route as Modo18RouteImport } from './routes/modo-18'
 import { Route as MemoriaRouteImport } from './routes/memoria'
+import { Route as MarcarEncontroRouteImport } from './routes/marcar-encontro'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LeituraRouteImport } from './routes/leitura'
 import { Route as HistoricoRouteImport } from './routes/historico'
@@ -86,6 +87,11 @@ const MemoriaRoute = MemoriaRouteImport.update({
   path: '/memoria',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarcarEncontroRoute = MarcarEncontroRouteImport.update({
+  id: '/marcar-encontro',
+  path: '/marcar-encontro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
+  '/marcar-encontro': typeof MarcarEncontroRoute
   '/memoria': typeof MemoriaRoute
   '/modo-18': typeof Modo18Route
   '/novidades': typeof NovidadesRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
+  '/marcar-encontro': typeof MarcarEncontroRoute
   '/memoria': typeof MemoriaRoute
   '/modo-18': typeof Modo18Route
   '/novidades': typeof NovidadesRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/historico': typeof HistoricoRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
+  '/marcar-encontro': typeof MarcarEncontroRoute
   '/memoria': typeof MemoriaRoute
   '/modo-18': typeof Modo18Route
   '/novidades': typeof NovidadesRoute
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/leitura'
     | '/login'
+    | '/marcar-encontro'
     | '/memoria'
     | '/modo-18'
     | '/novidades'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/leitura'
     | '/login'
+    | '/marcar-encontro'
     | '/memoria'
     | '/modo-18'
     | '/novidades'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/leitura'
     | '/login'
+    | '/marcar-encontro'
     | '/memoria'
     | '/modo-18'
     | '/novidades'
@@ -289,6 +301,7 @@ export interface RootRouteChildren {
   HistoricoRoute: typeof HistoricoRoute
   LeituraRoute: typeof LeituraRoute
   LoginRoute: typeof LoginRoute
+  MarcarEncontroRoute: typeof MarcarEncontroRoute
   MemoriaRoute: typeof MemoriaRoute
   Modo18Route: typeof Modo18Route
   NovidadesRoute: typeof NovidadesRoute
@@ -382,6 +395,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MemoriaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marcar-encontro': {
+      id: '/marcar-encontro'
+      path: '/marcar-encontro'
+      fullPath: '/marcar-encontro'
+      preLoaderRoute: typeof MarcarEncontroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -465,6 +485,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoricoRoute: HistoricoRoute,
   LeituraRoute: LeituraRoute,
   LoginRoute: LoginRoute,
+  MarcarEncontroRoute: MarcarEncontroRoute,
   MemoriaRoute: MemoriaRoute,
   Modo18Route: Modo18Route,
   NovidadesRoute: NovidadesRoute,
@@ -481,13 +502,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
