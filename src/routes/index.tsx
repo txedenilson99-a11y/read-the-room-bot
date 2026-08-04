@@ -367,6 +367,14 @@ function Home() {
           span="col-span-2"
         />
         <ToolCard
+          to="/marcar-encontro"
+          label="Encontro"
+          title="📅 Marcar Encontro"
+          sub="A IA lê a conversa e diz se já dá pra chamar pra sair — com convites prontos."
+          span="col-span-2"
+        />
+
+        <ToolCard
           to="/perfil-ig"
           label="Perfil"
           title="Análise de Perfil"
