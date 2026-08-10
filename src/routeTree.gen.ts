@@ -23,6 +23,7 @@ import { Route as MemoriaRouteImport } from './routes/memoria'
 import { Route as MarcarEncontroRouteImport } from './routes/marcar-encontro'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LeituraRouteImport } from './routes/leitura'
+import { Route as LabiaRouteImport } from './routes/labia'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as FotoStoryRouteImport } from './routes/foto-story'
 import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
@@ -102,6 +103,11 @@ const LeituraRoute = LeituraRouteImport.update({
   path: '/leitura',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabiaRoute = LabiaRouteImport.update({
+  id: '/labia',
+  path: '/labia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoricoRoute = HistoricoRouteImport.update({
   id: '/historico',
   path: '/historico',
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/labia': typeof LabiaRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/marcar-encontro': typeof MarcarEncontroRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/labia': typeof LabiaRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/marcar-encontro': typeof MarcarEncontroRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/foto-mensagem': typeof FotoMensagemRoute
   '/foto-story': typeof FotoStoryRoute
   '/historico': typeof HistoricoRoute
+  '/labia': typeof LabiaRoute
   '/leitura': typeof LeituraRoute
   '/login': typeof LoginRoute
   '/marcar-encontro': typeof MarcarEncontroRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/labia'
     | '/leitura'
     | '/login'
     | '/marcar-encontro'
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/labia'
     | '/leitura'
     | '/login'
     | '/marcar-encontro'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/foto-mensagem'
     | '/foto-story'
     | '/historico'
+    | '/labia'
     | '/leitura'
     | '/login'
     | '/marcar-encontro'
@@ -299,6 +311,7 @@ export interface RootRouteChildren {
   FotoMensagemRoute: typeof FotoMensagemRoute
   FotoStoryRoute: typeof FotoStoryRoute
   HistoricoRoute: typeof HistoricoRoute
+  LabiaRoute: typeof LabiaRoute
   LeituraRoute: typeof LeituraRoute
   LoginRoute: typeof LoginRoute
   MarcarEncontroRoute: typeof MarcarEncontroRoute
@@ -416,6 +429,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeituraRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/labia': {
+      id: '/labia'
+      path: '/labia'
+      fullPath: '/labia'
+      preLoaderRoute: typeof LabiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/historico': {
       id: '/historico'
       path: '/historico'
@@ -483,6 +503,7 @@ const rootRouteChildren: RootRouteChildren = {
   FotoMensagemRoute: FotoMensagemRoute,
   FotoStoryRoute: FotoStoryRoute,
   HistoricoRoute: HistoricoRoute,
+  LabiaRoute: LabiaRoute,
   LeituraRoute: LeituraRoute,
   LoginRoute: LoginRoute,
   MarcarEncontroRoute: MarcarEncontroRoute,
@@ -502,13 +523,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
