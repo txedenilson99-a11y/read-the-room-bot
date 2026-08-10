@@ -373,6 +373,15 @@ function Home() {
           sub="A IA lê a conversa e diz se já dá pra chamar pra sair — com convites prontos."
           span="col-span-2"
         />
+        <ToolCard
+          to="/labia"
+          label="Lábia"
+          title="🐶 Lábia de Cachorro"
+          sub="Dopamina rápida. Zero enrolação. Cola a mensagem e recebe uma resposta curta, natural e impossível de ignorar."
+          tone="violet"
+          span="col-span-2"
+        />
+
 
         <ToolCard
           to="/perfil-ig"
