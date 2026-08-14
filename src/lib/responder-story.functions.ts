@@ -255,6 +255,27 @@ const SCHEMA = {
   type: "object",
   properties: {
     leitura: { type: "string", description: "1-2 linhas lendo o story de verdade, tom de amigo." },
+    labia_melhor: { type: "string", description: "A melhor resposta. 5-18 palavras, minúscula, ancorada em detalhe visível." },
+    labia_modos: {
+      type: "array",
+      minItems: 6,
+      maxItems: 6,
+      items: {
+        type: "object",
+        properties: {
+          modo: { type: "string", enum: [...MODOS_LABIA] },
+          texto: { type: "string" },
+        },
+        required: ["modo", "texto"],
+        additionalProperties: false,
+      },
+      description: "Ordem: fazer_rir, provocar, criar_curiosidade, flertar, inteligente, curta.",
+    },
+    labia_detalhe: { type: "string", description: "1 linha do detalhe encontrado." },
+    labia_assunto: { type: "string", description: "Melhor assunto em 2-5 palavras." },
+    labia_abordagem: { type: "string", description: "2-4 palavras. Ex: 'Humor + observação'." },
+    labia_risco: { type: "string", enum: ["baixo", "medio", "alto"] },
+
     tipo_story: {
       type: "string",
       enum: [
@@ -341,7 +362,7 @@ const SCHEMA = {
       additionalProperties: false,
     },
   },
-  required: ["leitura", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "detalhes_encontrados", "melhor_assunto", "melhor_assunto_porque", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: ["leitura", "labia_melhor", "labia_modos", "labia_detalhe", "labia_assunto", "labia_abordagem", "labia_risco", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "detalhes_encontrados", "melhor_assunto", "melhor_assunto_porque", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
   additionalProperties: false,
 } as const;
 
@@ -357,6 +378,12 @@ export interface RespostaScored {
 
 export interface ResponderStoryResult {
   leitura: string;
+  labia_melhor: string;
+  labia_modos: { modo: ModoLabiaStory; texto: string }[];
+  labia_detalhe: string;
+  labia_assunto: string;
+  labia_abordagem: string;
+  labia_risco: "baixo" | "medio" | "alto";
   tipo_story: string;
   tipo_assuntos_usar: string[];
   tipo_assuntos_evitar: string[];
