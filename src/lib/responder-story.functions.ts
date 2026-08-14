@@ -209,24 +209,73 @@ Classifique o story em UM tipo (use exatamente um destes rótulos):
 A partir do tipo:
 - tipo_assuntos_usar: 3-5 ganchos REAIS pra puxar conversa (ex: "música tocando", "lugar do drink", "treino de hoje"). Específicos do que aparece, não genéricos.
 - tipo_assuntos_evitar: 3-5 caminhos que viram cringe nesse tipo (ex: em selfie → elogio de corpo; em pet → "que fofo demais").
-- intencao_incerta (boolean): true se NÃO der pra cravar a intenção dela ao postar. Quando true, em "intencao" escreva LITERALMENTE: "Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story." Nada de chute.` + IA_HONESTA;
+- intencao_incerta (boolean): true se NÃO der pra cravar a intenção dela ao postar. Quando true, em "intencao" escreva LITERALMENTE: "Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story." Nada de chute.
 
+🐶 BLOCO LÁBIA DE CACHORRO (o mais importante — é o que o usuário vê PRIMEIRO):
+Dopamina rápida, zero enrolação. O cara abre e pensa "essa eu mandaria".
+
+ORDEM DE BUSCA DO DETALHE (obrigatória): texto do story → música → objetos → cenário → atividade → detalhe incomum → elemento engraçado → contraste visual.
+Use o detalhe MAIS INTERESSANTE encontrado. Nunca aparência. Nunca intenção inventada. Nunca dizer o que ela sente ou pensa.
+
+- labia_melhor: UMA resposta em destaque, 5 a 18 palavras, minúscula, natural, ancorada num detalhe REALMENTE visível.
+  Exemplos de calibragem: "essa cadeira roubou metade da cena kkk" / "jeff buckley + essa cadeira foi combinação inesperada 😂"
+- labia_modos: exatamente 6 respostas, uma por modo, nessa ordem: fazer_rir, provocar, criar_curiosidade, flertar, inteligente, curta.
+  fazer_rir = humor espontâneo. provocar = provocação leve sobre algo realmente presente. criar_curiosidade = abre espaço pra ela continuar. flertar = flerte leve e contextual, sem exagero. inteligente = observação diferente que mostra atenção. curta = 2 a 6 palavras.
+  Todas 5-18 palavras (exceto "curta"), minúsculas, ancoradas no story, sem elogio de aparência.
+- labia_detalhe: 1 linha sobre o detalhe encontrado. Ex: "O contraste entre o visual produzido e a cadeira simples chamou atenção."
+- labia_assunto: o melhor assunto em 2-5 palavras. Ex: "Cadeira + música".
+- labia_abordagem: 2-4 palavras. Ex: "Humor + observação".
+- labia_risco: "baixo" | "medio" | "alto" — risco da lábia parecer forçada.` + IA_HONESTA;
+
+
+const MODOS_LABIA = [
+  "fazer_rir",
+  "provocar",
+  "criar_curiosidade",
+  "flertar",
+  "inteligente",
+  "curta",
+] as const;
+
+export type ModoLabiaStory = (typeof MODOS_LABIA)[number];
 
 const TIPOS = [
   "Natural",
-  "Debochada",
-  "Irônica",
-  "Anti-Gado",
+  "Engraçada",
+  "Confiante",
+  "Provocadora",
+  "Flertando",
+  "Inteligente",
   "Misteriosa",
-  "Flow",
   "Ousada",
-  "Líder",
 ] as const;
+
 
 const SCHEMA = {
   type: "object",
   properties: {
     leitura: { type: "string", description: "1-2 linhas lendo o story de verdade, tom de amigo." },
+    labia_melhor: { type: "string", description: "A melhor resposta. 5-18 palavras, minúscula, ancorada em detalhe visível." },
+    labia_modos: {
+      type: "array",
+      minItems: 6,
+      maxItems: 6,
+      items: {
+        type: "object",
+        properties: {
+          modo: { type: "string", enum: [...MODOS_LABIA] },
+          texto: { type: "string" },
+        },
+        required: ["modo", "texto"],
+        additionalProperties: false,
+      },
+      description: "Ordem: fazer_rir, provocar, criar_curiosidade, flertar, inteligente, curta.",
+    },
+    labia_detalhe: { type: "string", description: "1 linha do detalhe encontrado." },
+    labia_assunto: { type: "string", description: "Melhor assunto em 2-5 palavras." },
+    labia_abordagem: { type: "string", description: "2-4 palavras. Ex: 'Humor + observação'." },
+    labia_risco: { type: "string", enum: ["baixo", "medio", "alto"] },
+
     tipo_story: {
       type: "string",
       enum: [
@@ -313,7 +362,7 @@ const SCHEMA = {
       additionalProperties: false,
     },
   },
-  required: ["leitura", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "detalhes_encontrados", "melhor_assunto", "melhor_assunto_porque", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
+  required: ["leitura", "labia_melhor", "labia_modos", "labia_detalhe", "labia_assunto", "labia_abordagem", "labia_risco", "tipo_story", "tipo_assuntos_usar", "tipo_assuntos_evitar", "intencao_incerta", "vibe", "intencao", "evitar", "duracao_estimada", "potencial_conversa", "nivel_confianca", "identificado", "nao_confirmado", "detalhes_encontrados", "melhor_assunto", "melhor_assunto_porque", "respostas", "melhor_indice", "melhor_motivo", "ranking"],
   additionalProperties: false,
 } as const;
 
@@ -329,6 +378,12 @@ export interface RespostaScored {
 
 export interface ResponderStoryResult {
   leitura: string;
+  labia_melhor: string;
+  labia_modos: { modo: ModoLabiaStory; texto: string }[];
+  labia_detalhe: string;
+  labia_assunto: string;
+  labia_abordagem: string;
+  labia_risco: "baixo" | "medio" | "alto";
   tipo_story: string;
   tipo_assuntos_usar: string[];
   tipo_assuntos_evitar: string[];
@@ -467,7 +522,7 @@ export const responderStory = createServerFn({ method: "POST" })
 
 Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
 
-    const baseText = `Analisa esse story e me devolve 8 respostas SCORED + ranking + potencial de conversa.${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${slidersText}`;
+    const baseText = `Analisa esse story. PRIMEIRO monta o bloco LÁBIA (labia_melhor + os 6 modos + detalhe/assunto/abordagem/risco) — é o que o cara vê primeiro e tem que dar vontade de mandar na hora. Depois devolve as 8 respostas SCORED + ranking + potencial de conversa.${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${slidersText}`;
 
     let result: ResponderStoryResult | null = null;
     let tentativas = 0;
@@ -524,4 +579,79 @@ Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
     }
 
     return { result };
+  });
+
+// 🔥 OUTRA — regenera só a frase reaproveitando a análise já feita.
+// NÃO reenvia a imagem ao Gemini (economiza tokens e é quase instantâneo).
+export const outraLabiaStory = createServerFn({ method: "POST" })
+  .inputValidator((input: {
+    detalhe?: string;
+    assunto?: string;
+    abordagem?: string;
+    detalhes?: string[];
+    usadas?: string[];
+  }) => {
+    const detalhe = (input?.detalhe ?? "").slice(0, 600).trim();
+    const assunto = (input?.assunto ?? "").slice(0, 200).trim();
+    const abordagem = (input?.abordagem ?? "").slice(0, 200).trim();
+    const detalhes = Array.isArray(input?.detalhes)
+      ? input!.detalhes!.filter((s) => typeof s === "string").slice(0, 8)
+      : [];
+    const usadas = Array.isArray(input?.usadas)
+      ? input!.usadas!.filter((s) => typeof s === "string").slice(0, 20)
+      : [];
+    if (!detalhe && detalhes.length === 0) {
+      throw new Error("Sem análise salva. Analisa o story primeiro.");
+    }
+    return { detalhe, assunto, abordagem, detalhes, usadas };
+  })
+  .handler(async ({ data }) => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
+
+    const json = (await geminiRequest(apiKey, {
+      model: "gemini-flash-latest",
+      messages: [
+        { role: "system", content: SYSTEM },
+        {
+          role: "user",
+          content: `Análise do story já feita (NÃO tenho a imagem aqui, use só isso):
+- Detalhe encontrado: ${data.detalhe}
+${data.detalhes.length ? `- Detalhes visíveis: ${data.detalhes.join(", ")}\n` : ""}${data.assunto ? `- Melhor assunto: ${data.assunto}\n` : ""}${data.abordagem ? `- Abordagem: ${data.abordagem}\n` : ""}${
+            data.usadas.length
+              ? `\nJá usei estas, NÃO repita nem parafraseie:\n- ${data.usadas.join("\n- ")}\n`
+              : ""
+          }
+Me dá UMA nova resposta pra mandar agora: 5 a 18 palavras, minúscula, ancorada nesses detalhes reais, sem elogio de aparência, sem inventar intenção.`,
+        },
+      ],
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "outra_labia_story",
+            description: "Gera uma única resposta nova pro story.",
+            parameters: {
+              type: "object",
+              properties: { texto: { type: "string" } },
+              required: ["texto"],
+              additionalProperties: false,
+            },
+          },
+        },
+      ],
+      tool_choice: { type: "function", function: { name: "outra_labia_story" } },
+    })) as {
+      choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
+    };
+
+    const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    if (!args) throw new Error("Resposta vazia da IA.");
+    try {
+      const parsed = JSON.parse(args) as { texto: string };
+      if (!parsed?.texto?.trim()) throw new Error("vazio");
+      return { texto: parsed.texto.trim() };
+    } catch {
+      throw new Error("A IA devolveu algo estranho. Tenta de novo.");
+    }
   });
