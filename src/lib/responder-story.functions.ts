@@ -209,19 +209,47 @@ Classifique o story em UM tipo (use exatamente um destes rótulos):
 A partir do tipo:
 - tipo_assuntos_usar: 3-5 ganchos REAIS pra puxar conversa (ex: "música tocando", "lugar do drink", "treino de hoje"). Específicos do que aparece, não genéricos.
 - tipo_assuntos_evitar: 3-5 caminhos que viram cringe nesse tipo (ex: em selfie → elogio de corpo; em pet → "que fofo demais").
-- intencao_incerta (boolean): true se NÃO der pra cravar a intenção dela ao postar. Quando true, em "intencao" escreva LITERALMENTE: "Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story." Nada de chute.` + IA_HONESTA;
+- intencao_incerta (boolean): true se NÃO der pra cravar a intenção dela ao postar. Quando true, em "intencao" escreva LITERALMENTE: "Não tenho elementos suficientes pra afirmar a intenção. Vou focar só no que aparece no story." Nada de chute.
 
+🐶 BLOCO LÁBIA DE CACHORRO (o mais importante — é o que o usuário vê PRIMEIRO):
+Dopamina rápida, zero enrolação. O cara abre e pensa "essa eu mandaria".
+
+ORDEM DE BUSCA DO DETALHE (obrigatória): texto do story → música → objetos → cenário → atividade → detalhe incomum → elemento engraçado → contraste visual.
+Use o detalhe MAIS INTERESSANTE encontrado. Nunca aparência. Nunca intenção inventada. Nunca dizer o que ela sente ou pensa.
+
+- labia_melhor: UMA resposta em destaque, 5 a 18 palavras, minúscula, natural, ancorada num detalhe REALMENTE visível.
+  Exemplos de calibragem: "essa cadeira roubou metade da cena kkk" / "jeff buckley + essa cadeira foi combinação inesperada 😂"
+- labia_modos: exatamente 6 respostas, uma por modo, nessa ordem: fazer_rir, provocar, criar_curiosidade, flertar, inteligente, curta.
+  fazer_rir = humor espontâneo. provocar = provocação leve sobre algo realmente presente. criar_curiosidade = abre espaço pra ela continuar. flertar = flerte leve e contextual, sem exagero. inteligente = observação diferente que mostra atenção. curta = 2 a 6 palavras.
+  Todas 5-18 palavras (exceto "curta"), minúsculas, ancoradas no story, sem elogio de aparência.
+- labia_detalhe: 1 linha sobre o detalhe encontrado. Ex: "O contraste entre o visual produzido e a cadeira simples chamou atenção."
+- labia_assunto: o melhor assunto em 2-5 palavras. Ex: "Cadeira + música".
+- labia_abordagem: 2-4 palavras. Ex: "Humor + observação".
+- labia_risco: "baixo" | "medio" | "alto" — risco da lábia parecer forçada.` + IA_HONESTA;
+
+
+const MODOS_LABIA = [
+  "fazer_rir",
+  "provocar",
+  "criar_curiosidade",
+  "flertar",
+  "inteligente",
+  "curta",
+] as const;
+
+export type ModoLabiaStory = (typeof MODOS_LABIA)[number];
 
 const TIPOS = [
   "Natural",
-  "Debochada",
-  "Irônica",
-  "Anti-Gado",
+  "Engraçada",
+  "Confiante",
+  "Provocadora",
+  "Flertando",
+  "Inteligente",
   "Misteriosa",
-  "Flow",
   "Ousada",
-  "Líder",
 ] as const;
+
 
 const SCHEMA = {
   type: "object",
