@@ -580,3 +580,78 @@ Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
 
     return { result };
   });
+
+// 🔥 OUTRA — regenera só a frase reaproveitando a análise já feita.
+// NÃO reenvia a imagem ao Gemini (economiza tokens e é quase instantâneo).
+export const outraLabiaStory = createServerFn({ method: "POST" })
+  .inputValidator((input: {
+    detalhe?: string;
+    assunto?: string;
+    abordagem?: string;
+    detalhes?: string[];
+    usadas?: string[];
+  }) => {
+    const detalhe = (input?.detalhe ?? "").slice(0, 600).trim();
+    const assunto = (input?.assunto ?? "").slice(0, 200).trim();
+    const abordagem = (input?.abordagem ?? "").slice(0, 200).trim();
+    const detalhes = Array.isArray(input?.detalhes)
+      ? input!.detalhes!.filter((s) => typeof s === "string").slice(0, 8)
+      : [];
+    const usadas = Array.isArray(input?.usadas)
+      ? input!.usadas!.filter((s) => typeof s === "string").slice(0, 20)
+      : [];
+    if (!detalhe && detalhes.length === 0) {
+      throw new Error("Sem análise salva. Analisa o story primeiro.");
+    }
+    return { detalhe, assunto, abordagem, detalhes, usadas };
+  })
+  .handler(async ({ data }) => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
+
+    const json = (await geminiRequest(apiKey, {
+      model: "gemini-flash-latest",
+      messages: [
+        { role: "system", content: SYSTEM },
+        {
+          role: "user",
+          content: `Análise do story já feita (NÃO tenho a imagem aqui, use só isso):
+- Detalhe encontrado: ${data.detalhe}
+${data.detalhes.length ? `- Detalhes visíveis: ${data.detalhes.join(", ")}\n` : ""}${data.assunto ? `- Melhor assunto: ${data.assunto}\n` : ""}${data.abordagem ? `- Abordagem: ${data.abordagem}\n` : ""}${
+            data.usadas.length
+              ? `\nJá usei estas, NÃO repita nem parafraseie:\n- ${data.usadas.join("\n- ")}\n`
+              : ""
+          }
+Me dá UMA nova resposta pra mandar agora: 5 a 18 palavras, minúscula, ancorada nesses detalhes reais, sem elogio de aparência, sem inventar intenção.`,
+        },
+      ],
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "outra_labia_story",
+            description: "Gera uma única resposta nova pro story.",
+            parameters: {
+              type: "object",
+              properties: { texto: { type: "string" } },
+              required: ["texto"],
+              additionalProperties: false,
+            },
+          },
+        },
+      ],
+      tool_choice: { type: "function", function: { name: "outra_labia_story" } },
+    })) as {
+      choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }>;
+    };
+
+    const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+    if (!args) throw new Error("Resposta vazia da IA.");
+    try {
+      const parsed = JSON.parse(args) as { texto: string };
+      if (!parsed?.texto?.trim()) throw new Error("vazio");
+      return { texto: parsed.texto.trim() };
+    } catch {
+      throw new Error("A IA devolveu algo estranho. Tenta de novo.");
+    }
+  });
