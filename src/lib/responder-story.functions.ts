@@ -522,7 +522,7 @@ export const responderStory = createServerFn({ method: "POST" })
 
 Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
 
-    const baseText = `Analisa esse story e me devolve 8 respostas SCORED + ranking + potencial de conversa.${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${slidersText}`;
+    const baseText = `Analisa esse story. PRIMEIRO monta o bloco LÁBIA (labia_melhor + os 6 modos + detalhe/assunto/abordagem/risco) — é o que o cara vê primeiro e tem que dar vontade de mandar na hora. Depois devolve as 8 respostas SCORED + ranking + potencial de conversa.${data.link ? `\n\nLink: ${data.link}` : ""}${data.legenda ? `\n\nLegenda/contexto: ${data.legenda}` : ""}\n\n${slidersText}`;
 
     let result: ResponderStoryResult | null = null;
     let tentativas = 0;
