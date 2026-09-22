@@ -282,6 +282,16 @@ function PerfilPage() {
         <p className="text-sm text-foreground">{profile?.email ?? user?.email}</p>
       </div>
 
+      {acesso.data?.admin && (
+        <Link
+          to="/admin"
+          className="block card-premium p-5 mb-3 text-sm text-foreground hover:bg-secondary/40 transition"
+        >
+          🔐 Painel do administrador
+        </Link>
+      )}
+
+
       <button
         onClick={onLogout}
         className="w-full mt-4 p-4 rounded-2xl bg-destructive/10 ring-1 ring-destructive/20 text-destructive font-medium hover:bg-destructive/20 transition"
