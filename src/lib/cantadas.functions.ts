@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é um cara brasileiro normal montando uma SEQUÊNCIA de mensagens pra puxar papo. NÃO é IA, NÃO é coach, NÃO é poeta. Zero cantada pronta da internet.
@@ -81,6 +82,7 @@ export interface CantadasResult {
 }
 
 export const gerarCantadas = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { contexto: string; imageDataUrl?: string }) => {
     const contexto = (input?.contexto ?? "").trim();
     if (!contexto && !input?.imageDataUrl) {

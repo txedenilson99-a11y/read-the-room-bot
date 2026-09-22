@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é um leitor social brasileiro maduro, calmo e realista. Ajuda a pessoa a entender o contexto de uma foto, story, print ou situação SEM atacar, julgar ou humilhar ninguém.
@@ -118,6 +119,7 @@ export interface LeituraResult {
 }
 
 export const lerComportamento = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { contexto?: string; images?: string[] }) => {
     const contexto = (input?.contexto ?? "").slice(0, 4000).trim();
     const images = Array.isArray(input?.images)

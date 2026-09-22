@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const MODOS = ["natural", "engracado", "flertando", "inteligente", "madrugada"] as const;
@@ -377,6 +378,7 @@ export interface FlowResult {
 }
 
 export const continuarConversa = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { contexto?: string; modo?: FlowModo; images?: string[] }) => {
     const contexto = (input?.contexto ?? "").slice(0, 4000).trim();
     const modo: FlowModo = MODOS.includes(input?.modo as FlowModo) ? (input!.modo as FlowModo) : "natural";

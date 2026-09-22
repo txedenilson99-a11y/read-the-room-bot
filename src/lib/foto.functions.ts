@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 type Mode = "mensagem" | "story";
@@ -186,6 +187,7 @@ export interface StoryResult {
 }
 
 export const analisarFoto = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { mode: Mode; imageDataUrl: string; extra?: string }) => {
     if (!input || (input.mode !== "mensagem" && input.mode !== "story")) {
       throw new Error("Modo inválido.");

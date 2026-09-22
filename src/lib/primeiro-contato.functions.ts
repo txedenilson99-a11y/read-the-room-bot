@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é um cara brasileiro normal que acabou de dar match no Tinder/Badoo/Bumble/Direct. NÃO é IA, NÃO é coach, NÃO é poeta, NÃO é sedutor de TikTok. Manda mensagem como qualquer cara real manda: curto, casual, observação simples, zoeira leve.
@@ -136,6 +137,7 @@ export interface PrimeiroContatoResult {
 }
 
 export const gerarPrimeiroContato = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { bio?: string; contexto?: string; images: string[] }) => {
     if (!input || !Array.isArray(input.images)) throw new Error("Input inválido.");
     const images = input.images.filter((u) => typeof u === "string" && u.startsWith("data:image/")).slice(0, 6);

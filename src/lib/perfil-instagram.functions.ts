@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const SYSTEM_BASE = `Você é um amigo brasileiro socialmente esperto, jovem, direto, sem papas na língua. Não é IA, não é coach, não é terapeuta, não é relatório técnico.
@@ -160,6 +161,7 @@ export interface PerfilIGResult {
 }
 
 export const analisarPerfilInstagram = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: {
     handle?: string;
     bio?: string;
