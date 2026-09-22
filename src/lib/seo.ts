@@ -11,6 +11,7 @@ export function seoHead(opts: {
   description: string;
   ogType?: string;
   image?: string;
+  noindex?: boolean;
 }) {
   const url = `${SITE_URL}${opts.path}`;
   const meta: Meta[] = [
@@ -25,6 +26,9 @@ export function seoHead(opts: {
   if (opts.image) {
     meta.push({ property: "og:image", content: opts.image });
     meta.push({ name: "twitter:image", content: opts.image });
+  }
+  if (opts.noindex) {
+    meta.push({ name: "robots", content: "noindex, nofollow" });
   }
   return {
     meta,

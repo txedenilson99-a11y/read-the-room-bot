@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você escreve respostas de WhatsApp/Instagram pra um cara real. Nome da ferramenta: Lábia de Cachorro. Dopamina rápida, zero enrolação.
@@ -125,6 +126,7 @@ function validarEntrada(input: { mensagem?: string; images?: string[] }) {
 }
 
 export const gerarLabia = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator(validarEntrada)
   .handler(async ({ data }) => {
     const apiKey = process.env.GEMINI_API_KEY;
@@ -178,6 +180,7 @@ export const gerarLabia = createServerFn({ method: "POST" })
 // Regeneração leve: usa só o contexto já lido + as frases já usadas.
 // Não refaz a análise completa da conversa (economiza chamada).
 export const outraLabia = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { contexto?: string; abordagem?: string; usadas?: string[] }) => {
     const contexto = (input?.contexto ?? "").slice(0, 800).trim();
     const abordagem = (input?.abordagem ?? "").slice(0, 300).trim();

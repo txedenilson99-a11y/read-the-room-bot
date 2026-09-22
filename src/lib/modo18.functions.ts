@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const ESTILOS = ["provocador", "atrevido", "madrugada", "duplo_sentido", "quimica"] as const;
@@ -90,6 +91,7 @@ export interface Modo18Result {
 }
 
 export const gerarModo18 = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { contexto?: string; estilo?: Modo18Estilo; images?: string[] }) => {
     const contexto = (input?.contexto ?? "").slice(0, 4000).trim();
     const estilo: Modo18Estilo = ESTILOS.includes(input?.estilo as Modo18Estilo)

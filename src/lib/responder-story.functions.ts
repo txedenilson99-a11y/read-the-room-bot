@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é um OBSERVADOR SOCIAL HUMANO.
@@ -481,6 +482,7 @@ async function chamarIA(apiKey: string, userParts: any[]): Promise<ResponderStor
 }
 
 export const responderStory = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: {
     imageDataUrl?: string;
     link?: string;
@@ -584,6 +586,7 @@ Calibra o TOM SEM violar regras. Naturalidade alta = mais crua e curta.`;
 // 🔥 OUTRA — regenera só a frase reaproveitando a análise já feita.
 // NÃO reenvia a imagem ao Gemini (economiza tokens e é quase instantâneo).
 export const outraLabiaStory = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: {
     detalhe?: string;
     assunto?: string;

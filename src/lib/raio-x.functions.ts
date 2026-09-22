@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const TIPOS_PERFIL = [
@@ -149,6 +150,7 @@ export interface RaioXResult {
 }
 
 export const raioXPerfil = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { bio?: string; contexto?: string; images?: string[] }) => {
     const bio = (input.bio ?? "").slice(0, 1500);
     const contexto = (input.contexto ?? "").slice(0, 1500);

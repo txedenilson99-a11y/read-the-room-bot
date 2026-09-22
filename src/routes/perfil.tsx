@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, useProfile } from "@/lib/use-auth";
+import { useAcesso } from "@/lib/use-acesso";
 import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/perfil")({
@@ -125,6 +126,7 @@ function RadarChart({ data }: { data: { axis: string; value: number }[] }) {
 
 function PerfilPage() {
   const { user } = useAuth();
+  const acesso = useAcesso(!!user);
   const { profile, setProfile } = useProfile(user);
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -281,6 +283,16 @@ function PerfilPage() {
         <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-2">Email</div>
         <p className="text-sm text-foreground">{profile?.email ?? user?.email}</p>
       </div>
+
+      {acesso.data?.admin && (
+        <Link
+          to="/admin"
+          className="block card-premium p-5 mb-3 text-sm text-foreground hover:bg-secondary/40 transition"
+        >
+          🔐 Painel do administrador
+        </Link>
+      )}
+
 
       <button
         onClick={onLogout}

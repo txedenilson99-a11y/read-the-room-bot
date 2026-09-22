@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { TOOLS, type ToolSlug } from "./tools";
 import { geminiRequest } from "./gemini";
 
@@ -41,6 +42,7 @@ FORMATO:
 Texto corrido, espaçado, calmo. Sem cabeçalho, sem numeração, sem markdown pesado, sem lista de bullets.` + IA_HONESTA;
 
 export const analisar = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { tool: ToolSlug; content: string }) => {
     if (!input || typeof input.content !== "string") {
       throw new Error("Input inválido");

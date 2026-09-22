@@ -16,6 +16,7 @@ import appCss from "../styles.css?url";
 import { BottomNav } from "@/components/BottomNav";
 import { Particles } from "@/components/Particles";
 import { useAuth } from "@/lib/use-auth";
+import { useAcesso } from "@/lib/use-acesso";
 import { supabase } from "@/integrations/supabase/client";
 
 const PUBLIC_PATHS = new Set(["/login", "/cadastro", "/recuperar-senha", "/reset-password"]);
@@ -104,6 +105,45 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function Carregando() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-xs text-muted-foreground tracking-widest uppercase">Carregando…</div>
+    </div>
+  );
+}
+
+function ContaBloqueada({ email }: { email: string | null }) {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const sair = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/login", replace: true });
+  };
+  return (
+    <main className="min-h-screen flex items-center justify-center px-6 text-center">
+      <div className="max-w-sm">
+        <div className="text-[11px] font-medium uppercase tracking-[0.25em] text-accent mb-3">
+          Acesso privado
+        </div>
+        <h1 className="text-2xl font-medium tracking-tight">Conta bloqueada</h1>
+        <p className="mt-3 text-sm text-muted-foreground">
+          O ScanSocial está em modo privado. Sua conta{email ? ` (${email})` : ""} precisa ser
+          liberada pelo administrador antes de usar as ferramentas.
+        </p>
+        <button
+          onClick={sair}
+          className="mt-6 rounded-full border border-border px-5 py-2 text-sm font-medium hover:bg-secondary"
+        >
+          Sair
+        </button>
+      </div>
+    </main>
+  );
+}
+
 function AuthGate({ children }: { children: React.ReactNode }) {
   const { session, loading } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -112,6 +152,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
 
   const isPublic = PUBLIC_PATHS.has(pathname);
+  const acesso = useAcesso(!!session && !isPublic);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
@@ -127,15 +168,16 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     }
   }, [loading, session, isPublic, navigate]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xs text-muted-foreground tracking-widest uppercase">Carregando…</div>
-      </div>
-    );
-  }
+  if (loading) return <Carregando />;
 
   if (!session && !isPublic) return null;
+
+  if (session && !isPublic) {
+    if (acesso.isLoading || (!acesso.data && !acesso.isError)) return <Carregando />;
+    if (acesso.isError || !acesso.data?.aprovado) {
+      return <ContaBloqueada email={acesso.data?.email ?? session.user.email ?? null} />;
+    }
+  }
 
   return (
     <>

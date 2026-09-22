@@ -1,5 +1,6 @@
 import { IA_HONESTA } from "./ia-honesta";
 import { createServerFn } from "@tanstack/react-start";
+import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
 const SYSTEM = `Você é um leitor de conversa brasileiro maduro, calmo e BRUTALMENTE honesto. Sua função é dizer se JÁ EXISTE contexto suficiente pra chamar a pessoa pra sair — e nada além disso.
@@ -245,6 +246,7 @@ export interface EncontroResult {
 }
 
 export const marcarEncontro = createServerFn({ method: "POST" })
+  .middleware([requireAprovado])
   .inputValidator((input: { conversa?: string; contexto?: string; images?: string[] }) => {
     const conversa = (input?.conversa ?? "").slice(0, 6000).trim();
     const contexto = (input?.contexto ?? "").slice(0, 1000).trim();
