@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, useProfile } from "@/lib/use-auth";
+import { useAcesso } from "@/lib/use-acesso";
 import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/perfil")({
@@ -125,6 +126,7 @@ function RadarChart({ data }: { data: { axis: string; value: number }[] }) {
 
 function PerfilPage() {
   const { user } = useAuth();
+  const acesso = useAcesso(!!user);
   const { profile, setProfile } = useProfile(user);
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
