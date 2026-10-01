@@ -9,134 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as CadastroRouteImport } from './routes/cadastro'
-import { Route as CantadasRouteImport } from './routes/cantadas'
-import { Route as FlowRouteImport } from './routes/flow'
-import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
-import { Route as FotoStoryRouteImport } from './routes/foto-story'
-import { Route as HistoricoRouteImport } from './routes/historico'
-import { Route as LabiaRouteImport } from './routes/labia'
-import { Route as LeituraRouteImport } from './routes/leitura'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as MarcarEncontroRouteImport } from './routes/marcar-encontro'
-import { Route as MemoriaRouteImport } from './routes/memoria'
-import { Route as Modo18RouteImport } from './routes/modo-18'
-import { Route as NovidadesRouteImport } from './routes/novidades'
-import { Route as PerfilRouteImport } from './routes/perfil'
-import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
-import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
-import { Route as RaioXRouteImport } from './routes/raio-x'
-import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ResponderStoryRouteImport } from './routes/responder-story'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResponderStoryRouteImport } from './routes/responder-story'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as RaioXRouteImport } from './routes/raio-x'
+import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
+import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
+import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as NovidadesRouteImport } from './routes/novidades'
+import { Route as Modo18RouteImport } from './routes/modo-18'
+import { Route as MemoriaRouteImport } from './routes/memoria'
+import { Route as MarcarEncontroRouteImport } from './routes/marcar-encontro'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as LeituraRouteImport } from './routes/leitura'
+import { Route as LabiaRouteImport } from './routes/labia'
+import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as FotoStoryRouteImport } from './routes/foto-story'
+import { Route as FotoMensagemRouteImport } from './routes/foto-mensagem'
+import { Route as FlowRouteImport } from './routes/flow'
+import { Route as CantadasRouteImport } from './routes/cantadas'
+import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ScanToolRouteImport } from './routes/scan.$tool'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CadastroRoute = CadastroRouteImport.update({
-  id: '/cadastro',
-  path: '/cadastro',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CantadasRoute = CantadasRouteImport.update({
-  id: '/cantadas',
-  path: '/cantadas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FlowRoute = FlowRouteImport.update({
-  id: '/flow',
-  path: '/flow',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FotoMensagemRoute = FotoMensagemRouteImport.update({
-  id: '/foto-mensagem',
-  path: '/foto-mensagem',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FotoStoryRoute = FotoStoryRouteImport.update({
-  id: '/foto-story',
-  path: '/foto-story',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoricoRoute = HistoricoRouteImport.update({
-  id: '/historico',
-  path: '/historico',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LabiaRoute = LabiaRouteImport.update({
-  id: '/labia',
-  path: '/labia',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LeituraRoute = LeituraRouteImport.update({
-  id: '/leitura',
-  path: '/leitura',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MarcarEncontroRoute = MarcarEncontroRouteImport.update({
-  id: '/marcar-encontro',
-  path: '/marcar-encontro',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MemoriaRoute = MemoriaRouteImport.update({
-  id: '/memoria',
-  path: '/memoria',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Modo18Route = Modo18RouteImport.update({
-  id: '/modo-18',
-  path: '/modo-18',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NovidadesRoute = NovidadesRouteImport.update({
-  id: '/novidades',
-  path: '/novidades',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PerfilRoute = PerfilRouteImport.update({
-  id: '/perfil',
-  path: '/perfil',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PerfilIgRoute = PerfilIgRouteImport.update({
-  id: '/perfil-ig',
-  path: '/perfil-ig',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrimeiroContatoRoute = PrimeiroContatoRouteImport.update({
-  id: '/primeiro-contato',
-  path: '/primeiro-contato',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RaioXRoute = RaioXRouteImport.update({
-  id: '/raio-x',
-  path: '/raio-x',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
-  id: '/recuperar-senha',
-  path: '/recuperar-senha',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResponderStoryRoute = ResponderStoryRouteImport.update({
@@ -144,9 +44,109 @@ const ResponderStoryRoute = ResponderStoryRouteImport.update({
   path: '/responder-story',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
+  id: '/recuperar-senha',
+  path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RaioXRoute = RaioXRouteImport.update({
+  id: '/raio-x',
+  path: '/raio-x',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrimeiroContatoRoute = PrimeiroContatoRouteImport.update({
+  id: '/primeiro-contato',
+  path: '/primeiro-contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilIgRoute = PerfilIgRouteImport.update({
+  id: '/perfil-ig',
+  path: '/perfil-ig',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NovidadesRoute = NovidadesRouteImport.update({
+  id: '/novidades',
+  path: '/novidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Modo18Route = Modo18RouteImport.update({
+  id: '/modo-18',
+  path: '/modo-18',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemoriaRoute = MemoriaRouteImport.update({
+  id: '/memoria',
+  path: '/memoria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarcarEncontroRoute = MarcarEncontroRouteImport.update({
+  id: '/marcar-encontro',
+  path: '/marcar-encontro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeituraRoute = LeituraRouteImport.update({
+  id: '/leitura',
+  path: '/leitura',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LabiaRoute = LabiaRouteImport.update({
+  id: '/labia',
+  path: '/labia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FotoStoryRoute = FotoStoryRouteImport.update({
+  id: '/foto-story',
+  path: '/foto-story',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FotoMensagemRoute = FotoMensagemRouteImport.update({
+  id: '/foto-mensagem',
+  path: '/foto-mensagem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlowRoute = FlowRouteImport.update({
+  id: '/flow',
+  path: '/flow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CantadasRoute = CantadasRouteImport.update({
+  id: '/cantadas',
+  path: '/cantadas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadastroRoute = CadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScanToolRoute = ScanToolRouteImport.update({
@@ -344,151 +344,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cadastro': {
-      id: '/cadastro'
-      path: '/cadastro'
-      fullPath: '/cadastro'
-      preLoaderRoute: typeof CadastroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cantadas': {
-      id: '/cantadas'
-      path: '/cantadas'
-      fullPath: '/cantadas'
-      preLoaderRoute: typeof CantadasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/flow': {
-      id: '/flow'
-      path: '/flow'
-      fullPath: '/flow'
-      preLoaderRoute: typeof FlowRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/foto-mensagem': {
-      id: '/foto-mensagem'
-      path: '/foto-mensagem'
-      fullPath: '/foto-mensagem'
-      preLoaderRoute: typeof FotoMensagemRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/foto-story': {
-      id: '/foto-story'
-      path: '/foto-story'
-      fullPath: '/foto-story'
-      preLoaderRoute: typeof FotoStoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/historico': {
-      id: '/historico'
-      path: '/historico'
-      fullPath: '/historico'
-      preLoaderRoute: typeof HistoricoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/labia': {
-      id: '/labia'
-      path: '/labia'
-      fullPath: '/labia'
-      preLoaderRoute: typeof LabiaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/leitura': {
-      id: '/leitura'
-      path: '/leitura'
-      fullPath: '/leitura'
-      preLoaderRoute: typeof LeituraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/marcar-encontro': {
-      id: '/marcar-encontro'
-      path: '/marcar-encontro'
-      fullPath: '/marcar-encontro'
-      preLoaderRoute: typeof MarcarEncontroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/memoria': {
-      id: '/memoria'
-      path: '/memoria'
-      fullPath: '/memoria'
-      preLoaderRoute: typeof MemoriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/modo-18': {
-      id: '/modo-18'
-      path: '/modo-18'
-      fullPath: '/modo-18'
-      preLoaderRoute: typeof Modo18RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/novidades': {
-      id: '/novidades'
-      path: '/novidades'
-      fullPath: '/novidades'
-      preLoaderRoute: typeof NovidadesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/perfil': {
-      id: '/perfil'
-      path: '/perfil'
-      fullPath: '/perfil'
-      preLoaderRoute: typeof PerfilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/perfil-ig': {
-      id: '/perfil-ig'
-      path: '/perfil-ig'
-      fullPath: '/perfil-ig'
-      preLoaderRoute: typeof PerfilIgRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/primeiro-contato': {
-      id: '/primeiro-contato'
-      path: '/primeiro-contato'
-      fullPath: '/primeiro-contato'
-      preLoaderRoute: typeof PrimeiroContatoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/raio-x': {
-      id: '/raio-x'
-      path: '/raio-x'
-      fullPath: '/raio-x'
-      preLoaderRoute: typeof RaioXRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/recuperar-senha': {
-      id: '/recuperar-senha'
-      path: '/recuperar-senha'
-      fullPath: '/recuperar-senha'
-      preLoaderRoute: typeof RecuperarSenhaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/responder-story': {
@@ -498,11 +358,151 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponderStoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar-senha': {
+      id: '/recuperar-senha'
+      path: '/recuperar-senha'
+      fullPath: '/recuperar-senha'
+      preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/raio-x': {
+      id: '/raio-x'
+      path: '/raio-x'
+      fullPath: '/raio-x'
+      preLoaderRoute: typeof RaioXRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/primeiro-contato': {
+      id: '/primeiro-contato'
+      path: '/primeiro-contato'
+      fullPath: '/primeiro-contato'
+      preLoaderRoute: typeof PrimeiroContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil-ig': {
+      id: '/perfil-ig'
+      path: '/perfil-ig'
+      fullPath: '/perfil-ig'
+      preLoaderRoute: typeof PerfilIgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/novidades': {
+      id: '/novidades'
+      path: '/novidades'
+      fullPath: '/novidades'
+      preLoaderRoute: typeof NovidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modo-18': {
+      id: '/modo-18'
+      path: '/modo-18'
+      fullPath: '/modo-18'
+      preLoaderRoute: typeof Modo18RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/memoria': {
+      id: '/memoria'
+      path: '/memoria'
+      fullPath: '/memoria'
+      preLoaderRoute: typeof MemoriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marcar-encontro': {
+      id: '/marcar-encontro'
+      path: '/marcar-encontro'
+      fullPath: '/marcar-encontro'
+      preLoaderRoute: typeof MarcarEncontroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leitura': {
+      id: '/leitura'
+      path: '/leitura'
+      fullPath: '/leitura'
+      preLoaderRoute: typeof LeituraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/labia': {
+      id: '/labia'
+      path: '/labia'
+      fullPath: '/labia'
+      preLoaderRoute: typeof LabiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foto-story': {
+      id: '/foto-story'
+      path: '/foto-story'
+      fullPath: '/foto-story'
+      preLoaderRoute: typeof FotoStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foto-mensagem': {
+      id: '/foto-mensagem'
+      path: '/foto-mensagem'
+      fullPath: '/foto-mensagem'
+      preLoaderRoute: typeof FotoMensagemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flow': {
+      id: '/flow'
+      path: '/flow'
+      fullPath: '/flow'
+      preLoaderRoute: typeof FlowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cantadas': {
+      id: '/cantadas'
+      path: '/cantadas'
+      fullPath: '/cantadas'
+      preLoaderRoute: typeof CantadasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadastro': {
+      id: '/cadastro'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scan/$tool': {
