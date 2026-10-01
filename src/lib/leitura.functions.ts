@@ -149,7 +149,7 @@ export const lerComportamento = createServerFn({ method: "POST" })
     ];
 
         const json = await geminiRequest(apiKey, {
-        model: "gemini-flash-latest",
+        model: "gemini-2.5-flash-lite",
         messages: [
           { role: "system", content: SYSTEM },
           { role: "user", content: parts },

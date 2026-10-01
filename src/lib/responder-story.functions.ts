@@ -459,7 +459,7 @@ function respostaPassa(r: RespostaScored): boolean {
 
 async function chamarIA(apiKey: string, userParts: any[]): Promise<ResponderStoryResult> {
     const json = await geminiRequest(apiKey, {
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash-lite",
       messages: [
         { role: "system", content: SYSTEM },
         { role: "user", content: userParts },
@@ -613,7 +613,7 @@ export const outraLabiaStory = createServerFn({ method: "POST" })
     if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
     const json = (await geminiRequest(apiKey, {
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash-lite",
       messages: [
         { role: "system", content: SYSTEM },
         {

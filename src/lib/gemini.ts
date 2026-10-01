@@ -11,8 +11,8 @@
 const GEMINI_URL =
   "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
-const PRIMARY_MODEL = "gemini-flash-latest";
-const FALLBACK_MODEL = "gemini-2.5-flash-lite";
+// Modelo único do ScanSocial — sem fallback automático.
+const MODEL = "gemini-2.5-flash-lite";
 
 // Exponential backoff schedule for 503 retries: 1s, 2s, 4s.
 const BACKOFF_MS = [1000, 2000, 4000];
@@ -45,9 +45,7 @@ async function callOnce(apiKey: string, payload: Body) {
  *   it does NOT crash).
  */
 export async function geminiRequest(apiKey: string, body: Body): Promise<any> {
-  const requested = typeof body.model === "string" ? body.model : PRIMARY_MODEL;
-  const models = [requested];
-  if (requested !== FALLBACK_MODEL) models.push(FALLBACK_MODEL);
+  const models = [MODEL];
 
   let lastStatus = 0;
   let lastBody = "";
@@ -90,6 +88,9 @@ export async function geminiRequest(apiKey: string, body: Body): Promise<any> {
         }
         if (r.status === 401 || r.status === 403) {
           throw new Error("Chave da IA inválida. Verifica a configuração.");
+        }
+        if (r.status === 404) {
+          throw new Error(`Modelo ${MODEL} indisponível para este projeto.`);
         }
         if (r.status === 400) {
           // bad request — move to next model, no point retrying same payload.

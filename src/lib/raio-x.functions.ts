@@ -86,7 +86,7 @@ export const raioXPerfil = createServerFn({ method: "POST" })
     for (const url of data.images) userContent.push({ type: "image_url", image_url: { url } });
 
         const json = await geminiRequest(apiKey, {
-        model: "gemini-flash-latest",
+        model: "gemini-2.5-flash-lite",
         messages: [
           { role: "system", content: SYSTEM },
           { role: "user", content: userContent },
