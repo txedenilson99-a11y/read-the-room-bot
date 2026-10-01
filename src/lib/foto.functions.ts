@@ -218,7 +218,7 @@ export const analisarFoto = createServerFn({ method: "POST" })
     const schema = isMensagem ? MENSAGEM_SCHEMA : STORY_SCHEMA;
 
     const body = {
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash-lite",
       messages: [
         { role: "system", content: SYSTEM_BASE },
         {

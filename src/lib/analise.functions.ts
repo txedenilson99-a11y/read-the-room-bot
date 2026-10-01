@@ -63,7 +63,7 @@ export const analisar = createServerFn({ method: "POST" })
     const systemPrompt = `${SYSTEM_BASE}\n\nCONTEXTO DA FERRAMENTA (${tool.title}): ${tool.systemHint}`;
 
         const json = await geminiRequest(apiKey, {
-        model: "gemini-flash-latest",
+        model: "gemini-2.5-flash-lite",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: data.content },
