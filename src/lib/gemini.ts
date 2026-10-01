@@ -1,9 +1,7 @@
 // Production-grade Gemini wrapper.
 // Single entry point: geminiRequest()
-// - Primary model: gemini-flash-latest
-// - Retries on 503 (and other transient 5xx/429): 3 attempts
-// - Exponential backoff: 1s, 2s, 4s
-// - Falls back to gemini-2.5-flash-lite after primary exhausts retries
+// - Modelo único: gemini-2.5-flash-lite (sem fallback)
+// - Retries on 503/429/5xx: 3 attempts, backoff 1s, 2s, 4s
 // - Never throws raw network errors to the frontend; surfaces a friendly
 //   Error message that TanStack server-fn relays to the UI toast.
 // - Logs the complete Gemini error payload server-side.
