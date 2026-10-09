@@ -1,6 +1,6 @@
 // Production-grade Gemini wrapper.
 // Single entry point: geminiRequest()
-// - Modelo único: gemini-2.5-flash-lite (sem fallback)
+// - Modelo único: gemini-3.1-flash-lite (sem fallback)
 // - Retries on 503/429/5xx: 3 attempts, backoff 1s, 2s, 4s
 // - Never throws raw network errors to the frontend; surfaces a friendly
 //   Error message that TanStack server-fn relays to the UI toast.
@@ -10,7 +10,7 @@ const GEMINI_URL =
   "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
 // Modelo único do ScanSocial — sem fallback automático.
-const MODEL = "gemini-2.5-flash-lite";
+const MODEL = "gemini-3.1-flash-lite";
 
 // Exponential backoff schedule for 503 retries: 1s, 2s, 4s.
 const BACKOFF_MS = [1000, 2000, 4000];
