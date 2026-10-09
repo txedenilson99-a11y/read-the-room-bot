@@ -126,7 +126,7 @@ Lê o print/contexto e devolve 4 mensagens prontas, no estilo escolhido, confian
     ];
 
         const json = await geminiRequest(apiKey, {
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-3.1-flash-lite",
         messages: [
           { role: "system", content: SYSTEM },
           { role: "user", content: parts },

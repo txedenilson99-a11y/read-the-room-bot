@@ -146,7 +146,7 @@ export const gerarLabia = createServerFn({ method: "POST" })
     ];
 
     const json = (await geminiRequest(apiKey, {
-      model: "gemini-2.5-flash-lite",
+      model: "gemini-3.1-flash-lite",
       messages: [
         { role: "system", content: SYSTEM },
         { role: "user", content: parts },
@@ -195,7 +195,7 @@ export const outraLabia = createServerFn({ method: "POST" })
     if (!apiKey) throw new Error("GEMINI_API_KEY não configurada.");
 
     const json = (await geminiRequest(apiKey, {
-      model: "gemini-2.5-flash-lite",
+      model: "gemini-3.1-flash-lite",
       messages: [
         { role: "system", content: SYSTEM },
         {
