@@ -359,6 +359,14 @@ function Home() {
           span="col-span-2"
         />
         <ToolCard
+          to="/psicologia-proibida"
+          label="Proibida"
+          title="🕯️ Psicologia Proibida"
+          sub="Leia as entrelinhas. Sinais reais, interpretações possíveis e o que ainda não dá pra concluir."
+          tone="violet"
+          span="col-span-2"
+        />
+        <ToolCard
           to="/flow"
           label="Flow"
           title="🌊 Continuar Conversa"
