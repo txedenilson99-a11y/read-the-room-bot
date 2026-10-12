@@ -27,6 +27,7 @@ import { Route as NovidadesRouteImport } from './routes/novidades'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
+import { Route as PsicologiaProibidaRouteImport } from './routes/psicologia-proibida'
 import { Route as RaioXRouteImport } from './routes/raio-x'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -124,6 +125,11 @@ const PrimeiroContatoRoute = PrimeiroContatoRouteImport.update({
   path: '/primeiro-contato',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PsicologiaProibidaRoute = PsicologiaProibidaRouteImport.update({
+  id: '/psicologia-proibida',
+  path: '/psicologia-proibida',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RaioXRoute = RaioXRouteImport.update({
   id: '/raio-x',
   path: '/raio-x',
@@ -174,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/psicologia-proibida': typeof PsicologiaProibidaRoute
   '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/psicologia-proibida': typeof PsicologiaProibidaRoute
   '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/perfil': typeof PerfilRoute
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
+  '/psicologia-proibida': typeof PsicologiaProibidaRoute
   '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -255,6 +264,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/psicologia-proibida'
     | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/psicologia-proibida'
     | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
@@ -307,6 +318,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/perfil-ig'
     | '/primeiro-contato'
+    | '/psicologia-proibida'
     | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
@@ -334,6 +346,7 @@ export interface RootRouteChildren {
   PerfilRoute: typeof PerfilRoute
   PerfilIgRoute: typeof PerfilIgRoute
   PrimeiroContatoRoute: typeof PrimeiroContatoRoute
+  PsicologiaProibidaRoute: typeof PsicologiaProibidaRoute
   RaioXRoute: typeof RaioXRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -470,6 +483,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrimeiroContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/psicologia-proibida': {
+      id: '/psicologia-proibida'
+      path: '/psicologia-proibida'
+      fullPath: '/psicologia-proibida'
+      preLoaderRoute: typeof PsicologiaProibidaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/raio-x': {
       id: '/raio-x'
       path: '/raio-x'
@@ -534,6 +554,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilRoute: PerfilRoute,
   PerfilIgRoute: PerfilIgRoute,
   PrimeiroContatoRoute: PrimeiroContatoRoute,
+  PsicologiaProibidaRoute: PsicologiaProibidaRoute,
   RaioXRoute: RaioXRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
