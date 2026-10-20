@@ -367,6 +367,14 @@ function Home() {
           span="col-span-2"
         />
         <ToolCard
+          to="/psicologia-story"
+          label="Proibida · Story"
+          title="🕯️📸 Psicologia Proibida — Story"
+          sub="Manda o print do story. Detalhes reais, leituras possíveis, estratégia e respostas em 5 tons."
+          tone="violet"
+          span="col-span-2"
+        />
+        <ToolCard
           to="/flow"
           label="Flow"
           title="🌊 Continuar Conversa"

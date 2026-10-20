@@ -28,6 +28,7 @@ import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as PerfilIgRouteImport } from './routes/perfil-ig'
 import { Route as PrimeiroContatoRouteImport } from './routes/primeiro-contato'
 import { Route as PsicologiaProibidaRouteImport } from './routes/psicologia-proibida'
+import { Route as PsicologiaStoryRouteImport } from './routes/psicologia-story'
 import { Route as RaioXRouteImport } from './routes/raio-x'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -130,6 +131,11 @@ const PsicologiaProibidaRoute = PsicologiaProibidaRouteImport.update({
   path: '/psicologia-proibida',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PsicologiaStoryRoute = PsicologiaStoryRouteImport.update({
+  id: '/psicologia-story',
+  path: '/psicologia-story',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RaioXRoute = RaioXRouteImport.update({
   id: '/raio-x',
   path: '/raio-x',
@@ -181,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/psicologia-proibida': typeof PsicologiaProibidaRoute
+  '/psicologia-story': typeof PsicologiaStoryRoute
   '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -208,6 +215,7 @@ export interface FileRoutesByTo {
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/psicologia-proibida': typeof PsicologiaProibidaRoute
+  '/psicologia-story': typeof PsicologiaStoryRoute
   '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -236,6 +244,7 @@ export interface FileRoutesById {
   '/perfil-ig': typeof PerfilIgRoute
   '/primeiro-contato': typeof PrimeiroContatoRoute
   '/psicologia-proibida': typeof PsicologiaProibidaRoute
+  '/psicologia-story': typeof PsicologiaStoryRoute
   '/raio-x': typeof RaioXRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
     | '/perfil-ig'
     | '/primeiro-contato'
     | '/psicologia-proibida'
+    | '/psicologia-story'
     | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/perfil-ig'
     | '/primeiro-contato'
     | '/psicologia-proibida'
+    | '/psicologia-story'
     | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
@@ -319,6 +330,7 @@ export interface FileRouteTypes {
     | '/perfil-ig'
     | '/primeiro-contato'
     | '/psicologia-proibida'
+    | '/psicologia-story'
     | '/raio-x'
     | '/recuperar-senha'
     | '/reset-password'
@@ -347,6 +359,7 @@ export interface RootRouteChildren {
   PerfilIgRoute: typeof PerfilIgRoute
   PrimeiroContatoRoute: typeof PrimeiroContatoRoute
   PsicologiaProibidaRoute: typeof PsicologiaProibidaRoute
+  PsicologiaStoryRoute: typeof PsicologiaStoryRoute
   RaioXRoute: typeof RaioXRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -490,6 +503,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PsicologiaProibidaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/psicologia-story': {
+      id: '/psicologia-story'
+      path: '/psicologia-story'
+      fullPath: '/psicologia-story'
+      preLoaderRoute: typeof PsicologiaStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/raio-x': {
       id: '/raio-x'
       path: '/raio-x'
@@ -555,6 +575,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilIgRoute: PerfilIgRoute,
   PrimeiroContatoRoute: PrimeiroContatoRoute,
   PsicologiaProibidaRoute: PsicologiaProibidaRoute,
+  PsicologiaStoryRoute: PsicologiaStoryRoute,
   RaioXRoute: RaioXRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
