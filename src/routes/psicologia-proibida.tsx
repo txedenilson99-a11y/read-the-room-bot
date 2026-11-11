@@ -99,6 +99,16 @@ function PsicologiaPage() {
         </p>
       </header>
 
+      <Link to="/arte-da-atracao"
+        className="mb-6 flex items-center justify-between gap-3 card-premium p-4 md:p-5 hover:ring-1 hover:ring-accent/40 transition animate-fade-up">
+        <span>
+          <span className="block text-[10px] uppercase tracking-[0.24em]" style={{ color: "var(--violet)" }}>Novo módulo</span>
+          <span className="block mt-1 text-sm md:text-base font-medium text-foreground">💜 Arte da Atração</span>
+          <span className="block text-xs text-muted-foreground mt-0.5">Confiança pra puxar conversa e criar conexão recíproca</span>
+        </span>
+        <span className="text-muted-foreground">→</span>
+      </Link>
+
       <section className="space-y-4 animate-fade-up" style={{ animationDelay: "60ms" }}>
         <textarea
           value={contexto}

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ArteDaAtracaoRouteImport } from './routes/arte-da-atracao'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as CantadasRouteImport } from './routes/cantadas'
 import { Route as FlowRouteImport } from './routes/flow'
@@ -44,6 +45,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArteDaAtracaoRoute = ArteDaAtracaoRouteImport.update({
+  id: '/arte-da-atracao',
+  path: '/arte-da-atracao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CadastroRoute = CadastroRouteImport.update({
@@ -170,6 +176,7 @@ const ScanToolRoute = ScanToolRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/arte-da-atracao': typeof ArteDaAtracaoRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
   '/flow': typeof FlowRoute
@@ -198,6 +205,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/arte-da-atracao': typeof ArteDaAtracaoRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
   '/flow': typeof FlowRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/arte-da-atracao': typeof ArteDaAtracaoRoute
   '/cadastro': typeof CadastroRoute
   '/cantadas': typeof CantadasRoute
   '/flow': typeof FlowRoute
@@ -257,6 +266,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/arte-da-atracao'
     | '/cadastro'
     | '/cantadas'
     | '/flow'
@@ -285,6 +295,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/arte-da-atracao'
     | '/cadastro'
     | '/cantadas'
     | '/flow'
@@ -313,6 +324,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/arte-da-atracao'
     | '/cadastro'
     | '/cantadas'
     | '/flow'
@@ -342,6 +354,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  ArteDaAtracaoRoute: typeof ArteDaAtracaoRoute
   CadastroRoute: typeof CadastroRoute
   CantadasRoute: typeof CantadasRoute
   FlowRoute: typeof FlowRoute
@@ -382,6 +395,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arte-da-atracao': {
+      id: '/arte-da-atracao'
+      path: '/arte-da-atracao'
+      fullPath: '/arte-da-atracao'
+      preLoaderRoute: typeof ArteDaAtracaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cadastro': {
@@ -558,6 +578,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  ArteDaAtracaoRoute: ArteDaAtracaoRoute,
   CadastroRoute: CadastroRoute,
   CantadasRoute: CantadasRoute,
   FlowRoute: FlowRoute,
