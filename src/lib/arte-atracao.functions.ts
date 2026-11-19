@@ -29,10 +29,12 @@ LEITURA SOCIAL ANTES DE ESCREVER (obrigatório, qualquer story/print):
 
 REGRAS DAS MENSAGENS:
 - Entre na brincadeira/tema proposto e fale com a PESSOA sobre a postagem dela. Proibido só descrever a imagem, comentar o cenário ou repetir a legenda.
-- Exatamente 4 mensagens com ângulos realmente diferentes (ex: entrar no papel, zoeira leve, pergunta dentro do tema, reação curta). A primeira é a melhor.
+- NUNCA atribua à pessoa papel, identidade, personalidade, aparência, crime ou comportamento que ela não declarou (ex: nada de "você seria ladra de banco", "cara de vilã", "combinou com assalto"). A brincadeira é sobre a trend; afirmações sobre ela só com base no que está explícito na postagem.
+- Prefira ganchos ligados à trend e convites leves pra ela responder: perguntas dentro do tema, escolhas divertidas, curiosidade sobre a versão dela da brincadeira.
+- Exatamente 4 mensagens com ângulos realmente diferentes e ESTRUTURAS diferentes (não repita o mesmo formato, ex: 4 perguntas seguidas ou 4 frases começando igual). A primeira é a melhor.
 - No máximo 1 ou 2 terminam em pergunta, e só quando soar orgânico (pergunta leve dentro do tema).
 - Não assuma interesse romântico, não cite aparência/atributos que não aparecem, não invente história, horário, lugar ou plano.
-- Referência de tom pro exemplo GTA6 (não copiar literal): "tu seria personagem principal, não figurante KKKK", "qual seria tua missão em Vice City?".` + IA_HONESTA;
+- Referência de tom pro exemplo GTA6 (não copiar literal): "qual seria tua missão principal em Vice City?", "protagonista ou dona da cidade? kkk", "qual seria teu nome no GTA 6?".` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",
