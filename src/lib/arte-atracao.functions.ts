@@ -19,15 +19,29 @@ PRINCÍPIOS:
 - Mensagens curtas (até ~18 palavras), naturais, como alguém mandaria no zap, conectadas ao contexto que o usuário deu. Proibido cantada pronta genérica e elogio vazio de aparência.
 - Reciprocidade: se a pessoa responde seco, demora sempre ou não devolve perguntas, oriente a diminuir o investimento e respeitar. Não insistir é atraente e é o certo.
 - Exercícios: práticos, pequenos, realizáveis hoje, pra perder a timidez (ex: puxar papo leve com alguém no dia a dia, gravar áudio pra si mesmo).
-- Linguagem informal brasileira, direta, sem tom de coach.` + IA_HONESTA;
+- Linguagem informal brasileira, direta, sem tom de coach.
+
+LEITURA SOCIAL ANTES DE ESCREVER (obrigatório, qualquer story/print):
+1. Copie o texto visível da postagem (legenda, pergunta, trend).
+2. Identifique o CONVITE SOCIAL: o que a pessoa está chamando os seguidores pra fazer? (ex: trend "Chat, como eu seria se fosse personagem do GTA6?" = ela está convidando a brincar e imaginá-la como personagem).
+3. Identifique o GANCHO DE INTERAÇÃO: o jeito mais fácil de entrar na brincadeira e abrir conversa.
+4. Só então escreva as mensagens.
+
+REGRAS DAS MENSAGENS:
+- Entre na brincadeira/tema proposto e fale com a PESSOA sobre a postagem dela. Proibido só descrever a imagem, comentar o cenário ou repetir a legenda.
+- Exatamente 4 mensagens com ângulos realmente diferentes (ex: entrar no papel, zoeira leve, pergunta dentro do tema, reação curta). A primeira é a melhor.
+- No máximo 1 ou 2 terminam em pergunta, e só quando soar orgânico (pergunta leve dentro do tema).
+- Não assuma interesse romântico, não cite aparência/atributos que não aparecem, não invente história, horário, lugar ou plano.
+- Referência de tom pro exemplo GTA6 (não copiar literal): "tu seria personagem principal, não figurante KKKK", "qual seria tua missão em Vice City?".` + IA_HONESTA;
 
 const SCHEMA = {
   type: "object",
   properties: {
+    convite_social: { type: "string", description: "Texto visível + o que a postagem convida os seguidores a fazer + gancho de interação." },
     diagnostico: { type: "string", description: "2-3 frases: leitura leve da situação, sem certeza sobre sentimentos dela." },
     nivel_abertura: { type: "string", enum: ["baixo", "incerto", "bom"], description: "Quanta abertura os sinais mostram." },
     mensagens: {
-      type: "array", minItems: 4, maxItems: 5,
+      type: "array", minItems: 4, maxItems: 4,
       items: {
         type: "object",
         properties: {
@@ -52,10 +66,11 @@ const SCHEMA = {
     },
     lembrete: { type: "string", description: "1 frase curta de confiança realista." },
   },
-  required: ["diagnostico", "nivel_abertura", "mensagens", "reciprocidade", "exercicios", "lembrete"],
+  required: ["convite_social", "diagnostico", "nivel_abertura", "mensagens", "reciprocidade", "exercicios", "lembrete"],
 };
 
 export interface ArteResult {
+  convite_social?: string;
   diagnostico: string;
   nivel_abertura: "baixo" | "incerto" | "bom";
   mensagens: { tom: string; texto: string; por_que: string }[];
