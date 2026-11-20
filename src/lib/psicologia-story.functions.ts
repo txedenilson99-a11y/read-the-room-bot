@@ -26,6 +26,9 @@ MENSAGENS:
 8. Proibido: "despertar desejo", "fazer apego", "gatilho", promessas de controlar sentimentos, elogio à aparência ("linda", "gata"), frases genéricas ("que legal", "adorei", "tudo bem?").
 9. Use o contexto de relação/intimidade se informado; sem ele, abordagem respeitosa e de baixa pressão.
 10. Tons (campo "tom") são só variação de registro, sempre maduro: engracado = leve e espirituoso sem piada inventada; curioso = interesse genuíno; confiante = observação segura; carinhoso = simpático simples; provocador = brincadeira sutil sobre um detalhe real (se não couber, versão neutra).
+   - NÃO force humor nem provocação. Se não houver gancho genuíno para engraçado/provocador, escreva uma alternativa neutra, natural e específica (sem piada). Ex. RUIM: piadas de "maratona", "virou observadora de aves", "virou bióloga", rótulos/identidades dados à pessoa.
+   - Não comente roupa, calçado, corpo ou visual da pessoa, nem nada que soe como avaliação da aparência. Foque no lugar, animais, objetos, texto ou música.
+   - Padrão de qualidade aprovado (passeio com aves em recinto): "Lugar legal! É zoológico ou algum parque ambiental?" — simples, contextual, adulta. As alternativas devem ter esse nível; observações também valem (ex.: "essas aves de perto devem ser outra coisa").
 11. "melhor_resposta": selecione a mais natural, ancorada e de menor risco entre as geradas — e explique por quê em 1 frase. As outras 4 opções têm tons distintos.` + IA_HONESTA;
 
 const PROIBIDAS = [
@@ -33,7 +36,7 @@ const PROIBIDAS = [
   /\bvai passar\b/i, /\bsuperand/i, /\besquecer\b/i, /\bse precisar\b/i, /\bt[ôo] aqui pra\b/i,
   /\bex\b/i, /\blinda\b/i, /\bgata\b/i, /\bmaravilhosa\b/i, /\bdeusa\b/i, /\bperfeita\b/i,
   /^(que legal|adorei|amei|tudo bem\??)[.!]?$/i,
-  /despertar desejo|fazer apego|\bapego\b|gatilho|cansou|cansad|roub(ou|aram)|pronto pra qualquer|me conta mais|fiquei curios/i,
+  /despertar desejo|fazer apego|\bapego\b|gatilho|cansou|cansad|roub(ou|aram)|pronto pra qualquer|me conta mais|fiquei curios|maratona|virou (observador|bi[óo]log|exploradora|aventureira)|observadora de aves|\b(t[êe]nis|sapato|cal[çc]ado|roupa|look|outfit|corpo|shape)\b/i,
 ];
 
 function mensagemRuim(t: string): boolean {
