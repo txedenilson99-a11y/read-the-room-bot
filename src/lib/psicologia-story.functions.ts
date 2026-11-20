@@ -26,6 +26,14 @@ MENSAGENS:
 8. Proibido: "despertar desejo", "fazer apego", "gatilho", promessas de controlar sentimentos, elogio à aparência ("linda", "gata"), frases genéricas ("que legal", "adorei", "tudo bem?").
 9. Use o contexto de relação/intimidade se informado; sem ele, abordagem respeitosa e de baixa pressão.
 10. Tons (campo "tom") são só variação de registro, sempre maduro: engracado = leve e espirituoso sem piada inventada; curioso = interesse genuíno; confiante = observação segura; carinhoso = simpático simples; provocador = brincadeira sutil sobre um detalhe real (se não couber, versão neutra).
+
+CONTEÚDO INFANTIL (regra que sobrepõe tudo):
+- Se o assunto principal for bebê ou criança, classifique "assunto_principal" como conteúdo familiar/fofo (ex.: "foto fofa do bebê") e mude TODO o enquadramento para reações sociais neutras, carinhosas e respeitosas.
+- PROIBIDO nesse caso: flerte, sedução, atração, provocação, tom "confiante" de paquera, qualquer linguagem romântica.
+- PROIBIDO avaliar roupa/visual como crítica de estilo ("gentleman", "ditando tendência", "mais estilo que adulto", "impecável") e comparar a criança com adultos.
+- Mantenha os 5 tons, mas adaptados: engracado = reação espontânea; curioso = curiosidade familiar simples; confiante = observação leve; carinhoso = comentário carinhoso; provocador = melhor resposta neutra (sem provocação).
+- Mensagens curtas, naturais, sem excesso de elogios. Referências de tom (não copie sempre): "que sorriso bom 😂❤️", "essa foto ficou muito querida", "olha essa carinha 😄".
+- Se houver dúvida sobre a idade, NÃO faça inferência forte: trate como conteúdo neutro/fofo, nunca como paquera.
    - NÃO force humor nem provocação. Se não houver gancho genuíno para engraçado/provocador, escreva uma alternativa neutra, natural e específica (sem piada). Ex. RUIM: piadas de "maratona", "virou observadora de aves", "virou bióloga", rótulos/identidades dados à pessoa.
    - Não comente roupa, calçado, corpo ou visual da pessoa, nem nada que soe como avaliação da aparência. Foque no lugar, animais, objetos, texto ou música.
    - Padrão de qualidade aprovado (passeio com aves em recinto): "Lugar legal! É zoológico ou algum parque ambiental?" — simples, contextual, adulta. As alternativas devem ter esse nível; observações também valem (ex.: "essas aves de perto devem ser outra coisa").
@@ -44,6 +52,21 @@ function mensagemRuim(t: string): boolean {
   if (!s) return true;
   if (s.split(/\s+/).length > 16) return true;
   return PROIBIDAS.some((r) => r.test(s));
+}
+
+// Story de bebê/criança: bloqueia flerte, atração e avaliação de estilo/aparência.
+const INFANTIL_RE = /\b(beb[êe]s?|crian[çc]as?|nen[ée]m|nenem|filh[ao]s?|sobrinh[ao]s?|baby|kids?|criancinha)\b/i;
+const INFANTIL_PROIBIDAS = [
+  /flert|sedu|paquer|atra[çc][ãa]o|provoca|gatinh|lind[ao] demais|crush/i,
+  /gentleman|tend[êe]ncia|impec[áa]vel|estil|visual|mais .{0,20}que muito adulto|ditando/i,
+];
+
+function conteudoInfantil(fonte: string): boolean {
+  return INFANTIL_RE.test(fonte);
+}
+
+function mensagemRuimInfantil(t: string): boolean {
+  return INFANTIL_PROIBIDAS.some((r) => r.test(t));
 }
 
 // Elementos que costumam ser inventados (horário, rotina, fds, lugar, plano).
@@ -172,17 +195,18 @@ export const analisarPsicologiaStory = createServerFn({ method: "POST" })
 
       // Filtra mensagens ruins e duplicadas.
       const fonte = [r.texto_visivel, r.assunto_principal, ...(r.detalhes_observaveis ?? []), data.contexto].join(" | ");
+      const infantil = conteudoInfantil(fonte);
       const vistos = new Set<string>();
       const ruins: string[] = [];
       r.respostas = r.respostas.filter((x) => {
         const k = norm(x.texto);
-        if (mensagemRuim(x.texto) || inventaElemento(x.texto, fonte) || vistos.has(k)) { ruins.push(x.texto); return false; }
+        if (mensagemRuim(x.texto) || inventaElemento(x.texto, fonte) || vistos.has(k) || (infantil && mensagemRuimInfantil(x.texto))) { ruins.push(x.texto); return false; }
         vistos.add(k);
         return true;
       });
       const perguntas = r.respostas.filter((x) => x.texto.trim().endsWith("?"));
       if (perguntas.length > 2) { ruins.push(...perguntas.slice(2).map((x) => x.texto + " (pergunta demais)")); r.respostas = r.respostas.filter((x) => !perguntas.slice(2).includes(x)); }
-      if (mensagemRuim(r.melhor_resposta.texto) || inventaElemento(r.melhor_resposta.texto, fonte)) {
+      if (mensagemRuim(r.melhor_resposta.texto) || inventaElemento(r.melhor_resposta.texto, fonte) || (infantil && mensagemRuimInfantil(r.melhor_resposta.texto))) {
         ruins.push(r.melhor_resposta.texto);
         if (r.respostas[0]) r.melhor_resposta = { texto: r.respostas[0].texto, por_que: "A mais natural e ancorada num detalhe real." };
       }
