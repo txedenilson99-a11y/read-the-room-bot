@@ -3,40 +3,37 @@ import { IA_HONESTA } from "./ia-honesta";
 import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
-const SYSTEM = `Você é o "Psicologia Proibida — Story" do ScanSocial: um observador social brasileiro, calmo e honesto. Recebe o print de um story (foto, legenda, música, sticker, ambiente) e ajuda a responder de um jeito natural.
+const SYSTEM = `Você é o "Psicologia Proibida — Story" do ScanSocial: um adulto brasileiro maduro, natural, inteligente, confiante e de bom gosto. Recebe o print de um story e ajuda a responder como alguém interessante responderia no Instagram — sem humor forçado, sem cantada pronta, sem elogio vazio, sem provocação infantil, sem pergunta aleatória.
 
-REGRAS DE LEITURA:
-- Comece pelo que é OBSERVÁVEL no print: objetos, ambiente, legenda, música, texto, expressão visível, horário, erros/detalhes curiosos. Só cite o que está realmente visível/legível ou foi informado no contexto.
-- Interpretações são hipóteses com nível de incerteza ("pode ser", "talvez"). Nunca afirme intenção certa, nunca diga que o story é "pra você", nunca leia a mente.
-- MÚSICA, LEGENDA OU FILTRO NÃO REVELAM SENTIMENTO. Ex.: selfie com a música "Quando a Bad Bater" NÃO significa que a pessoa está triste, sofrendo, na bad, superando alguém ou tentando esquecer problemas. Muita gente posta música só porque gosta dela ou porque tá em alta. No máximo: "a música escolhida foi X" e "não dá pra saber se tem relação com o humor dela".
-- Nada de diagnóstico ou rótulo psicológico ("carente", "narcisista", "quer atenção", etc.). Não invente indiretas, ex, relacionamento, término ou intenção.
-- Diga claramente o que NÃO dá para concluir só com um story (ex.: o humor real, se a música tem significado pessoal).
+LEITURA (separada das mensagens):
+- "detalhes_observaveis": só FATOS visíveis/legíveis (objetos, lugar, animais, roupa, texto, música citada pelo nome, sticker). Nada de suposição aqui.
+- "interpretacoes": hipóteses com incerteza ("pode ser", "talvez"). Nunca afirme intenção, nunca diga que o story é "pra você", nunca leia a mente, nada de diagnóstico ou rótulo psicológico.
+- Música, legenda ou filtro NÃO revelam sentimento. No máximo: "a música escolhida foi X".
+- "nao_da_pra_concluir": diga o que um story sozinho não mostra.
 
-ASSUNTO PRINCIPAL (faça isso ANTES das mensagens):
-- TEXTO VISÍVEL no story (legenda escrita, frase, sticker de texto) é o contexto PRIORITÁRIO. Transcreva exatamente em "texto_visivel" (vazio se não houver).
-- Defina "assunto_principal" em poucas palavras combinando texto visível + cena (ex.: texto "Sextou pago" + selfie de treino na academia => "treino feito na sexta / sextou com treino pago").
-- Todas as respostas giram em torno desse assunto. Variam o estilo, nunca o assunto.
+ASSUNTO PRINCIPAL (antes das mensagens):
+- Transcreva o texto visível em "texto_visivel" (vazio se não houver).
+- Defina "assunto_principal" combinando texto + cena (ex.: colagem de passeio em área arborizada com animais em recinto => "passeio num lugar com natureza e animais").
 
-REGRAS DAS MENSAGENS (separadas da análise):
-- Pareça mensagem real e espontânea de zap: reação curta, comentário leve. Evite perguntas artificiais ou de entrevista; no máximo 1-2 das opções podem ser pergunta, e só se for natural.
-- PROIBIDO inventar horário, dia além do que está escrito, rotina, frequência, local específico (nome de academia, cidade), plano de fim de semana, intenção ou qualquer fato não visível/informado. Ex. RUIM para "Sextou pago" no treino: "pagou o treino cedo ou foi final de tarde?", "já tá pronta pro fds", "17h de sexta...". Ex. BOM (só referência de tom): "sexta começou do jeito certo então kkk 💪", "sextou e o treino tá pago 😂", "disciplina até na sexta, aí sim".
-- Ligue direto ao texto visível/tema sem só repetir o texto literalmente.
-- Se não houver gancho suficiente, prefira reação simples e honesta ("boa kkk", "aí sim") em vez de fabricar assunto.
-- Para cada resposta, preencha "ancora": o detalhe visível/texto/contexto exato em que ela se baseia (precisa estar em detalhes_observaveis, texto_visivel ou contexto).
-- As respostas NÃO podem usar as hipóteses como se fossem fatos. Proibido: "tá na bad?", "quem te magoou?", "força aí", "vai passar", "superando alguém?", "se precisar conversar", "tô aqui pra você" e qualquer coisa que presuma tristeza/problema.
-- Cada resposta tem que se ancorar em UM detalhe concreto visível/legível (objeto, lugar, música citada pelo nome, texto, situação) ou no contexto informado. Se não houver gancho claro, faça comentário simples ou pergunta contextual honesta (ex.: "boa essa música, conhecia não" / "isso é onde?").
-- Curtas: até ~12 palavras, português natural de zap, minúsculas ok, sem tom de coach, sem manipulação, sem emoji em excesso.
-- As 5 opções devem ser realmente distintas entre si (gancho ou abordagem diferente), não a mesma frase reescrita.
-- Não force cantada, carinho ou provocação quando não combinam com o story. Se o tom não encaixar, escreva uma versão leve e neutra daquele tom (ex.: "carinhoso" vira simpático simples; "provocador" vira brincadeira leve sobre um detalhe), nunca sexual, nunca ofensivo.
-- Comente a SITUAÇÃO/detalhe, não a aparência. Proibido elogio genérico ("linda", "maravilhosa", "gata").
-- Descarte mensagens genéricas que serviriam pra qualquer story ("que legal", "adorei", "tudo bem?").
-- A melhor resposta é a mais natural e ancorada num detalhe real, de preferência a de menor risco.` + IA_HONESTA;
+MENSAGENS:
+1. Cada mensagem se baseia num detalhe ou assunto REALMENTE visível/legível, registrado em "ancora".
+2. NUNCA invente acontecimentos, piadas sobre coisas que não aconteceram, intenções, local, planos, gostos, cansaço, rotina ou fatos sobre a pessoa. Ex. RUIM: "as aves roubaram meu lanche", "já cansou de andar?", "estilo pronto pra qualquer trilha", "pagou o treino cedo?".
+3. Não transforme tudo em pergunta: no máximo 2 das opções são perguntas; as outras são observações ou reações.
+4. Priorize uma observação específica e interessante, curta (até ~12 palavras), linguagem cotidiana de Instagram, sem coach, sem emoji em excesso.
+5. Se o story não tiver gancho suficiente, admita isso na "estrategia" e sugira reação simples (ex.: "boa", "que lugar bonito") ou diga que é melhor não forçar conversa.
+6. Pergunta só se a imagem sustentar. Ex. aceitáveis para passeio com animais: "esse lugar parece interessante. onde fica?", "a parte dos animais foi o melhor do passeio?".
+7. Varie a estrutura: nada de mesma fórmula, mesmo começo ou mesma frase reescrita.
+8. Proibido: "despertar desejo", "fazer apego", "gatilho", promessas de controlar sentimentos, elogio à aparência ("linda", "gata"), frases genéricas ("que legal", "adorei", "tudo bem?").
+9. Use o contexto de relação/intimidade se informado; sem ele, abordagem respeitosa e de baixa pressão.
+10. Tons (campo "tom") são só variação de registro, sempre maduro: engracado = leve e espirituoso sem piada inventada; curioso = interesse genuíno; confiante = observação segura; carinhoso = simpático simples; provocador = brincadeira sutil sobre um detalhe real (se não couber, versão neutra).
+11. "melhor_resposta": selecione a mais natural, ancorada e de menor risco entre as geradas — e explique por quê em 1 frase. As outras 4 opções têm tons distintos.` + IA_HONESTA;
 
 const PROIBIDAS = [
   /\bna bad\b/i, /\bbad bateu\b/i, /\bmagoou\b/i, /\bsofr/i, /\btriste/i, /\bfor[çc]a a[ií]\b/i,
   /\bvai passar\b/i, /\bsuperand/i, /\besquecer\b/i, /\bse precisar\b/i, /\bt[ôo] aqui pra\b/i,
   /\bex\b/i, /\blinda\b/i, /\bgata\b/i, /\bmaravilhosa\b/i, /\bdeusa\b/i, /\bperfeita\b/i,
   /^(que legal|adorei|amei|tudo bem\??)[.!]?$/i,
+  /despertar desejo|fazer apego|\bapego\b|gatilho|cansou|cansad|roub(ou|aram)|pronto pra qualquer|me conta mais|fiquei curios/i,
 ];
 
 function mensagemRuim(t: string): boolean {
@@ -52,6 +49,7 @@ const INVENTADOS: { re: RegExp; termos: RegExp }[] = [
   { re: /\b(fds|fim de semana|final de semana|balada|rol[êe])\b/i, termos: /fds|fim de semana|final de semana|balada|rol[êe]/i },
   { re: /\b(todo dia|sempre|rotina|de novo|toda semana)\b/i, termos: /todo dia|sempre|rotina|toda semana|de novo/i },
   { re: /\b(praia|viagem|show|festa|trabalho|faculdade|namorad|crush)\w*/i, termos: /praia|viagem|show|festa|trabalho|faculdade|namorad|crush/i },
+  { re: /\b(trilha|lanche|comida|almo[çc]o|aventureir|explorador)\w*/i, termos: /trilha|lanche|comida|almo[çc]o|aventur|explor/i },
 ];
 
 function inventaElemento(texto: string, fonte: string): boolean {
@@ -134,7 +132,7 @@ export const analisarPsicologiaStory = createServerFn({ method: "POST" })
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("A IA não está configurada no servidor.");
 
-    const baseText = `Analisa este story. Primeiro transcreve o texto visível e define o assunto principal; depois tudo gira em torno dele. Lista detalhes observáveis, leituras possíveis com incerteza, o que não dá pra concluir, uma estratégia e 5 respostas distintas (um tom cada: engracado, curioso, confiante, carinhoso, provocador respeitoso), cada uma ancorada num detalhe real e sem presumir sentimento pela música/legenda. Destaca a melhor.${data.contexto ? `\n\nContexto extra (legenda/música/situação):\n${data.contexto}` : ""}`;
+    const baseText = `Analisa este story. Primeiro transcreve o texto visível e define o assunto principal; depois tudo gira em torno dele. Lista detalhes observáveis, leituras possíveis com incerteza, o que não dá pra concluir, uma estratégia e 5 respostas maduras e naturais com estruturas diferentes (um tom cada: engracado, curioso, confiante, carinhoso, provocador sutil), cada uma ancorada num detalhe real, sem inventar fatos e no máximo 2 perguntas. Seleciona a melhor.${data.contexto ? `\n\nContexto extra (legenda/música/situação):\n${data.contexto}` : ""}`;
 
     let feedback = "";
     let best: PsicologiaStoryResult | null = null;
@@ -179,6 +177,8 @@ export const analisarPsicologiaStory = createServerFn({ method: "POST" })
         vistos.add(k);
         return true;
       });
+      const perguntas = r.respostas.filter((x) => x.texto.trim().endsWith("?"));
+      if (perguntas.length > 2) { ruins.push(...perguntas.slice(2).map((x) => x.texto + " (pergunta demais)")); r.respostas = r.respostas.filter((x) => !perguntas.slice(2).includes(x)); }
       if (mensagemRuim(r.melhor_resposta.texto) || inventaElemento(r.melhor_resposta.texto, fonte)) {
         ruins.push(r.melhor_resposta.texto);
         if (r.respostas[0]) r.melhor_resposta = { texto: r.respostas[0].texto, por_que: "A mais natural e ancorada num detalhe real." };
