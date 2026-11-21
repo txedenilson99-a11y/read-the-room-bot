@@ -2,6 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { IA_HONESTA } from "./ia-honesta";
 import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
+import {
+  DIAGNOSTICO_PAISAGEM,
+  diagnosticoRuim,
+  ehPaisagem,
+  filtrarMensagens,
+} from "./arte-atracao.validacao";
 
 export const SITUACOES = {
   primeira: "Primeira abordagem (ainda não conversaram)",
@@ -11,7 +17,8 @@ export const SITUACOES = {
 } as const;
 export type Situacao = keyof typeof SITUACOES;
 
-const SYSTEM = `Você é o módulo "Arte da Atração" do ScanSocial: um amigo brasileiro experiente, calmo e honesto que ajuda homens tímidos a ganhar confiança pra puxar conversa, mostrar interesse e criar conexão RECÍPROCA.
+const SYSTEM =
+  `Você é o módulo "Arte da Atração" do ScanSocial: um amigo brasileiro experiente, calmo e honesto que ajuda homens tímidos a ganhar confiança pra puxar conversa, mostrar interesse e criar conexão RECÍPROCA.
 
 PRINCÍPIOS:
 - Atração saudável = curiosidade genuína + leveza + respeito. Nada de manipulação, joguinho, técnica de pressão, ciúme induzido, "sumir pra ela sentir falta" ou qualquer promessa de fazer alguém sentir desejo, apego ou dependência.
@@ -43,18 +50,49 @@ PROIBIDO IDENTIFICAR LUGARES (regra crítica):
 - Diagnóstico de foto de paisagem/lugar: diga só que é uma paisagem e que não há sinal claro de intenção romântica. Não atribua pensamentos, desejos ou estado emocional à pessoa.
 
 TOM DAS MENSAGENS: conversa real de WhatsApp/Instagram. Proibido linguagem publicitária, frases de efeito, exageros e clichês: "merece a visita", "visual renova", "energia absurda", "lugar clássico", "vibe incrível", "paraíso", "recarregar as energias" e parecidos.
-- Não force quantidade: gere de 2 a 4 mensagens, só as que tiverem função conversacional diferente (ex: pergunta simples, reação curta, comentário específico). Se só houver 2 boas, entregue 2.
+- Não force quantidade: gere de 1 a 4 mensagens, só as que tiverem função conversacional diferente (ex: pergunta simples, reação curta, comentário específico). Se só houver 2 boas, entregue 2.
 
-- Referência de tom pro exemplo GTA6 (não copiar literal): "qual seria tua missão principal em Vice City?", "protagonista ou dona da cidade? kkk", "qual seria teu nome no GTA 6?".` + IA_HONESTA;
+- Referência de tom pro exemplo GTA6 (não copiar literal): "qual seria tua missão principal em Vice City?", "protagonista ou dona da cidade? kkk", "qual seria teu nome no GTA 6?".` +
+  IA_HONESTA;
 
 const SCHEMA = {
   type: "object",
   properties: {
-    convite_social: { type: "string", description: "Texto visível + o que a postagem convida os seguidores a fazer + gancho de interação." },
-    diagnostico: { type: "string", description: "2-3 frases: leitura leve da situação, sem certeza sobre sentimentos dela." },
-    nivel_abertura: { type: "string", enum: ["baixo", "incerto", "bom"], description: "Quanta abertura os sinais mostram." },
+    tipo_imagem: {
+      type: "string",
+      enum: [
+        "paisagem_lugar",
+        "selfie_pessoa",
+        "trend_texto",
+        "print_conversa",
+        "outro",
+        "sem_imagem",
+      ],
+      description: "O que a imagem mostra principalmente.",
+    },
+    texto_visivel: {
+      type: "string",
+      description:
+        "Transcrição LITERAL do texto escrito na imagem. Vazio se não houver. Nunca coloque nome de lugar que não esteja escrito.",
+    },
+    convite_social: {
+      type: "string",
+      description:
+        "Texto visível + o que a postagem convida os seguidores a fazer + gancho de interação.",
+    },
+    diagnostico: {
+      type: "string",
+      description: "2-3 frases: leitura leve da situação, sem certeza sobre sentimentos dela.",
+    },
+    nivel_abertura: {
+      type: "string",
+      enum: ["baixo", "incerto", "bom"],
+      description: "Quanta abertura os sinais mostram.",
+    },
     mensagens: {
-      type: "array", minItems: 2, maxItems: 4,
+      type: "array",
+      minItems: 1,
+      maxItems: 4,
       items: {
         type: "object",
         properties: {
@@ -66,11 +104,18 @@ const SCHEMA = {
       },
     },
     reciprocidade: {
-      type: "array", minItems: 2, maxItems: 4,
-      items: { type: "string", description: "Sinal pra observar / limite a respeitar / quando recuar." },
+      type: "array",
+      minItems: 2,
+      maxItems: 4,
+      items: {
+        type: "string",
+        description: "Sinal pra observar / limite a respeitar / quando recuar.",
+      },
     },
     exercicios: {
-      type: "array", minItems: 2, maxItems: 3,
+      type: "array",
+      minItems: 2,
+      maxItems: 3,
       items: {
         type: "object",
         properties: { titulo: { type: "string" }, como: { type: "string" } },
@@ -79,10 +124,22 @@ const SCHEMA = {
     },
     lembrete: { type: "string", description: "1 frase curta de confiança realista." },
   },
-  required: ["convite_social", "diagnostico", "nivel_abertura", "mensagens", "reciprocidade", "exercicios", "lembrete"],
+  required: [
+    "tipo_imagem",
+    "texto_visivel",
+    "convite_social",
+    "diagnostico",
+    "nivel_abertura",
+    "mensagens",
+    "reciprocidade",
+    "exercicios",
+    "lembrete",
+  ],
 };
 
 export interface ArteResult {
+  tipo_imagem?: string;
+  texto_visivel?: string;
   convite_social?: string;
   diagnostico: string;
   nivel_abertura: "baixo" | "incerto" | "bom";
@@ -90,20 +147,6 @@ export interface ArteResult {
   reciprocidade: string[];
   exercicios: { titulo: string; como: string }[];
   lembrete: string;
-}
-
-const BANIDAS = [
-  "merece a visita", "visual renova", "visual sempre renova", "energia absurda", "energia desse lugar",
-  "lugar clássico", "ponto turístico", "por essas bandas", "faz tempo que não", "já fui", "paraíso",
-  "recarregar", "renova as energias", "vibe incrível", "famos", "trilha", "subida",
-];
-
-function mensagemRuim(texto: string, fonte: string): boolean {
-  const t = texto.toLowerCase();
-  if (BANIDAS.some((b) => t.includes(b) && !fonte.includes(b))) return true;
-  // Nomes próprios com artigo ("O Caracol") não presentes no contexto
-  const nomes = texto.match(/\b(?:[OoAa]s?|[Dd][oa]s?|[Nn][oa]s?)\s+([A-ZÁÉÍÓÚÂÊÔÃÕ][a-záéíóúâêôãõç]{3,})/g) ?? [];
-  return nomes.some((n) => !fonte.includes(n.split(/\s+/).pop()!.toLowerCase()));
 }
 
 export const gerarArteAtracao = createServerFn({ method: "POST" })
@@ -114,7 +157,8 @@ export const gerarArteAtracao = createServerFn({ method: "POST" })
     const images = Array.isArray(input.images)
       ? input.images.filter((u) => typeof u === "string" && u.startsWith("data:image/")).slice(0, 6)
       : [];
-    for (const img of images) if (img.length > 8_000_000) throw new Error("Uma das imagens tá muito pesada.");
+    for (const img of images)
+      if (img.length > 8_000_000) throw new Error("Uma das imagens tá muito pesada.");
     return { situacao: input.situacao, contexto, images };
   })
   .handler(async ({ data }) => {
@@ -123,36 +167,82 @@ export const gerarArteAtracao = createServerFn({ method: "POST" })
     const text = `Situação escolhida: ${SITUACOES[data.situacao]}.${data.contexto ? `\n\nContexto do usuário:\n${data.contexto}` : "\n\nSem contexto extra — se faltar informação, sugira mensagens neutras e diga isso no diagnóstico."}${data.images.length ? `\n\n${data.images.length} print(s) anexado(s).` : ""}`;
     const fonte = data.contexto.toLowerCase();
     const call = async (extra: string) => {
-    const json = (await geminiRequest(apiKey, {
-      model: "gemini-3.1-flash-lite",
-      messages: [
-        { role: "system", content: SYSTEM },
-        {
-          role: "user",
-          content: [
-            { type: "text", text: text + extra },
-            ...data.images.map((url) => ({ type: "image_url", image_url: { url } })),
-          ],
-        },
-      ],
-      tools: [{ type: "function", function: { name: "arte_da_atracao", description: "Plano prático e honesto.", parameters: SCHEMA } }],
-      tool_choice: { type: "function", function: { name: "arte_da_atracao" } },
-    })) as { choices?: Array<{ message?: { tool_calls?: Array<{ function?: { arguments?: string } }> } }> };
-    const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
-    if (!args) throw new Error("Resposta vazia da IA. Tenta de novo.");
-    try {
-      return JSON.parse(args) as ArteResult;
-    } catch {
-      throw new Error("A IA devolveu algo estranho. Tenta de novo.");
-    }
+      const json = (await geminiRequest(apiKey, {
+        model: "gemini-3.1-flash-lite",
+        messages: [
+          { role: "system", content: SYSTEM },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: text + extra },
+              ...data.images.map((url) => ({ type: "image_url", image_url: { url } })),
+            ],
+          },
+        ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "arte_da_atracao",
+              description: "Plano prático e honesto.",
+              parameters: SCHEMA,
+            },
+          },
+        ],
+        tool_choice: { type: "function", function: { name: "arte_da_atracao" } },
+      })) as {
+        choices?: Array<{
+          message?: { tool_calls?: Array<{ function?: { arguments?: string } }> };
+        }>;
+      };
+      const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+      if (!args) throw new Error("Resposta vazia da IA. Tenta de novo.");
+      try {
+        return JSON.parse(args) as ArteResult;
+      } catch {
+        throw new Error("A IA devolveu algo estranho. Tenta de novo.");
+      }
+    };
+    const avaliar = (r: ArteResult) => {
+      const paisagem =
+        r.tipo_imagem === "paisagem_lugar" ||
+        (r.tipo_imagem !== "trend_texto" && ehPaisagem(r.diagnostico, r.convite_social));
+      // Em paisagem, nomes só valem se o usuário escreveu; em trends, vale também o texto visível transcrito.
+      const fonte = paisagem ? data.contexto : `${data.contexto}\n${r.texto_visivel ?? ""}`;
+      return { paisagem, fonte, ...filtrarMensagens(r.mensagens ?? [], fonte, paisagem) };
     };
     let result = await call("");
-    const ruins = (r: ArteResult) => (r.mensagens ?? []).filter((m) => mensagemRuim(m.texto, fonte));
-    if (ruins(result).length) {
-      const bad = ruins(result).map((m) => `"${m.texto}"`).join(", ");
-      result = await call(`\n\nREFAÇA: as mensagens ${bad} inventaram nome/fama de lugar, experiência pessoal ou usaram frase pronta. Descreva só o visível e escreva como conversa real.`);
+    let av = avaliar(result);
+    if (av.reprovadas.length || diagnosticoRuim(result.diagnostico ?? "", av.fonte)) {
+      const lista = av.reprovadas.map((x) => `"${x.texto}" (${x.motivo})`).join("; ");
+      const primeiras = av.aprovadas;
+      result = await call(
+        `\n\nREFAÇA. Reprovadas: ${lista || "diagnóstico com suposição"}. Não use nome de lugar, fama, subida, vista, clima, passeio, viagem nem clichês (incrível, surreal, icônico, clássico, energia, vibe). Descreva só o visível. Pode devolver só 1 ou 2 mensagens.`,
+      );
+      av = avaliar(result);
+      // mantém as aprovadas da 1ª tentativa se a 2ª vier pior
+      if (av.aprovadas.length === 0 && primeiras.length) av = { ...av, aprovadas: primeiras };
     }
-    const limpas = (result.mensagens ?? []).filter((m) => !mensagemRuim(m.texto, fonte));
-    if (limpas.length) result.mensagens = limpas;
+    result.mensagens = av.aprovadas.slice(0, 4);
+    if (av.paisagem) {
+      result.diagnostico = DIAGNOSTICO_PAISAGEM;
+      if (result.nivel_abertura === "bom") result.nivel_abertura = "incerto";
+      if (!result.mensagens.length) {
+        result.mensagens = [
+          {
+            tom: "pergunta simples",
+            texto: "Que lugar é esse?",
+            por_que: "Pergunta direta sobre o que aparece na foto, sem supor nada.",
+          },
+        ];
+      }
+    } else if (diagnosticoRuim(result.diagnostico ?? "", av.fonte)) {
+      result.diagnostico =
+        "A imagem/contexto não permite concluir a intenção de quem postou. Vai pelo que está visível e observa como ela responde.";
+    }
+    if (!result.mensagens.length)
+      throw new Error(
+        "Não consegui gerar mensagens confiáveis com essas informações. Tenta adicionar um pouco de contexto.",
+      );
     return { result };
   });
