@@ -28,6 +28,10 @@ const CLICHES = [
   "lugar perfeito",
   "cartao postal",
   "absurd",
+  "imperdivel",
+  "imperdi",
+  "deslumbrante",
+  "magnific",
 ];
 
 // Suposições sem base visível: lugar, fama, trajeto, clima, experiência.
@@ -63,6 +67,17 @@ const SUPOSICOES = [
   "viagem",
   "viajar",
   "barulho",
+  " som ",
+  "ouvir",
+  "distancia",
+  "longe",
+  "acesso",
+  "acessivel",
+  "nunca fui",
+  "nao vou",
+  "ja estive",
+  "tempo ajudando",
+  "dia bom",
   "agua gelada",
   "de perto",
   "pegou um dia",
@@ -125,7 +140,7 @@ export function motivoReprovacao(
 }
 
 export const DIAGNOSTICO_PAISAGEM =
-  "É uma foto de uma cachoeira/paisagem. A imagem não permite concluir onde fica nem a intenção de quem postou.";
+  "A imagem mostra uma cachoeira e vegetação. Não há contexto suficiente para identificar o local nem inferir intenção romântica.";
 
 type Msg = { tom: string; texto: string; por_que: string };
 

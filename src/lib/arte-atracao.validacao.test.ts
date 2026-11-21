@@ -40,3 +40,25 @@ describe("Arte da Atração — validação", () => {
     expect(ehPaisagem("foto de uma cachoeira")).toBe(true);
   });
 });
+
+describe("Arte da Atração — casos reprovados na 3ª rodada", () => {
+  test.each([
+    "Caracol é um clássico",
+    "Que vista de lá de cima, hein",
+    "Isso aí tá surreal",
+    "Paisagem icônica essa",
+    "O barulho deve ser forte",
+    "Lugar imperdível",
+    "Nunca fui num lugar assim",
+    "Você pegou um dia bom por aí?",
+    "O tempo tá ajudando?",
+  ])("rejeita: %s", (t: string) => {
+    expect(motivoReprovacao(t, "", true)).not.toBeNull();
+  });
+  test("aprova 'Você já conhecia esse lugar?'", () => {
+    expect(motivoReprovacao("Você já conhecia esse lugar?", "", true)).toBeNull();
+  });
+  test("diagnóstico 'paisagem icônica' é reprovado", () => {
+    expect(diagnosticoRuim("Uma paisagem icônica.", "")).toBe(true);
+  });
+});

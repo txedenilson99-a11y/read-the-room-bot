@@ -50,6 +50,7 @@ PROIBIDO IDENTIFICAR LUGARES (regra crítica):
 - Diagnóstico de foto de paisagem/lugar: diga só que é uma paisagem e que não há sinal claro de intenção romântica. Não atribua pensamentos, desejos ou estado emocional à pessoa.
 
 TOM DAS MENSAGENS: conversa real de WhatsApp/Instagram. Proibido linguagem publicitária, frases de efeito, exageros e clichês: "merece a visita", "visual renova", "energia absurda", "lugar clássico", "vibe incrível", "paraíso", "recarregar as energias" e parecidos.
+- Em foto de paisagem/lugar: no máximo 2 mensagens (prefira 1), curiosidade direta sobre o visível, sem fala em primeira pessoa ("nunca fui", "faz tempo que não vou"), sem perguntas sobre dia bom/passeio/tempo/som/vista. Se não houver gancho real, diga no "lembrete" que é melhor não mandar nada.
 - Não force quantidade: gere de 1 a 4 mensagens, só as que tiverem função conversacional diferente (ex: pergunta simples, reação curta, comentário específico). Se só houver 2 boas, entregue 2.
 
 - Referência de tom pro exemplo GTA6 (não copiar literal): "qual seria tua missão principal em Vice City?", "protagonista ou dona da cidade? kkk", "qual seria teu nome no GTA 6?".` +
@@ -223,7 +224,7 @@ export const gerarArteAtracao = createServerFn({ method: "POST" })
       // mantém as aprovadas da 1ª tentativa se a 2ª vier pior
       if (av.aprovadas.length === 0 && primeiras.length) av = { ...av, aprovadas: primeiras };
     }
-    result.mensagens = av.aprovadas.slice(0, 4);
+    result.mensagens = av.aprovadas.slice(0, av.paisagem ? 2 : 4);
     if (av.paisagem) {
       result.diagnostico = DIAGNOSTICO_PAISAGEM;
       if (result.nivel_abertura === "bom") result.nivel_abertura = "incerto";
