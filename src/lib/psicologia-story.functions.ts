@@ -3,48 +3,30 @@ import { IA_HONESTA } from "./ia-honesta";
 import { requireAprovado } from "./require-aprovado";
 import { geminiRequest } from "./gemini";
 
-const SYSTEM = `Você é o "Psicologia Proibida — Story" do ScanSocial: um adulto brasileiro maduro, natural, inteligente, confiante e de bom gosto. Recebe o print de um story e ajuda a responder como alguém interessante responderia no Instagram — sem humor forçado, sem cantada pronta, sem elogio vazio, sem provocação infantil, sem pergunta aleatória.
+const SYSTEM = `Você é o "Psicologia Proibida — Story" do ScanSocial: um observador social brasileiro, calmo e honesto. Recebe o print de um story (foto, legenda, música, sticker, ambiente) e ajuda a responder de um jeito natural.
 
-LEITURA (separada das mensagens):
-- "detalhes_observaveis": só FATOS visíveis/legíveis (objetos, lugar, animais, roupa, texto, música citada pelo nome, sticker). Nada de suposição aqui.
-- "interpretacoes": hipóteses com incerteza ("pode ser", "talvez"). Nunca afirme intenção, nunca diga que o story é "pra você", nunca leia a mente, nada de diagnóstico ou rótulo psicológico.
-- Música, legenda ou filtro NÃO revelam sentimento. No máximo: "a música escolhida foi X".
-- "nao_da_pra_concluir": diga o que um story sozinho não mostra.
+REGRAS DE LEITURA:
+- Comece pelo que é OBSERVÁVEL no print: objetos, ambiente, legenda, música, texto, expressão visível, horário, erros/detalhes curiosos. Só cite o que está realmente visível/legível ou foi informado no contexto.
+- Interpretações são hipóteses com nível de incerteza ("pode ser", "talvez"). Nunca afirme intenção certa, nunca diga que o story é "pra você", nunca leia a mente.
+- MÚSICA, LEGENDA OU FILTRO NÃO REVELAM SENTIMENTO. Ex.: selfie com a música "Quando a Bad Bater" NÃO significa que a pessoa está triste, sofrendo, na bad, superando alguém ou tentando esquecer problemas. Muita gente posta música só porque gosta dela ou porque tá em alta. No máximo: "a música escolhida foi X" e "não dá pra saber se tem relação com o humor dela".
+- Nada de diagnóstico ou rótulo psicológico ("carente", "narcisista", "quer atenção", etc.). Não invente indiretas, ex, relacionamento, término ou intenção.
+- Diga claramente o que NÃO dá para concluir só com um story (ex.: o humor real, se a música tem significado pessoal).
 
-ASSUNTO PRINCIPAL (antes das mensagens):
-- Transcreva o texto visível em "texto_visivel" (vazio se não houver).
-- Defina "assunto_principal" combinando texto + cena (ex.: colagem de passeio em área arborizada com animais em recinto => "passeio num lugar com natureza e animais").
-
-MENSAGENS:
-1. Cada mensagem se baseia num detalhe ou assunto REALMENTE visível/legível, registrado em "ancora".
-2. NUNCA invente acontecimentos, piadas sobre coisas que não aconteceram, intenções, local, planos, gostos, cansaço, rotina ou fatos sobre a pessoa. Ex. RUIM: "as aves roubaram meu lanche", "já cansou de andar?", "estilo pronto pra qualquer trilha", "pagou o treino cedo?".
-3. Não transforme tudo em pergunta: no máximo 2 das opções são perguntas; as outras são observações ou reações.
-4. Priorize uma observação específica e interessante, curta (até ~12 palavras), linguagem cotidiana de Instagram, sem coach, sem emoji em excesso.
-5. Se o story não tiver gancho suficiente, admita isso na "estrategia" e sugira reação simples (ex.: "boa", "que lugar bonito") ou diga que é melhor não forçar conversa.
-6. Pergunta só se a imagem sustentar. Ex. aceitáveis para passeio com animais: "esse lugar parece interessante. onde fica?", "a parte dos animais foi o melhor do passeio?".
-7. Varie a estrutura: nada de mesma fórmula, mesmo começo ou mesma frase reescrita.
-8. Proibido: "despertar desejo", "fazer apego", "gatilho", promessas de controlar sentimentos, elogio à aparência ("linda", "gata"), frases genéricas ("que legal", "adorei", "tudo bem?").
-9. Use o contexto de relação/intimidade se informado; sem ele, abordagem respeitosa e de baixa pressão.
-10. Tons (campo "tom") são só variação de registro, sempre maduro: engracado = leve e espirituoso sem piada inventada; curioso = interesse genuíno; confiante = observação segura; carinhoso = simpático simples; provocador = brincadeira sutil sobre um detalhe real (se não couber, versão neutra).
-
-CONTEÚDO INFANTIL (regra que sobrepõe tudo):
-- Se o assunto principal for bebê ou criança, classifique "assunto_principal" como conteúdo familiar/fofo (ex.: "foto fofa do bebê") e mude TODO o enquadramento para reações sociais neutras, carinhosas e respeitosas.
-- PROIBIDO nesse caso: flerte, sedução, atração, provocação, tom "confiante" de paquera, qualquer linguagem romântica.
-- PROIBIDO avaliar roupa/visual como crítica de estilo ("gentleman", "ditando tendência", "mais estilo que adulto", "impecável") e comparar a criança com adultos.
-- Mantenha os 5 tons, mas adaptados: engracado = reação espontânea; curioso = curiosidade familiar simples; confiante = observação leve; carinhoso = comentário carinhoso; provocador = melhor resposta neutra (sem provocação).
-- Mensagens curtas, naturais, sem excesso de elogios. Referências de tom (não copie sempre): "que sorriso bom 😂❤️", "essa foto ficou muito querida", "olha essa carinha 😄".
-- Se houver dúvida sobre a idade, NÃO faça inferência forte: trate como conteúdo neutro/fofo, nunca como paquera.
-   - NÃO force humor nem provocação. Se não houver gancho genuíno para engraçado/provocador, escreva uma alternativa neutra, natural e específica (sem piada). Ex. RUIM: piadas de "maratona", "virou observadora de aves", "virou bióloga", rótulos/identidades dados à pessoa.
-   - Não comente roupa, calçado, corpo ou visual da pessoa, nem nada que soe como avaliação da aparência. Foque no lugar, animais, objetos, texto ou música.
-   - Padrão de qualidade aprovado (passeio com aves em recinto): "Lugar legal! É zoológico ou algum parque ambiental?" — simples, contextual, adulta. As alternativas devem ter esse nível; observações também valem (ex.: "essas aves de perto devem ser outra coisa").
-11. "melhor_resposta": selecione a mais natural, ancorada e de menor risco entre as geradas — e explique por quê em 1 frase. As outras 4 opções têm tons distintos.` + IA_HONESTA;
+REGRAS DAS MENSAGENS (separadas da análise):
+- As respostas NÃO podem usar as hipóteses como se fossem fatos. Proibido: "tá na bad?", "quem te magoou?", "força aí", "vai passar", "superando alguém?", "se precisar conversar", "tô aqui pra você" e qualquer coisa que presuma tristeza/problema.
+- Cada resposta tem que se ancorar em UM detalhe concreto visível/legível (objeto, lugar, música citada pelo nome, texto, situação) ou no contexto informado. Se não houver gancho claro, faça comentário simples ou pergunta contextual honesta (ex.: "boa essa música, conhecia não" / "isso é onde?").
+- Curtas: até ~12 palavras, português natural de zap, minúsculas ok, sem tom de coach, sem manipulação, sem emoji em excesso.
+- As 5 opções devem ser realmente distintas entre si (gancho ou abordagem diferente), não a mesma frase reescrita.
+- Não force cantada, carinho ou provocação quando não combinam com o story. Se o tom não encaixar, escreva uma versão leve e neutra daquele tom (ex.: "carinhoso" vira simpático simples; "provocador" vira brincadeira leve sobre um detalhe), nunca sexual, nunca ofensivo.
+- Comente a SITUAÇÃO/detalhe, não a aparência. Proibido elogio genérico ("linda", "maravilhosa", "gata").
+- Descarte mensagens genéricas que serviriam pra qualquer story ("que legal", "adorei", "tudo bem?").
+- A melhor resposta é a mais natural e ancorada num detalhe real, de preferência a de menor risco.` + IA_HONESTA;
 
 const PROIBIDAS = [
   /\bna bad\b/i, /\bbad bateu\b/i, /\bmagoou\b/i, /\bsofr/i, /\btriste/i, /\bfor[çc]a a[ií]\b/i,
   /\bvai passar\b/i, /\bsuperand/i, /\besquecer\b/i, /\bse precisar\b/i, /\bt[ôo] aqui pra\b/i,
   /\bex\b/i, /\blinda\b/i, /\bgata\b/i, /\bmaravilhosa\b/i, /\bdeusa\b/i, /\bperfeita\b/i,
   /^(que legal|adorei|amei|tudo bem\??)[.!]?$/i,
-  /despertar desejo|fazer apego|\bapego\b|gatilho|cansou|cansad|roub(ou|aram)|pronto pra qualquer|me conta mais|fiquei curios|maratona|virou (observador|bi[óo]log|exploradora|aventureira)|observadora de aves|\b(t[êe]nis|sapato|cal[çc]ado|roupa|look|outfit|corpo|shape)\b/i,
 ];
 
 function mensagemRuim(t: string): boolean {
@@ -52,34 +34,6 @@ function mensagemRuim(t: string): boolean {
   if (!s) return true;
   if (s.split(/\s+/).length > 16) return true;
   return PROIBIDAS.some((r) => r.test(s));
-}
-
-// Story de bebê/criança: bloqueia flerte, atração e avaliação de estilo/aparência.
-const INFANTIL_RE = /\b(beb[êe]s?|crian[çc]as?|nen[ée]m|nenem|filh[ao]s?|sobrinh[ao]s?|baby|kids?|criancinha)\b/i;
-const INFANTIL_PROIBIDAS = [
-  /flert|sedu|paquer|atra[çc][ãa]o|provoca|gatinh|lind[ao] demais|crush/i,
-  /gentleman|tend[êe]ncia|impec[áa]vel|estil|visual|mais .{0,20}que muito adulto|ditando/i,
-];
-
-function conteudoInfantil(fonte: string): boolean {
-  return INFANTIL_RE.test(fonte);
-}
-
-function mensagemRuimInfantil(t: string): boolean {
-  return INFANTIL_PROIBIDAS.some((r) => r.test(t));
-}
-
-// Elementos que costumam ser inventados (horário, rotina, fds, lugar, plano).
-const INVENTADOS: { re: RegExp; termos: RegExp }[] = [
-  { re: /\b\d{1,2}\s?(h|horas?)\b|\b(cedo|madrugada|final de tarde|fim de tarde|de manh[ãa]|à noite|a noite|hoje cedo)\b/i, termos: /\b\d{1,2}\s?h\b|hor[áa]rio|cedo|manh[ãa]|tarde|noite|madrugada/i },
-  { re: /\b(fds|fim de semana|final de semana|balada|rol[êe])\b/i, termos: /fds|fim de semana|final de semana|balada|rol[êe]/i },
-  { re: /\b(todo dia|sempre|rotina|de novo|toda semana)\b/i, termos: /todo dia|sempre|rotina|toda semana|de novo/i },
-  { re: /\b(praia|viagem|show|festa|trabalho|faculdade|namorad|crush)\w*/i, termos: /praia|viagem|show|festa|trabalho|faculdade|namorad|crush/i },
-  { re: /\b(trilha|lanche|comida|almo[çc]o|aventureir|explorador)\w*/i, termos: /trilha|lanche|comida|almo[çc]o|aventur|explor/i },
-];
-
-function inventaElemento(texto: string, fonte: string): boolean {
-  return INVENTADOS.some(({ re, termos }) => re.test(texto) && !termos.test(fonte));
 }
 
 function norm(t: string) {
@@ -91,8 +45,6 @@ const TONS = ["engracado", "curioso", "confiante", "carinhoso", "provocador"] as
 const SCHEMA = {
   type: "object",
   properties: {
-    texto_visivel: { type: "string", description: "Texto escrito no story, transcrito exatamente. Vazio se não houver." },
-    assunto_principal: { type: "string", description: "Assunto central do story em poucas palavras." },
     detalhes_observaveis: { type: "array", minItems: 2, maxItems: 6, items: { type: "string" } },
     interpretacoes: {
       type: "array", minItems: 1, maxItems: 4,
@@ -115,9 +67,8 @@ const SCHEMA = {
         properties: {
           tom: { type: "string", enum: [...TONS] },
           texto: { type: "string" },
-          ancora: { type: "string", description: "Detalhe visível/texto/contexto que sustenta a resposta." },
         },
-        required: ["tom", "texto", "ancora"],
+        required: ["tom", "texto"],
       },
     },
     melhor_resposta: {
@@ -129,17 +80,15 @@ const SCHEMA = {
       required: ["texto", "por_que"],
     },
   },
-  required: ["texto_visivel", "assunto_principal", "detalhes_observaveis", "interpretacoes", "nao_da_pra_concluir", "estrategia", "respostas", "melhor_resposta"],
+  required: ["detalhes_observaveis", "interpretacoes", "nao_da_pra_concluir", "estrategia", "respostas", "melhor_resposta"],
 };
 
 export interface PsicologiaStoryResult {
-  texto_visivel?: string;
-  assunto_principal?: string;
   detalhes_observaveis: string[];
   interpretacoes: { leitura: string; base: string; incerteza: "alta" | "media" | "baixa" }[];
   nao_da_pra_concluir: string[];
   estrategia: string;
-  respostas: { tom: (typeof TONS)[number]; texto: string; ancora?: string }[];
+  respostas: { tom: (typeof TONS)[number]; texto: string }[];
   melhor_resposta: { texto: string; por_que: string };
 }
 
@@ -158,7 +107,7 @@ export const analisarPsicologiaStory = createServerFn({ method: "POST" })
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("A IA não está configurada no servidor.");
 
-    const baseText = `Analisa este story. Primeiro transcreve o texto visível e define o assunto principal; depois tudo gira em torno dele. Lista detalhes observáveis, leituras possíveis com incerteza, o que não dá pra concluir, uma estratégia e 5 respostas maduras e naturais com estruturas diferentes (um tom cada: engracado, curioso, confiante, carinhoso, provocador sutil), cada uma ancorada num detalhe real, sem inventar fatos e no máximo 2 perguntas. Seleciona a melhor.${data.contexto ? `\n\nContexto extra (legenda/música/situação):\n${data.contexto}` : ""}`;
+    const baseText = `Analisa este story. Lista detalhes observáveis, leituras possíveis com incerteza, o que não dá pra concluir, uma estratégia e 5 respostas distintas (um tom cada: engracado, curioso, confiante, carinhoso, provocador respeitoso), cada uma ancorada num detalhe real e sem presumir sentimento pela música/legenda. Destaca a melhor.${data.contexto ? `\n\nContexto extra (legenda/música/situação):\n${data.contexto}` : ""}`;
 
     let feedback = "";
     let best: PsicologiaStoryResult | null = null;
@@ -194,25 +143,21 @@ export const analisarPsicologiaStory = createServerFn({ method: "POST" })
       if (!r?.respostas || !r?.melhor_resposta) continue;
 
       // Filtra mensagens ruins e duplicadas.
-      const fonte = [r.texto_visivel, r.assunto_principal, ...(r.detalhes_observaveis ?? []), data.contexto].join(" | ");
-      const infantil = conteudoInfantil(fonte);
       const vistos = new Set<string>();
       const ruins: string[] = [];
       r.respostas = r.respostas.filter((x) => {
         const k = norm(x.texto);
-        if (mensagemRuim(x.texto) || inventaElemento(x.texto, fonte) || vistos.has(k) || (infantil && mensagemRuimInfantil(x.texto))) { ruins.push(x.texto); return false; }
+        if (mensagemRuim(x.texto) || vistos.has(k)) { ruins.push(x.texto); return false; }
         vistos.add(k);
         return true;
       });
-      const perguntas = r.respostas.filter((x) => x.texto.trim().endsWith("?"));
-      if (perguntas.length > 2) { ruins.push(...perguntas.slice(2).map((x) => x.texto + " (pergunta demais)")); r.respostas = r.respostas.filter((x) => !perguntas.slice(2).includes(x)); }
-      if (mensagemRuim(r.melhor_resposta.texto) || inventaElemento(r.melhor_resposta.texto, fonte) || (infantil && mensagemRuimInfantil(r.melhor_resposta.texto))) {
+      if (mensagemRuim(r.melhor_resposta.texto)) {
         ruins.push(r.melhor_resposta.texto);
         if (r.respostas[0]) r.melhor_resposta = { texto: r.respostas[0].texto, por_que: "A mais natural e ancorada num detalhe real." };
       }
       best = r;
       if (ruins.length === 0 && r.respostas.length >= 4) break;
-      feedback = `\n\nATENÇÃO: descarte e refaça. Estas mensagens foram rejeitadas por presumir sentimento, inventar horário/rotina/lugar/plano não visível, serem genéricas, longas, repetidas ou elogio: ${ruins.map((s) => `"${s}"`).join(", ")}. Gere 5 novas, curtas, espontâneas e distintas, todas sobre o assunto principal${r.assunto_principal ? ` ("${r.assunto_principal}")` : ""}, ancoradas no texto visível e detalhes reais.`;
+      feedback = `\n\nATENÇÃO: descarte e refaça. Estas mensagens foram rejeitadas por presumir sentimento, serem genéricas, longas, repetidas ou elogio: ${ruins.map((s) => `"${s}"`).join(", ")}. Gere 5 novas, curtas e distintas, ancoradas em detalhes visíveis.`;
     }
     if (!best || best.respostas.length === 0) throw new Error("A IA não respondeu dessa vez. Tenta de novo.");
     return { result: best };
