@@ -1,0 +1,2 @@
+# Architecture
+- Keep Story output and upload validation in a client-safe module, with generation in a server-only helper behind the existing approval middleware; this permits focused tests without weakening access checks.
